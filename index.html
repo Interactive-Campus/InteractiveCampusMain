@@ -1,0 +1,235 @@
+<html>
+
+  <head>
+
+    <title>Clean THREE</title>
+
+    <style>
+
+      body
+      {
+        margin: 0;
+      }
+
+      canvas
+      {
+        width: 100%;
+        height: 100%;
+      }
+
+      div
+      {
+
+      }
+
+    </style>
+
+  </head>
+
+  <body>
+    <script src="js/three.js"></script>
+		<script src="js/controls/OrbitControls.js"></script>
+    <script src="js/loaders/OBJLoader.js"></script>
+    <script src="js/shaders/CopyShader.js"></script>
+		<script src="js/shaders/FXAAShader.js"></script>
+		<script src="js/postprocessing/EffectComposer.js"></script>
+		<script src="js/postprocessing/RenderPass.js"></script>
+		<script src="js/postprocessing/ShaderPass.js"></script>
+		<script src="js/postprocessing/OutlinePass.js"></script>
+		<script src="js/libs/stats.min.js"></script>
+		<script src='js/libs/dat.gui.min.js'></script>
+
+    <script>
+      // declaring big boy variables
+      var container, stats;
+			var camera, scene, renderer, controls;
+			var raycaster = new THREE.Raycaster();
+			var mouse = new THREE.Vector2();
+			var selectedObjects = [];
+			var composer, effectFXAA, outlinePass;
+			var group = new THREE.Group();
+      var obj3d = new THREE.Object3D();
+
+      init();
+			animate();
+
+			function init()
+      {
+        // initialize renderer
+				renderer = new THREE.WebGLRenderer();
+
+        // initialize cutout as div
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+        document.body.appendChild( renderer.domElement );
+
+        // set to cutout size in the future
+				var width = window.innerWidth;
+				var height = window.innerHeight;
+
+        // enable shadows
+				renderer.shadowMap.enabled = true;
+
+        // initialize scene
+				scene = new THREE.Scene();
+
+        // initialize and position camera
+        camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
+        camera.position.set( 0, 0, 8 );
+
+        // initialize and customize controls
+        controls = new THREE.OrbitControls( camera, renderer.domElement );
+				controls.minDistance = 5;
+				controls.maxDistance = 20;
+				controls.maxPolarAngle = Math.PI/2;
+				controls.enablePan = true;
+				controls.enableDamping = true;
+				controls.dampingFactor = 0.25;
+
+        // add ambient light
+				scene.add( new THREE.AmbientLight( 0xaaaaaa, 0.2 ) );
+
+        // add point light
+				var light = new THREE.PointLight(0xddffdd, 0.7);
+				light.position.set( 5, 5, 5 );
+				light.castShadow = true;
+				scene.add( light );
+
+        // idk wtf this does
+				scene.add( group );
+
+        // add and position model
+				var loader = new THREE.OBJLoader();
+				loader.load( 'models/slls.obj', function ( mesh )
+        {
+					mesh.position.set( 0, - 1.5, 0);
+					mesh.rotation.set( 0, - Math.PI / 2, 0 );
+					mesh.scale.set( 0.5, 0.5, 0.5 );
+					mesh.traverse( function (child)
+          {
+						if (child instanceof THREE.Mesh)
+            {
+							if (child.geometry.isGeometry)
+              {
+								child.geometry.center();
+								child.geometry.computeBoundingSphere();
+								scale = 2 * child.geometry.boundingSphere.radius;
+								var phongMaterial = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0x111111, shininess: 5 });
+								child.material = phongMaterial;
+								child.receiveShadow = true;
+								child.castShadow = true;
+							}
+						}
+					});
+					group.add(mesh);
+          //obj3d.add( object );
+				});
+
+        // add and position floor
+				var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
+				var floorGeometry = new THREE.PlaneBufferGeometry(200, 200);
+				var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+				floorMesh.rotation.x -= Math.PI * 0.5;
+				floorMesh.position.y = 0;
+				//scene.add(floorMesh);
+				floorMesh.receiveShadow = true;
+
+				// initialize stats
+				stats = new Stats();
+				container.appendChild( stats.dom );
+
+        // initialize postprocessing
+				composer = new THREE.EffectComposer( renderer );
+				var renderPass = new THREE.RenderPass( scene, camera );
+				composer.addPass( renderPass );
+				outlinePass = new THREE.OutlinePass( new THREE.Vector2( window.innerWidth, window.innerHeight ), scene, camera );
+				composer.addPass( outlinePass );
+
+        // initialize antialiasing
+				effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
+				effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight );
+				effectFXAA.renderToScreen = true;
+				composer.addPass( effectFXAA );
+
+        // initialize event listeners
+				window.addEventListener( 'resize', onWindowResize, false );
+				window.addEventListener( 'mousedown', onTouchMove );
+				window.addEventListener( 'touchmove', onTouchMove );
+
+        // event triggered functions
+        // {
+
+        //
+				function onTouchMove( event )
+        {
+					var x, y;
+					if ( event.changedTouches )
+          {
+						x = event.changedTouches[ 0 ].pageX;
+						y = event.changedTouches[ 0 ].pageY;
+					}
+          else
+          {
+						x = event.clientX;
+						y = event.clientY;
+					}
+					mouse.x = ( x / window.innerWidth ) * 2 - 1;
+					mouse.y = - ( y / window.innerHeight ) * 2 + 1;
+					checkIntersection();
+				}
+
+        //
+				function addSelectedObject( object )
+        {
+					selectedObjects = [];
+					selectedObjects.push( object );
+				}
+
+        //
+				function checkIntersection()
+        {
+					raycaster.setFromCamera( mouse, camera );
+					var intersects = raycaster.intersectObjects( [ group ], true );
+					if ( intersects.length > 0 )
+          {
+						var selectedObject = intersects[ 0 ].object;
+						//camera.position.copy(selectedObject.position);
+						//controls.target = selectedObject;
+						addSelectedObject( selectedObject );
+						outlinePass.selectedObjects = selectedObjects;
+					}
+          else
+          {
+						// outlinePass.selectedObjects = [];
+					}
+				}
+
+        // }
+			}
+
+      // resize the screen correctly
+			function onWindowResize()
+      {
+				var width = window.innerWidth;
+				var height = window.innerHeight;
+				camera.aspect = width / height;
+				camera.updateProjectionMatrix();
+				renderer.setSize( width, height );
+				composer.setSize( width, height );
+				effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight );
+			}
+
+      // draw loop
+			function animate()
+      {
+				requestAnimationFrame( animate );
+				stats.begin();
+				var timer = performance.now();
+				controls.update();
+				composer.render();
+				stats.end();
+			}
+
+    </script>
+  </body>
+</html>
