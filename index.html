@@ -52,7 +52,7 @@
 
     <script src="js/three.js"></script>
     <script src="js/controls/OrbitControls.js"></script>
-    <script src="js/loaders/OBJLoader.js"></script>
+    <script src="js/loaders/GLTFLoader.js"></script>
     <script src="js/shaders/CopyShader.js"></script>
     <script src="js/shaders/FXAAShader.js"></script>
     <script src="js/postprocessing/EffectComposer.js"></script>
@@ -85,8 +85,6 @@
         renderer = new THREE.WebGLRenderer();
 
         // initialize cutout as div
-        container = document.getElementById( 'canvas' );
-        document.body.appendChild( container );
         document.body.appendChild( renderer.domElement );
 
         // set to cutout size in the future
@@ -125,13 +123,13 @@
         scene.add( group );
 
         // add and position model
-        var loader = new THREE.OBJLoader();
-        loader.load( 'models/slls.obj', function ( mesh )
+        var loader = new THREE.GLTFLoader();
+        loader.load( 'models/SchoolAnimTest.gltf', function ( mesh )
         {
-          mesh.position.set( 0, - 1.5, 0);
-          mesh.rotation.set( 0, - Math.PI / 2, 0 );
-          mesh.scale.set( 0.5, 0.5, 0.5 );
-          mesh.traverse( function (child)
+          //mesh.position.set( 0, - 1.5, 0);
+          //mesh.rotation.set( 0, - Math.PI / 2, 0 );
+          //mesh.scale.set( 0.5, 0.5, 0.5 );
+          mesh.scene.traverse( function (child)
           {
             if (child instanceof THREE.Mesh)
             {
@@ -147,7 +145,7 @@
               }
             }
           });
-          group.add(mesh);
+          group.add(mesh.scene);
           //obj3d.add( object );
         });
 
@@ -159,10 +157,6 @@
         floorMesh.position.y = 0;
         //scene.add(floorMesh);
         floorMesh.receiveShadow = true;
-
-        // initialize stats
-        stats = new Stats();
-        container.appendChild( stats.dom );
 
         // initialize postprocessing
         composer = new THREE.EffectComposer( renderer );
@@ -256,11 +250,8 @@
       function animate()
       {
         requestAnimationFrame( animate );
-        stats.begin();
-        var timer = performance.now();
         controls.update();
         composer.render();
-        stats.end();
       }
 
     </script>
