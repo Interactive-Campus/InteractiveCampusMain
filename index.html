@@ -75,6 +75,10 @@
       var obj3d = new THREE.Object3D();
       var divWidth = 500;//window.innerWidth;//500;
       var divHeight = 500;//window.innerHeight;//500;
+      //animation handler
+      var mixer, clips;
+      var mixer = new THREE.AnimationMixer();
+      var clock = new THREE.Clock(true);
 
       init();
       animate();
@@ -123,12 +127,14 @@
         scene.add( group );
 
         // add and position model
+
+
+
         var loader = new THREE.GLTFLoader();
         loader.load( 'models/SchoolAnimTest.gltf', function ( mesh )
         {
-          //mesh.position.set( 0, - 1.5, 0);
-          //mesh.rotation.set( 0, - Math.PI / 2, 0 );
-          //mesh.scale.set( 0.5, 0.5, 0.5 );
+          var clips = mesh.animations;
+
           mesh.scene.traverse( function (child)
           {
             if (child instanceof THREE.Mesh)
@@ -212,9 +218,6 @@
           var intersects = raycaster.intersectObjects( [ group ], true );
           if ( intersects.length > 0 )
           {
-            var selectedObject = intersects[ 0 ].object;
-            //camera.position.copy(selectedObject.position);
-            //controls.target = selectedObject;
             addSelectedObject( selectedObject );
             outlinePass.selectedObjects = selectedObjects;
           }
@@ -252,6 +255,7 @@
         requestAnimationFrame( animate );
         controls.update();
         composer.render();
+        mixer.update(clock.getDelta());
       }
 
     </script>
