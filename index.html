@@ -21,9 +21,7 @@
       {
         width: 0px;
         height: 0px;
-        border: 100px;
-        top: 400px;
-        left: 400px;
+
         margin-left: 0px;
       }
 
@@ -59,23 +57,6 @@
       <script>
       // https://stackoverflow.com/questions/13542175/three-js-ray-intersect-fails-by-adding-div/13544277#13544277
 
-      var css = '#canvas {margin-left: 400px;, background-color: #f0f;, width: 0px;, height: 0px;, padding: 0px;, position: static;}',
-      head = document.head || document.getElementsByTagName('head')[0],
-      style = document.createElement('style');
-
-      style.type = 'text/css';
-      if (style.styleSheet)
-      {
-        // This is required for IE8 and below.
-        style.styleSheet.cssText = css;
-      }
-      else
-      {
-        style.appendChild(document.createTextNode(css));
-      }
-
-      head.appendChild(style);
-
         // declaring big boy variables
         var container, stats;
         var camera, scene, renderer, controls;
@@ -88,7 +69,9 @@
         var divWidth = window.innerWidth / 2;//500;
         var divHeight = window.innerHeight / 2;//500;
 
+
         init();
+        onWindowResize();
         animate();
 
         function init()
@@ -182,8 +165,8 @@
           floorMesh.receiveShadow = true;
 
           // initialize stats
-          stats = new Stats();
-          container.appendChild( stats.dom );
+          //stats = new Stats();
+          //container.appendChild( stats.dom );
 
           // initialize postprocessing
           composer = new THREE.EffectComposer( renderer );
@@ -312,22 +295,41 @@
           divHeight = window.innerHeight / 2;
           var width = divWidth;
           var height = divHeight;
+          var w2 = width / 2;
+          var h2 = height / 2;
           camera.aspect = width / height;
           camera.updateProjectionMatrix();
           renderer.setSize( width, height );
           composer.setSize( width, height );
           effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
+
+          var css = '#canvas {background-color: #f0f; margin-left: ' + w2.toString() + 'px; width: 0px; height: 0px; padding: 0px; margin-top: ' + h2.toString() + 'px; position: static;}',
+          head = document.head || document.getElementsByTagName('head')[0],
+          style = document.createElement('style');
+
+          style.type = 'text/css';
+          if (style.styleSheet)
+          {
+            // This is required for IE8 and below.
+            style.styleSheet.cssText = css;
+          }
+          else
+          {
+            style.appendChild(document.createTextNode(css));
+          }
+
+          head.appendChild(style);
         }
 
         // draw loop
         function animate()
         {
           requestAnimationFrame( animate );
-          stats.begin();
+          //tats.begin();
           var timer = performance.now();
           controls.update();
           composer.render();
-          stats.end();
+          //stats.end();
         }
 
       </script>
