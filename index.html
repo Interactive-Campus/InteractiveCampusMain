@@ -77,7 +77,6 @@
       var divHeight = 500;//window.innerHeight;//500;
       //animation handler
       var mixer, clips;
-      var mixer = new THREE.AnimationMixer();
       var clock = new THREE.Clock(true);
 
       init();
@@ -87,6 +86,8 @@
       {
         // initialize renderer
         renderer = new THREE.WebGLRenderer();
+
+
 
         // initialize cutout as div
         document.body.appendChild( renderer.domElement );
@@ -155,6 +156,8 @@
           //obj3d.add( object );
         });
 
+        var mixer = new THREE.AnimationMixer(group.children[0]);
+
         // add and position floor
         var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
         var floorGeometry = new THREE.PlaneBufferGeometry(200, 200);
@@ -186,6 +189,10 @@
         // {
 
         //
+        function playAnimation(){
+          
+        }
+
         function onTouchMove( event )
         {
           var x, y;
