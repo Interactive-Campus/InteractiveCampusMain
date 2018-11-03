@@ -134,7 +134,8 @@
         var loader = new THREE.GLTFLoader();
         loader.load( 'models/SchoolAnimTest.gltf', function ( mesh )
         {
-          var clips = mesh.animations;
+          clips = mesh.animations[0];
+          console.log(clips.name);
 
           mesh.scene.traverse( function (child)
           {
@@ -156,7 +157,7 @@
           //obj3d.add( object );
         });
 
-        var mixer = new THREE.AnimationMixer(group.children[0]);
+        mixer = new THREE.AnimationMixer();
 
         // add and position floor
         var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
@@ -190,7 +191,8 @@
 
         //
         function playAnimation(){
-          
+          console.log(clips.uuid);
+          mixer.clipAction( clips ).play();
         }
 
         function onTouchMove( event )
@@ -225,8 +227,10 @@
           var intersects = raycaster.intersectObjects( [ group ], true );
           if ( intersects.length > 0 )
           {
+            var selectedObject = intersects[0].object;
             addSelectedObject( selectedObject );
             outlinePass.selectedObjects = selectedObjects;
+            playAnimation();
           }
           else
           {
