@@ -69,6 +69,11 @@
         var divWidth = window.innerWidth / 2;//500;
         var divHeight = window.innerHeight / 2;//500;
 
+        var xd = 1;
+        var yd = 1;
+        var xx = 0;
+        var yy = 0;
+
 
         init();
         onWindowResize();
@@ -165,8 +170,8 @@
           floorMesh.receiveShadow = true;
 
           // initialize stats
-          //stats = new Stats();
-          //container.appendChild( stats.dom );
+          stats = new Stats();
+          container.appendChild( stats.dom );
 
           // initialize postprocessing
           composer = new THREE.EffectComposer( renderer );
@@ -295,8 +300,8 @@
           divHeight = window.innerHeight / 2;
           var width = divWidth;
           var height = divHeight;
-          var w2 = width / 2;
-          var h2 = height / 2;
+          var w2 = xx
+          var h2 = yy;
           camera.aspect = width / height;
           camera.updateProjectionMatrix();
           renderer.setSize( width, height );
@@ -322,14 +327,36 @@
         }
 
         // draw loop
+
         function animate()
         {
           requestAnimationFrame( animate );
-          //tats.begin();
+          stats.begin();
           var timer = performance.now();
           controls.update();
           composer.render();
-          //stats.end();
+          stats.end();
+          xx += xd * (divWidth / 32);
+          yy += xd * (divHeight / 32);
+          if (xx > divWidth )
+          {
+            xd = -1;
+          }
+          if (xx < 0)
+          {
+            xd = 1;
+          }
+
+          if (yy > divHeight)
+          {
+            yd = -1;
+          }
+          if (yy < 0)
+          {
+            yd = 1;
+          }
+
+          onWindowResize();
         }
 
       </script>
