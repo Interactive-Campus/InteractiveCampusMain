@@ -132,10 +132,13 @@
 
 
         var loader = new THREE.GLTFLoader();
-        loader.load( 'models/SchoolAnimTest.gltf', function ( mesh )
+        loader.load( 'models/cubeTest.gltf', function ( mesh )
         {
           clips = mesh.animations[0];
-          console.log(clips.name);
+          console.log(mesh.scene.children[0].isMesh);
+           var objects = [];
+           objects  = mesh.scene.children;
+           //outlinePass.selectedObjects = objects;
 
           mesh.scene.traverse( function (child)
           {
@@ -190,9 +193,10 @@
         // {
 
         //
-        function playAnimation(){
+        function playAnimation( rootObject ){
           console.log(clips.uuid);
-          mixer.clipAction( clips ).play();
+          var action = mixer.clipAction( clips, rootObject ).play();
+          action.clampWhenFinished = true;
         }
 
         function onTouchMove( event )
@@ -229,12 +233,18 @@
           {
             var selectedObject = intersects[0].object;
             addSelectedObject( selectedObject );
+            console.log(selectedObject.parent.children.length);
+            for(var i = 0; i < selectedObject.parent.children.length; i++){
+                selectedObjects.push(selectedObject.parent.children[i]);
+            }
+
             outlinePass.selectedObjects = selectedObjects;
-            playAnimation();
+
+            console.log(selectedObject.isMesh);
           }
           else
           {
-            // outlinePass.selectedObjects = [];
+            outlinePass.selectedObjects = [];
           }
         }
 
