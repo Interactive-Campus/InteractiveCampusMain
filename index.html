@@ -124,41 +124,44 @@
         light.castShadow = true;
         scene.add( light );
 
-        // idk wtf this does
+        //add the group of all models into the scene
         scene.add( group );
 
         // add and position model
 
-
-
         var loader = new THREE.GLTFLoader();
-        loader.load( 'models/cubeTest.gltf', function ( mesh )
-        {
-          clips = mesh.animations[0];
-          console.log(mesh.scene.children[0].isMesh);
-           var objects = [];
-           objects  = mesh.scene.children;
-           //outlinePass.selectedObjects = objects;
 
-          mesh.scene.traverse( function (child)
+        function loadGltf(path, position, modelGroup){
+
+          loader.load( path, function ( gltf )
           {
-            if (child instanceof THREE.Mesh)
-            {
-              if (child.geometry.isGeometry)
-              {
-                child.geometry.center();
-                child.geometry.computeBoundingSphere();
-                scale = 2 * child.geometry.boundingSphere.radius;
-                var phongMaterial = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0x111111, shininess: 5 });
-                child.material = phongMaterial;
-                child.receiveShadow = true;
-                child.castShadow = true;
-              }
-            }
+            console.log(gltf.scenes.length);
+            //for each scene in the array of scene
+            gltf.scenes.forEach(function (scene){
+              var sceneGroup = new THREE.Group();
+              gltf.scene.children.forEach(function(mesh){
+                group.add(mesh);
+              });
+              sceneGroup.position.copy(position);
+              //for each object in the scene
+              sceneGroup.traverse( function (child){
+                if (child instanceof THREE.Mesh){
+                  if (child.geometry.isGeometry){
+                    child.geometry.center();
+                    child.geometry.computeBoundingSphere();
+                    scale = 2 * child.geometry.boundingSphere.radius;
+                    child.material = phongMaterial;
+                    child.receiveShadow = true;
+                    child.castShadow = true;
+                  }
+                }
+              });
+              modelGroup.add(sceneGroup);
+            });
           });
-          group.add(mesh.scene);
-          //obj3d.add( object );
-        });
+        }
+
+        loadGltf('models/sceneTest.gltf', new THREE.Vector3(1,1,0), group);
 
         mixer = new THREE.AnimationMixer();
 
@@ -231,13 +234,19 @@
           var intersects = raycaster.intersectObjects( [ group ], true );
           if ( intersects.length > 0 )
           {
+            //gets first selected object
             var selectedObject = intersects[0].object;
             addSelectedObject( selectedObject );
-            console.log(selectedObject.parent.children.length);
+
+            //logs the amount of children of the top object of the group
+            console.log(selectedObject.parent.parent.children.length);
+            console.log(selectedObject.uuid);
+
+            //hihlights all the objects in the group
             for(var i = 0; i < selectedObject.parent.children.length; i++){
                 selectedObjects.push(selectedObject.parent.children[i]);
             }
-
+            //add the selected object to list of highlighted objects
             outlinePass.selectedObjects = selectedObjects;
 
             console.log(selectedObject.isMesh);
