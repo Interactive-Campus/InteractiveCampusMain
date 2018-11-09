@@ -87,8 +87,6 @@
         // initialize renderer
         renderer = new THREE.WebGLRenderer();
 
-
-
         // initialize cutout as div
         document.body.appendChild( renderer.domElement );
 
@@ -135,13 +133,20 @@
 
           loader.load( path, function ( gltf )
           {
-            console.log(gltf.scenes.length);
             //for each scene in the array of scene
-            gltf.scenes.forEach(function (scene){
+            gltf.scenes.forEach(function (curScene){
+              //adds the objects to a new group
               var sceneGroup = new THREE.Group();
-              gltf.scene.children.forEach(function(mesh){
-                group.add(mesh);
-              });
+              var sceneLength = curScene.children.length;
+              console.log("number of children" + curScene.children.length);
+              for(var i = 0; i < sceneLength; i++){
+                sceneGroup.add(curScene.children[0]);
+                console.log(curScene.children.length);
+              }
+              /*curScene.children.forEach(function(mesh){
+                sceneGroup.add(mesh);
+                console.log('added');
+              });*/
               sceneGroup.position.copy(position);
               //for each object in the scene
               sceneGroup.traverse( function (child){
@@ -239,17 +244,11 @@
             addSelectedObject( selectedObject );
 
             //logs the amount of children of the top object of the group
-            console.log(selectedObject.parent.parent.children.length);
-            console.log(selectedObject.uuid);
+            console.log(selectedObject.parent.children.length);
 
-            //hihlights all the objects in the group
-            for(var i = 0; i < selectedObject.parent.children.length; i++){
-                selectedObjects.push(selectedObject.parent.children[i]);
-            }
             //add the selected object to list of highlighted objects
             outlinePass.selectedObjects = selectedObjects;
 
-            console.log(selectedObject.isMesh);
           }
           else
           {
