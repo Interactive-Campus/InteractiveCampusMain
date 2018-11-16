@@ -133,6 +133,7 @@
 
           loader.load( path, function ( gltf )
           {
+            gltf.animations.forEach(function(anim){console.log(anim.name)});
             //for each scene in the array of scene
             gltf.scenes.forEach(function (curScene){
               //adds the objects to a new group
@@ -143,10 +144,6 @@
                 sceneGroup.add(curScene.children[0]);
                 console.log(curScene.children.length);
               }
-              /*curScene.children.forEach(function(mesh){
-                sceneGroup.add(mesh);
-                console.log('added');
-              });*/
               sceneGroup.position.copy(position);
               //for each object in the scene
               sceneGroup.traverse( function (child){
@@ -166,7 +163,7 @@
           });
         }
 
-        loadGltf('models/sceneTest.gltf', new THREE.Vector3(1,1,0), group);
+        loadGltf('models/Nangaku.gltf', new THREE.Vector3(1,1,0), group);
 
         mixer = new THREE.AnimationMixer();
 
@@ -241,13 +238,13 @@
           {
             //gets first selected object
             var selectedObject = intersects[0].object;
-            addSelectedObject( selectedObject );
+            addSelectedObject(selectedObject);
 
             //logs the amount of children of the top object of the group
-            console.log(selectedObject.parent.children.length);
+            console.log(selectedObject.parent.children[0].name);
 
             //add the selected object to list of highlighted objects
-            outlinePass.selectedObjects = selectedObjects;
+            outlinePass.selectedObjects = selectedObject.parent.children;
 
           }
           else
