@@ -17,14 +17,6 @@
         height: 100%;
       }
 
-      div
-      {
-        width: 0px;
-        height: 0px;
-
-        margin-left: 0px;
-      }
-
       #canvas
       {
         background-color: #f0f;
@@ -57,7 +49,12 @@
       <script>
       // https://stackoverflow.com/questions/13542175/three-js-ray-intersect-fails-by-adding-div/13544277#13544277
 
+      // heap clears frequently, nodes do not
+
+      // dummy buttons
+
         // declaring big boy variables
+        var t;
         var container, stats;
         var camera, scene, renderer, controls;
         var raycaster = new THREE.Raycaster();
@@ -66,8 +63,8 @@
         var composer, effectFXAA, outlinePass;
         var group = new THREE.Group();
         var obj3d = new THREE.Object3D();
-        var divWidth = window.innerWidth / 2;//500;
-        var divHeight = window.innerHeight / 2;//500;
+        var divWidth = window.innerWidth;// / 2;//500;
+        var divHeight = window.innerHeight;// / 2;//500;
 
         var xd = 1;
         var yd = 1;
@@ -109,17 +106,19 @@
           scene = new THREE.Scene();
 
           // initialize and position camera
-          camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
+          //camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
+          var camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
           camera.position.set( 0, 0, 8 );
 
           // initialize and customize controls
           controls = new THREE.OrbitControls( camera, renderer.domElement );
           controls.minDistance = 5;
-          controls.maxDistance = 20;
+          controls.maxDistance = 40;
           controls.maxPolarAngle = Math.PI/2;
           controls.enablePan = true;
           controls.enableDamping = true;
           controls.dampingFactor = 0.25;
+          controls.target.x =  1;
 
           // add ambient light
           scene.add( new THREE.AmbientLight( 0xaaaaaa, 0.2 ) );
@@ -135,7 +134,7 @@
 
           // add and position model
           var loader = new THREE.OBJLoader();
-          loader.load( 'models/slls.obj', function ( mesh )
+          loader.load( 'models/nu2.obj', function ( mesh )
           {
             mesh.position.set( 0, - 1.5, 0);
             mesh.rotation.set( 0, - Math.PI / 2, 0 );
@@ -192,16 +191,44 @@
           window.addEventListener( 'touchend', onTouchMove );
           window.addEventListener( 'touchstart', onmesh);
           window.addEventListener( 'mousedown', onmesh);
+          window.addEventListener( 'mousemove', stopstart);
 
           // event triggered functions
           // {
 
           var clicked = true;
           var started = false;
+          var lfclick = true;
+
+          function stopstart (event)
+          {
+            if (!lfclick)
+            {
+              controls.enableRotate = false;
+              controls.enablePan = true;
+              console.log("a");
+            }
+            else
+            {
+              controls.enableRotate = true;
+              controls.enablePan = false;
+              console.log("b");
+            }
+          }
 
           function onmesh (event)
           {
             var x, y;
+
+            if (event.button == 2)
+            {
+              lfclick = false;
+            }
+            else
+            {
+              lfclick = true;
+            }
+
             if ( event.changedTouches )
             {
               x = event.changedTouches[ 0 ].pageX;
@@ -291,26 +318,37 @@
           camera.updateProjectionMatrix();
           renderer.setSize( width, height );
           composer.setSize( width, height );
+          renderer.domElement.style.width = width + 'px';
+          renderer.domElement.style.height = height + 'px';
         }
 
         // resize the screen correctly
+        var i = 0;
         function onWindowResize()
         {
-          divWidth = window.innerWidth / 2;
-          divHeight = window.innerHeight / 2;
+          divWidth = window.innerWidth;// / 2;
+          divHeight = window.innerHeight; // 2;
           var width = divWidth;
           var height = divHeight;
           var w2 = xx
           var h2 = yy;
-          camera.aspect = width / height;
-          camera.updateProjectionMatrix();
+          //camera.aspect = width / height;
+          //camera.updateProjectionMatrix();
           renderer.setSize( width, height );
           composer.setSize( width, height );
+          renderer.domElement.style.width = width + 'px';
+          renderer.domElement.style.height = height + 'px';
+          //renderer.domElement.style.offsetLeft = w2 + 'px';
+          //renderer.domElement.style.offsetTop = h2 + 'px';
           effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
+
 
           var css = '#canvas {background-color: #f0f; margin-left: ' + w2.toString() + 'px; width: 0px; height: 0px; padding: 0px; margin-top: ' + h2.toString() + 'px; position: static;}',
           head = document.head || document.getElementsByTagName('head')[0],
           style = document.createElement('style');
+
+          var y;
+
 
           style.type = 'text/css';
           if (style.styleSheet)
@@ -320,24 +358,71 @@
           }
           else
           {
-            style.appendChild(document.createTextNode(css));
+            t = document.createTextNode(css);
+            style.appendChild(t);
+
+            if (style.childNodes.length <1)
+            {
+              //y = style.childNode[0];
+              style.removeChild(style.childNode[style.childNodes.length - 1]);
+              head.style.childNodes[0].kill();
+              head.style.childNodes[i].kill();
+              style.removeChild(style.childNode[0]);
+              head.style.childNodes[i-1].kill();
+              style.removeChild(style.childNode[i]);
+              style.removeChild(style.childNode[i-1]);
+              head.style.childNodes[style.childNodes.length - 1].kill();
+              //console.log(style.childNodes.length);
+
+              i++;
+            }
+
+            console.log(style.childNodes.length);
+
+            //head.style.textContent = css;
           }
 
           head.appendChild(style);
+
+          if (head.childNodes.length > 1)
+          {
+            //y = style.childNodes[0];
+            //head.removeChild(y);
+          }
         }
 
         // draw loop
+
+        var panx = 1;
+        var panz = 1;
 
         function animate()
         {
           requestAnimationFrame( animate );
           stats.begin();
           var timer = performance.now();
+
+          //var newX = target.x + panx;
+          //var newY = target.y + pany;
+          if (controls.target.x > panx) {
+              controls.target.x = panx;
+          }
+          if (controls.target.x < -1 * panx) {
+              controls.target.x = -1 * panx;
+          }
+          if (controls.target.z > panz) {
+              controls.target.z = panz;
+          }
+          if (controls.target.z < -1 * panz) {
+              controls.target.z = -1 * panz;
+          }
+          controls.target.y = 0;
+
           controls.update();
           composer.render();
           stats.end();
-          xx += xd * (divWidth / 32);
-          yy += xd * (divHeight / 32);
+          //xx += xd * (divWidth / 32);
+          //yy += xd * (divHeight / 32);
           if (xx > divWidth )
           {
             xd = -1;
@@ -356,7 +441,8 @@
             yd = 1;
           }
 
-          onWindowResize();
+            console.log(controls.target.x);
+          //onWindowResize();
         }
 
       </script>
