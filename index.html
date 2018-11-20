@@ -1,451 +1,517 @@
+<!DOCTYPE html>
 <html>
-
+<title>Nangaku Building</title>
   <head>
 
-    <title>Clean THREE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
+    body {
+        font-family: "Gill Sans", sans-serif;
+    }
 
-      body
-      {
-        margin: 0;
-      }
-
-      canvas
-      {
-        width: 100%;
+    .sidenav {
         height: 100%;
-      }
+        width: 0;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        right: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+    }
 
-      #canvas
-      {
-        background-color: #f0f;
-        width: 0px;
-        height: 0px;
-        padding: 0px;
-        position: static; /* fixed or static */
-      }
+    .sidenav a {
+        padding: 4px 10px 4px 10px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+    }
 
+    .sidenav a:hover {
+        color: #f1f1f1;
+    }
+
+    .sidenav .closebtn {
+        position: absolute;
+        top: 0;
+        right: 10px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+
+    p
+    {
+      font-size: 20px;
+      padding-left: 10px;
+      padding-right: 3px;
+      color: #FFFFFF
+    }
+
+    #main {
+        transition: margin-left .5s;
+        padding: 16px;
+    }
+
+    @media screen and (max-height: 450px) {
+      .sidenav {padding-top: 15px;}
+      .sidenav a {font-size: 18px;}
+    }
     </style>
-
   </head>
+<body>
 
-  <body>
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="event.html">Adam's Chinese presentation - History of Bridges</a>
+    <p>Where: N-205</p>
+    <a href="Event2">Event 2</a>
+    <p>Event 2 description</p>
+    <a href="Event3">Event 3</a>
+    <p>Event 3 description</p>
+  </div>
+
+  <div id="main">
+    <h2>Nangaku Building</h2>
+    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>
+  </div>
+
+  <script>
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+        document.getElementById("main").style.marginRight = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        document.getElementById("main").style.marginLRight= "0";
+    }
+  </script>
+
+  <script src="js/three.js"></script>
+  <script src="js/controls/OrbitControls.js"></script>
+  <script src="js/loaders/OBJLoader.js"></script>
+  <script src="js/shaders/CopyShader.js"></script>
+  <script src="js/shaders/FXAAShader.js"></script>
+  <script src="js/postprocessing/EffectComposer.js"></script>
+  <script src="js/postprocessing/RenderPass.js"></script>
+  <script src="js/postprocessing/ShaderPass.js"></script>
+  <script src="js/postprocessing/OutlinePass.js"></script>
+  <script src="js/libs/stats.min.js"></script>
+  <script src='js/libs/dat.gui.min.js'></script>
+
+  <div id = 'canvas'>
+    <script>
+    // https://stackoverflow.com/questions/13542175/three-js-ray-intersect-fails-by-adding-div/13544277#13544277
+
+    // heap clears frequently, nodes do not
+
+    // dummy buttons
+
+      // declaring big boy variables
+      var t;
+      var container, stats;
+      var camera, scene, renderer, controls;
+      var raycaster = new THREE.Raycaster();
+      var mouse = new THREE.Vector2();
+      var selectedObjects = [];
+      var composer, effectFXAA, outlinePass;
+      var group = new THREE.Group();
+      var obj3d = new THREE.Object3D();
+      var divWidth = window.innerWidth * 3 / 4;// / 2;//500;
+      var divHeight = window.innerHeight * 5 / 7// / 2;//500;
+
+      var xd = 1;
+      var yd = 1;
+      var xx = 0;
+      var yy = 0;
 
 
-    <script src="js/three.js"></script>
-    <script src="js/controls/OrbitControls.js"></script>
-    <script src="js/loaders/OBJLoader.js"></script>
-    <script src="js/shaders/CopyShader.js"></script>
-    <script src="js/shaders/FXAAShader.js"></script>
-    <script src="js/postprocessing/EffectComposer.js"></script>
-    <script src="js/postprocessing/RenderPass.js"></script>
-    <script src="js/postprocessing/ShaderPass.js"></script>
-    <script src="js/postprocessing/OutlinePass.js"></script>
-    <script src="js/libs/stats.min.js"></script>
-    <script src='js/libs/dat.gui.min.js'></script>
+      init();
+      onWindowResize();
+      animate();
 
-    <div id = 'canvas'>
-      <script>
-      // https://stackoverflow.com/questions/13542175/three-js-ray-intersect-fails-by-adding-div/13544277#13544277
+      function init()
+      {
+        container = document.getElementById( 'canvas' );
+        document.body.appendChild( container );
 
-      // heap clears frequently, nodes do not
+        renderer = new THREE.WebGLRenderer();
+        //renderer.setSize( 200, 200 );
+        container.appendChild( renderer.domElement );
+        /*
+        // initialize renderer
+        renderer = new THREE.WebGLRenderer();
+        renderer.serSize(divWidth, divHeight);
+        // initialize cutout as div
+        container = document.getElementById( 'canvas' );
+        document.body.appendChild( container );
+        document.body.appendChild( renderer.domElement );
+        container.appendChild( renderer.domElement );
+        */
 
-      // dummy buttons
+        // set to cutout size in the future
+        var width = divWidth;
+        var height = divHeight;
 
-        // declaring big boy variables
-        var t;
-        var container, stats;
-        var camera, scene, renderer, controls;
-        var raycaster = new THREE.Raycaster();
-        var mouse = new THREE.Vector2();
-        var selectedObjects = [];
-        var composer, effectFXAA, outlinePass;
-        var group = new THREE.Group();
-        var obj3d = new THREE.Object3D();
-        var divWidth = window.innerWidth;// / 2;//500;
-        var divHeight = window.innerHeight;// / 2;//500;
+        // enable shadows
+        renderer.shadowMap.enabled = true;
 
-        var xd = 1;
-        var yd = 1;
-        var xx = 0;
-        var yy = 0;
+        // initialize scene
+        scene = new THREE.Scene();
 
+        // initialize and position camera
+        //camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
+        var camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
+        camera.position.set( 0, 0, 8 );
 
-        init();
-        onWindowResize();
-        animate();
+        // initialize and customize controls
+        controls = new THREE.OrbitControls( camera, renderer.domElement );
+        controls.minDistance = 5;
+        controls.maxDistance = 40;
+        controls.maxPolarAngle = Math.PI/2;
+        controls.enablePan = true;
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
+        controls.target.x =  1;
+        controls.enableZoom = true;
 
-        function init()
+        // add ambient light
+        scene.add( new THREE.AmbientLight( 0xaaaaaa, 0.2 ) );
+
+        // add point light
+        var light = new THREE.PointLight(0xddffdd, 0.7);
+        light.position.set( 5, 5, 5 );
+        light.castShadow = true;
+        scene.add( light );
+
+        // idk wtf this does
+        scene.add( group );
+
+        // add and position model
+        var loader = new THREE.OBJLoader();
+        loader.load( 'models/nu2.obj', function ( mesh )
         {
-          container = document.getElementById( 'canvas' );
-          document.body.appendChild( container );
-
-          renderer = new THREE.WebGLRenderer();
-          //renderer.setSize( 200, 200 );
-          container.appendChild( renderer.domElement );
-          /*
-          // initialize renderer
-          renderer = new THREE.WebGLRenderer();
-          renderer.serSize(divWidth, divHeight);
-          // initialize cutout as div
-          container = document.getElementById( 'canvas' );
-          document.body.appendChild( container );
-          document.body.appendChild( renderer.domElement );
-          container.appendChild( renderer.domElement );
-          */
-
-          // set to cutout size in the future
-          var width = divWidth;
-          var height = divHeight;
-
-          // enable shadows
-          renderer.shadowMap.enabled = true;
-
-          // initialize scene
-          scene = new THREE.Scene();
-
-          // initialize and position camera
-          //camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
-          var camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
-          camera.position.set( 0, 0, 8 );
-
-          // initialize and customize controls
-          controls = new THREE.OrbitControls( camera, renderer.domElement );
-          controls.minDistance = 5;
-          controls.maxDistance = 40;
-          controls.maxPolarAngle = Math.PI/2;
-          controls.enablePan = true;
-          controls.enableDamping = true;
-          controls.dampingFactor = 0.25;
-          controls.target.x =  1;
-
-          // add ambient light
-          scene.add( new THREE.AmbientLight( 0xaaaaaa, 0.2 ) );
-
-          // add point light
-          var light = new THREE.PointLight(0xddffdd, 0.7);
-          light.position.set( 5, 5, 5 );
-          light.castShadow = true;
-          scene.add( light );
-
-          // idk wtf this does
-          scene.add( group );
-
-          // add and position model
-          var loader = new THREE.OBJLoader();
-          loader.load( 'models/nu2.obj', function ( mesh )
+          mesh.position.set( 0, - 1.5, 0);
+          mesh.rotation.set( 0, - Math.PI / 2, 0 );
+          mesh.scale.set( 0.5, 0.5, 0.5 );
+          mesh.traverse( function (child)
           {
-            mesh.position.set( 0, - 1.5, 0);
-            mesh.rotation.set( 0, - Math.PI / 2, 0 );
-            mesh.scale.set( 0.5, 0.5, 0.5 );
-            mesh.traverse( function (child)
+            if (child instanceof THREE.Mesh)
             {
-              if (child instanceof THREE.Mesh)
+              if (child.geometry.isGeometry)
               {
-                if (child.geometry.isGeometry)
-                {
-                  child.geometry.center();
-                  child.geometry.computeBoundingSphere();
-                  scale = 2 * child.geometry.boundingSphere.radius;
-                  var phongMaterial = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0x111111, shininess: 5 });
-                  child.material = phongMaterial;
-                  child.receiveShadow = true;
-                  child.castShadow = true;
-                }
+                child.geometry.center();
+                child.geometry.computeBoundingSphere();
+                scale = 2 * child.geometry.boundingSphere.radius;
+                var phongMaterial = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0x111111, shininess: 5 });
+                child.material = phongMaterial;
+                child.receiveShadow = true;
+                child.castShadow = true;
               }
-            });
-            group.add(mesh);
-            //obj3d.add( object );
+            }
           });
+          group.add(mesh);
+          //obj3d.add( object );
+        });
 
-          // add and position floor
-          var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
-          var floorGeometry = new THREE.PlaneBufferGeometry(200, 200);
-          var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
-          floorMesh.rotation.x -= Math.PI * 0.5;
-          floorMesh.position.y = 0;
-          //scene.add(floorMesh);
-          floorMesh.receiveShadow = true;
+        // add and position floor
+        var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
+        var floorGeometry = new THREE.PlaneBufferGeometry(200, 200);
+        var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+        floorMesh.rotation.x -= Math.PI * 0.5;
+        floorMesh.position.y = 0;
+        //scene.add(floorMesh);
+        floorMesh.receiveShadow = true;
 
-          // initialize stats
-          stats = new Stats();
-          container.appendChild( stats.dom );
+        // initialize stats
+        stats = new Stats();
+        container.appendChild( stats.dom );
 
-          // initialize postprocessing
-          composer = new THREE.EffectComposer( renderer );
-          var renderPass = new THREE.RenderPass( scene, camera );
-          composer.addPass( renderPass );
-          outlinePass = new THREE.OutlinePass( new THREE.Vector2( divWidth, divHeight ), scene, camera );
-          composer.addPass( outlinePass );
+        // initialize postprocessing
+        composer = new THREE.EffectComposer( renderer );
+        var renderPass = new THREE.RenderPass( scene, camera );
+        composer.addPass( renderPass );
+        outlinePass = new THREE.OutlinePass( new THREE.Vector2( divWidth, divHeight ), scene, camera );
+        composer.addPass( outlinePass );
 
-          // initialize antialiasing
-          effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
-          effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
-          effectFXAA.renderToScreen = true;
-          composer.addPass( effectFXAA );
+        // initialize antialiasing
+        effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
+        effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
+        effectFXAA.renderToScreen = true;
+        composer.addPass( effectFXAA );
 
-          // initialize event listeners
-          window.addEventListener( 'resize', onWindowResize, false );
-          window.addEventListener( 'mouseup', onTouchMove );
-          window.addEventListener( 'touchend', onTouchMove );
-          window.addEventListener( 'touchstart', onmesh);
-          window.addEventListener( 'mousedown', onmesh);
-          window.addEventListener( 'mousemove', stopstart);
+        // initialize event listeners
+        window.addEventListener( 'resize', onWindowResize, false );
+        window.addEventListener( 'mouseup', onTouchMove );
+        window.addEventListener( 'touchend', onTouchMove );
+        window.addEventListener( 'touchstart', onmesh);
+        window.addEventListener( 'mousedown', onmesh);
+        window.addEventListener( 'mousemove', stopstart);
 
-          // event triggered functions
-          // {
+        // event triggered functions
+        // {
 
-          var clicked = true;
-          var started = false;
-          var lfclick = true;
+        var clicked = true;
+        var started = false;
+        var lfclick = true;
+        var prevobj = null;
 
-          function stopstart (event)
-          {
-            if (!lfclick)
-            {
-              controls.enableRotate = false;
-              controls.enablePan = true;
-              console.log("a");
-            }
-            else
-            {
-              controls.enableRotate = true;
-              controls.enablePan = false;
-              console.log("b");
-            }
-          }
-
-          function onmesh (event)
-          {
-            var x, y;
-
-            if (event.button == 2)
-            {
-              lfclick = false;
-            }
-            else
-            {
-              lfclick = true;
-            }
-
-            if ( event.changedTouches )
-            {
-              x = event.changedTouches[ 0 ].pageX;
-              y = event.changedTouches[ 0 ].pageY;
-            }
-            else
-            {
-              x = event.clientX;
-              y = event.clientY;
-            }
-            mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
-            mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
-
-            raycaster.setFromCamera( mouse, camera );
-            var intersects = raycaster.intersectObjects( [ group ], true );
-            if ( intersects.length > 0 )
-            {
-              started = true;
-            }
-            else
-            {
-              started = false;
-            }
-          }
-
-          //
-          function onTouchMove( event )
-          {
-            var x, y;
-            if ( event.changedTouches )
-            {
-              x = event.changedTouches[ 0 ].pageX;
-              y = event.changedTouches[ 0 ].pageY;
-            }
-            else
-            {
-              x = event.clientX;
-              y = event.clientY;
-            }
-            mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
-            mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
-            checkIntersection();
-          }
-
-          //
-          function addSelectedObject( object )
-          {
-            selectedObjects = [];
-            selectedObjects.push( object );
-          }
-
-          //
-          function checkIntersection()
-          {
-            raycaster.setFromCamera( mouse, camera );
-            var intersects = raycaster.intersectObjects( [ group ], true );
-            if ( intersects.length > 0 )
-            {
-              var selectedObject = intersects[ 0 ].object;
-              //camera.position.copy(selectedObject.position);
-              //controls.target = selectedObject;
-              addSelectedObject( selectedObject );
-              if (clicked && started)
-              {
-                outlinePass.selectedObjects = selectedObjects;
-              }
-              else
-              {
-                outlinePass.selectedObjects = [];
-              }
-              clicked = !clicked;
-            }
-            else
-            {
-              if (!started)
-              {
-                outlinePass.selectedObjects = [];
-              }
-            }
-          }
-
-          // }
-
-          var width = divWidth;
-          var height = divHeight;
-          camera.aspect = width / height;
-          camera.updateProjectionMatrix();
-          renderer.setSize( width, height );
-          composer.setSize( width, height );
-          renderer.domElement.style.width = width + 'px';
-          renderer.domElement.style.height = height + 'px';
-        }
-
-        // resize the screen correctly
-        var i = 0;
-        function onWindowResize()
+        function stopstart (event)
         {
-          divWidth = window.innerWidth;// / 2;
-          divHeight = window.innerHeight; // 2;
-          var width = divWidth;
-          var height = divHeight;
-          var w2 = xx
-          var h2 = yy;
-          //camera.aspect = width / height;
-          //camera.updateProjectionMatrix();
-          renderer.setSize( width, height );
-          composer.setSize( width, height );
-          renderer.domElement.style.width = width + 'px';
-          renderer.domElement.style.height = height + 'px';
-          //renderer.domElement.style.offsetLeft = w2 + 'px';
-          //renderer.domElement.style.offsetTop = h2 + 'px';
-          effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
-
-
-          var css = '#canvas {background-color: #f0f; margin-left: ' + w2.toString() + 'px; width: 0px; height: 0px; padding: 0px; margin-top: ' + h2.toString() + 'px; position: static;}',
-          head = document.head || document.getElementsByTagName('head')[0],
-          style = document.createElement('style');
-
-          var y;
-
-
-          style.type = 'text/css';
-          if (style.styleSheet)
+          if (!lfclick)
           {
-            // This is required for IE8 and below.
-            style.styleSheet.cssText = css;
+            controls.enableRotate = false;
+            controls.enablePan = true;
+            console.log("a");
           }
           else
           {
-            t = document.createTextNode(css);
-            style.appendChild(t);
-
-            if (style.childNodes.length <1)
-            {
-              //y = style.childNode[0];
-              style.removeChild(style.childNode[style.childNodes.length - 1]);
-              head.style.childNodes[0].kill();
-              head.style.childNodes[i].kill();
-              style.removeChild(style.childNode[0]);
-              head.style.childNodes[i-1].kill();
-              style.removeChild(style.childNode[i]);
-              style.removeChild(style.childNode[i-1]);
-              head.style.childNodes[style.childNodes.length - 1].kill();
-              //console.log(style.childNodes.length);
-
-              i++;
-            }
-
-            console.log(style.childNodes.length);
-
-            //head.style.textContent = css;
-          }
-
-          head.appendChild(style);
-
-          if (head.childNodes.length > 1)
-          {
-            //y = style.childNodes[0];
-            //head.removeChild(y);
+            controls.enableRotate = true;
+            controls.enablePan = false;
+            console.log("b");
           }
         }
 
-        // draw loop
-
-        var panx = 1;
-        var panz = 1;
-
-        function animate()
+        function onmesh (event)
         {
-          requestAnimationFrame( animate );
-          stats.begin();
-          var timer = performance.now();
+          var x, y;
 
-          //var newX = target.x + panx;
-          //var newY = target.y + pany;
-          if (controls.target.x > panx) {
-              controls.target.x = panx;
-          }
-          if (controls.target.x < -1 * panx) {
-              controls.target.x = -1 * panx;
-          }
-          if (controls.target.z > panz) {
-              controls.target.z = panz;
-          }
-          if (controls.target.z < -1 * panz) {
-              controls.target.z = -1 * panz;
-          }
-          controls.target.y = 0;
-
-          controls.update();
-          composer.render();
-          stats.end();
-          //xx += xd * (divWidth / 32);
-          //yy += xd * (divHeight / 32);
-          if (xx > divWidth )
+          if (event.button == 2)
           {
-            xd = -1;
+            lfclick = false;
           }
-          if (xx < 0)
+          else
           {
-            xd = 1;
+            lfclick = true;
           }
 
-          if (yy > divHeight)
+          if ( event.changedTouches )
           {
-            yd = -1;
+            x = event.changedTouches[ 0 ].pageX;
+            y = event.changedTouches[ 0 ].pageY;
           }
-          if (yy < 0)
+          else
           {
-            yd = 1;
+            x = event.clientX;
+            y = event.clientY;
           }
+          mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
+          mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
 
-            console.log(controls.target.x);
-          //onWindowResize();
+          raycaster.setFromCamera( mouse, camera );
+          var intersects = raycaster.intersectObjects( [ group ], true );
+          if ( intersects.length > 0 )
+          {
+            started = true;
+          }
+          else
+          {
+            started = false;
+          }
         }
 
-      </script>
-    </div>
-  </body>
+        //
+        function onTouchMove( event )
+        {
+          var x, y;
+          if ( event.changedTouches )
+          {
+            x = event.changedTouches[ 0 ].pageX;
+            y = event.changedTouches[ 0 ].pageY;
+          }
+          else
+          {
+            x = event.clientX;
+            y = event.clientY;
+          }
+          mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
+          mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
+          checkIntersection();
+        }
+
+        //
+        function addSelectedObject( object )
+        {
+          selectedObjects = [];
+          selectedObjects.push( object );
+        }
+
+        //
+        function checkIntersection()
+        {
+          raycaster.setFromCamera( mouse, camera );
+          var intersects = raycaster.intersectObjects( [ group ], true );
+          if ( intersects.length > 0 )
+          {
+            var selectedObject = intersects[ 0 ].object;
+            //camera.position.copy(selectedObject.position);
+            //controls.target = selectedObject;
+            addSelectedObject( selectedObject );
+            if (clicked && started || prevobj != selectedObject)
+            {
+              outlinePass.selectedObjects = selectedObjects;
+            }
+            else
+            {
+              outlinePass.selectedObjects = [];
+            }
+            clicked = !clicked;
+          }
+          else
+          {
+            if (!started)
+            {
+              outlinePass.selectedObjects = [];
+            }
+          }
+          prevobj = selectedObject;
+        }
+
+        // }
+
+        var width = divWidth;
+        var height = divHeight;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize( width, height );
+        composer.setSize( width, height );
+        renderer.domElement.style.width = width + 'px';
+        renderer.domElement.style.height = height + 'px';
+      }
+
+      // resize the screen correctly
+      var i = 0;
+      function onWindowResize()
+      {
+        divWidth = window.innerWidth;// / 2;
+        divHeight = window.innerHeight; // 2;
+        var width = divWidth;
+        var height = divHeight;
+        var w2 = 0;//200/7;//= xx;
+        var h2 = 0;//= yy;
+        //camera.aspect = width / height;
+        //camera.updateProjectionMatrix();
+        renderer.setSize( width, height );
+        composer.setSize( width, height );
+        renderer.domElement.style.width = width + 'px';
+        renderer.domElement.style.height = height + 'px';
+        //renderer.domElement.style.offsetLeft = w2 + 'px';
+        //renderer.domElement.style.offsetTop = h2 + 'px';
+        effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
+
+
+        var css = '#canvas {background-color: #f0f; margin-left: ' + w2.toString() + 'vw; width: 0px; height: 0px; padding: 0px; margin-top: ' + h2.toString() + 'vw; position: static;}',
+        head = document.head || document.getElementsByTagName('head')[0],
+        style = document.createElement('style');
+
+        var y;
+
+
+        style.type = 'text/css';
+        if (style.styleSheet)
+        {
+          // This is required for IE8 and below.
+          style.styleSheet.cssText = css;
+        }
+        else
+        {
+          t = document.createTextNode(css);
+          style.appendChild(t);
+
+          if (style.childNodes.length <1)
+          {
+            //y = style.childNode[0];
+            style.removeChild(style.childNode[style.childNodes.length - 1]);
+            head.style.childNodes[0].kill();
+            head.style.childNodes[i].kill();
+            style.removeChild(style.childNode[0]);
+            head.style.childNodes[i-1].kill();
+            style.removeChild(style.childNode[i]);
+            style.removeChild(style.childNode[i-1]);
+            head.style.childNodes[style.childNodes.length - 1].kill();
+            //console.log(style.childNodes.length);
+
+            i++;
+          }
+
+          console.log(style.childNodes.length);
+
+          //head.style.textContent = css;
+        }
+
+        head.appendChild(style);
+
+        if (head.childNodes.length > 1)
+        {
+          //y = style.childNodes[0];
+          //head.removeChild(y);
+        }
+      }
+
+      // draw loop
+
+      var panx = 1;
+      var panz = 1;
+
+      function animate()
+      {
+        requestAnimationFrame( animate );
+        stats.begin();
+        var timer = performance.now();
+
+        //var newX = target.x + panx;
+        //var newY = target.y + pany;
+        if (controls.target.x > panx) {
+            controls.target.x = panx;
+        }
+        if (controls.target.x < -1 * panx) {
+            controls.target.x = -1 * panx;
+        }
+        if (controls.target.z > panz) {
+            controls.target.z = panz;
+        }
+        if (controls.target.z < -1 * panz) {
+            controls.target.z = -1 * panz;
+        }
+        controls.target.y = 0;
+
+        controls.update();
+        composer.render();
+        stats.end();
+        //xx += xd * (divWidth / 32);
+        //yy += xd * (divHeight / 32);
+        if (xx > divWidth )
+        {
+          xd = -1;
+        }
+        if (xx < 0)
+        {
+          xd = 1;
+        }
+
+        if (yy > divHeight)
+        {
+          yd = -1;
+        }
+        if (yy < 0)
+        {
+          yd = 1;
+        }
+
+          console.log(controls.target.x);
+        //onWindowResize();
+        if (controls.enablePan)
+        {
+          scene.background = new THREE.Color(0xFF00FF);
+        }
+      }
+
+    </script>
+
+</body>
 </html>
