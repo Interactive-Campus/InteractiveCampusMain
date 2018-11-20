@@ -133,13 +133,13 @@
 
           loader.load( path, function ( gltf )
           {
+            clips = gltf.animations;
             gltf.animations.forEach(function(anim){console.log(anim.name)});
             //for each scene in the array of scene
             gltf.scenes.forEach(function (curScene){
               //adds the objects to a new group
               var sceneGroup = new THREE.Group();
               var sceneLength = curScene.children.length;
-              console.log("number of children" + curScene.children.length);
               for(var i = 0; i < sceneLength; i++){
                 sceneGroup.add(curScene.children[0]);
                 console.log(curScene.children.length);
@@ -198,9 +198,8 @@
         // {
 
         //
-        function playAnimation( rootObject ){
-          console.log(clips.uuid);
-          var action = mixer.clipAction( clips, rootObject ).play();
+        function playAnimation( rootObject, clipName ){
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
           action.clampWhenFinished = true;
         }
 
@@ -239,18 +238,22 @@
             //gets first selected object
             var selectedObject = intersects[0].object;
             addSelectedObject(selectedObject);
-
-            //logs the amount of children of the top object of the group
-            console.log(selectedObject.parent.children[0].name);
-
             //add the selected object to list of highlighted objects
             outlinePass.selectedObjects = selectedObject.parent.children;
-
+            selectedObjectAnimate(selectedObject);
           }
           else
           {
             outlinePass.selectedObjects = [];
           }
+        }
+
+        function selectedObjectAnimate(selectedObject){
+          selectedObject.parent.children.forEach(function (child){
+            if(child.name.slice(0, child.name.length - 3) != 'floorOne'){
+              playAnimation(child, child.name.slice(0, child.name.length - 3));
+            }
+          });
         }
 
         // }
