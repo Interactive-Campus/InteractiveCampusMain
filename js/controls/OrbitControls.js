@@ -623,8 +623,6 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		rotateStart.copy( rotateEnd );
 
-		scope.update();
-
 		if ( scope.enableZoom ) {
 
 			var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
@@ -641,6 +639,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 			dollyStart.copy( dollyEnd );
 
 		}
+
+		scope.update();
 
 	}
 
@@ -821,7 +821,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		switch ( event.touches.length ) {
 
-			case 1:	// one-fingered touch: rotate
+			case 1:	// one-fingered touch: rotate jk pan
 
 			if ( scope.enablePan === false ) return;
 
@@ -829,9 +829,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 			state = STATE.TOUCH_DOLLY_PAN;
 
-
-
-				break;
+			break;
 
 			case 2:	// two-fingered touch: dolly-pan
 
@@ -869,7 +867,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 			case 1: // one-fingered touch: rotate
 
 			if ( scope.enablePan === false ) return;
-			if ( state !== STATE.TOUCH_DOLLY_PAN ) return; // is this needed?
+			//if ( state !== STATE.TOUCH_DOLLY_PAN ) return; // is this needed?
 
 			handleTouchMoveDollyPan( event );
 
@@ -878,11 +876,9 @@ THREE.OrbitControls = function ( object, domElement ) {
 			case 2: // two-fingered touch: dolly-pan
 
 			if ( scope.enableZoom === false && scope.enableRotate === false ) return;
-			if ( state !== STATE.TOUCH_ROTATE ) return; // is this needed?
+			//if ( state !== STATE.TOUCH_ROTATE ) return; // is this needed?
 
 			handleTouchMoveRotate( event );
-
-
 
 				break;
 
