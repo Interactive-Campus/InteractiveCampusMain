@@ -133,6 +133,7 @@
 
           loader.load( path, function ( gltf )
           {
+            console.log(gltf.animations[0]);
             clips = gltf.animations;
             gltf.animations.forEach(function(anim){console.log(anim.name)});
             //for each scene in the array of scene
@@ -141,8 +142,8 @@
               var sceneGroup = new THREE.Group();
               var sceneLength = curScene.children.length;
               for(var i = 0; i < sceneLength; i++){
+                curScene.children.userData = {alreadyUp:false};
                 sceneGroup.add(curScene.children[0]);
-                console.log(curScene.children.length);
               }
               sceneGroup.position.copy(position);
               //for each object in the scene
@@ -194,14 +195,29 @@
         window.addEventListener( 'mousedown', onTouchMove );
         window.addEventListener( 'touchmove', onTouchMove );
 
-        // event triggered functions
-        // {
 
-        //
-        function playAnimation( rootObject, clipName ){
-          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
+
+        function playAnimation( rootObject ){
+          var loops = 0
+          loops++;
+          var action = mixer.clipAction( clips[0], rootObject );
+          action.paused = false;
           action.clampWhenFinished = true;
+          action.setLoop(THREE.LoopOnce, loops);
+          if(rootObject.alreadyUp){
+            loops++;
+            action.setLoop(THREE.LoopOnce, loops);
+            action.timeScale = -1;
+            action.paused = false;
+          }
+          else{action.timeScale = 1;}
+
+          rootObject.alreadyUp = !rootObject.alreadyUp;
+          //console.log(rootObject.alreadyUp);
+          action.play();
         }
+
+        // event triggered functions
 
         function onTouchMove( event )
         {
@@ -237,10 +253,18 @@
           {
             //gets first selected object
             var selectedObject = intersects[0].object;
+            selectedObject.parent.children.forEach(function(child){
+              if (child.name.slice(0, child.name.length - 3) == 'floorTwo'){
+                playAnimation(child);
+              }
+            });
+
+
             addSelectedObject(selectedObject);
+
             //add the selected object to list of highlighted objects
             outlinePass.selectedObjects = selectedObject.parent.children;
-            selectedObjectAnimate(selectedObject);
+
           }
           else
           {
@@ -248,13 +272,13 @@
           }
         }
 
-        function selectedObjectAnimate(selectedObject){
+        /*function selectedObjectAnimate(selectedObject){
           selectedObject.parent.children.forEach(function (child){
             if(child.name.slice(0, child.name.length - 3) != 'floorOne'){
-              playAnimation(child, child.name.slice(0, child.name.length - 3));
+              playAnimation(child, 'Roof');
             }
           });
-        }
+        }*/
 
         // }
 
