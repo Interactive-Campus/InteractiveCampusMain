@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<title>Nangaku Building</title>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+    font-family: "Gill Sans", sans-serif;
+}
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    /* Color of entire sidebar */
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+.sidenav a, .dropdown-btn {
+    padding: 4px 10px 4px 10px;
+    text-decoration: none;
+    font-size: 25px;
+    /* Color of text in dropdown menu */
+    color: #818181;
+    background: none;
+    border: none;
+    display: block;
+    transition: 0.3s;
+}
+.sidenav a:hover {
+    /* Color of mouse hover over general text */
+    color: #f1f1f1;
+}
+.sidenav .closebtn {
+    position: absolute;
+    color: red;
+    top: 0;
+    right: 10px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.sidenav a:hover, .dropdown-btn:hover {
+    /* Color of mouse hover over sidebar dropdown button */
+    color: #f1f1f1;
+}
+
+.active {
+    /* Color of sidebar button when clicked to drop down */
+    background-color: darkred;
+    /* Color of text in button when clicked */
+    color: white;
+}
+
+.dropdown-container {
+    display: none;
+    /* Color of nested buttons in sidebar */
+    background-color: black;
+    padding-left: 8px;
+}
+
+.fa-caret-down {
+    float: right;
+    padding-right: 8px;
+}
+
+p
+{
+  font-size: 20px;
+  padding-left: 10px;
+  padding-right: 3px;
+  color: #FFFFFF;
+}
+#main {
+    transition: margin-left .5s;
+    padding: 16px;
+}
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+</style>
+</head>
+<body>
+
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <button class="dropdown-btn">Adam's Chinese Presentation
+    <i class="fa fa-caret-down"></i>
+  </button>
+  <div class="dropdown-container">
+    <a href="#">Location: N-213</a>
+    <a href="#">Directions</a>
+  </div>
+  <button class="dropdown-btn">Chinese Club Lunch
+    <i class="fa fa-caret-down"></i>
+  </button>
+  <div class="dropdown-container">
+    <a href="#">Location: N-215</a>
+    <a href="#">Directions</a>
+  </div>
+  <button class="dropdown-btn">Garrett's Amazing 10/10 English 9 Presentation
+    <i class="fa fa-caret-down"></i>
+  </button>
+  <div class="dropdown-container">
+    <a href="#">Location: N-110</a>
+    <a href="#">Directions</a>
+  </div>
+</div>
+
+<div id="main">
+  <h2>Nangaku Building</h2>
+  <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>
+</div>
+
+<script>
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+    document.getElementById("main").style.marginRight = "250px";
+}
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("main").style.marginLRight= "0";
+}
+</script>
+
+<script>
+var dropdown = document.getElementsByClassName("dropdown-btn");
+var i;
+
+for (i = 0; i < dropdown.length; i++) {
+  dropdown[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var dropdownContent = this.nextElementSibling;
+    if (dropdownContent.style.display === "block") {
+      dropdownContent.style.display = "none";
+    } else {
+      dropdownContent.style.display = "block";
+    }
+  });
+}
+</script>
+
+</body>
+</html>
