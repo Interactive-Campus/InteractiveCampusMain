@@ -66,31 +66,52 @@
 <body>
 
   <div id="mySidenav" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <a href="event.html">Adam's Chinese presentation - History of Bridges</a>
-    <p>Where: N-205</p>
-    <a href="Event2">Event 2</a>
-    <p>Event 2 description</p>
-    <a href="Event3">Event 3</a>
-    <p>Event 3 description</p>
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+
+
+
+  <a class="dropdown-btn">Garrett's Amazing 10/10 English 9 Presentation
+    <i class="fa fa-caret-down"></i>
+  </a>
+
+  <div class="dropdown-container">
+    <a href="#">Location: N-110</a>
+    <a href="#">Directions</a>
   </div>
+</div>
 
-  <div id="main">
-    <h2>Nangaku Building</h2>
-    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; open</span>
-  </div>
 
-  <script>
-    function openNav() {
-        document.getElementById("mySidenav").style.width = "250px";
-        document.getElementById("main").style.marginRight = "250px";
+
+<script>
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+    document.getElementById("main").style.marginRight = "250px";
+}
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("main").style.marginLRight= "0";
+}
+
+//startClosed();
+</script>
+
+<script>
+
+var dropdown = document.getElementsByClassName("dropdown-btn");
+var i;
+for (i = 0; i < dropdown.length; i++) {
+  dropdown[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var dropdownContent = this.nextElementSibling;
+    if (dropdownContent.style.display === "none") {
+      dropdownContent.style.display = "block";
+    } else {
+      dropdownContent.style.display = "none";
     }
+  });
+}
 
-    function closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        document.getElementById("main").style.marginLRight= "0";
-    }
-  </script>
+</script>
 
   <script src="js/three.js"></script>
   <script src="js/controls/OrbitControls.js"></script>
@@ -110,7 +131,18 @@
 
     // heap clears frequently, nodes do not
 
+    var color = false;
     // dummy buttons
+    const changeText = () => {
+        //const p = document.querySelector('p');
+
+        //p.textContent = "I changed because of an inline event handler.";
+        color = !color;
+
+        // joel paste here
+
+
+    }
 
       // declaring big boy variables
       var t;
@@ -129,14 +161,15 @@
       var yd = 1;
       var xx = 0;
       var yy = 0;
-
-
       init();
       onWindowResize();
       animate();
 
       function init()
       {
+
+        //startClosed();
+
         container = document.getElementById( 'canvas' );
         document.body.appendChild( container );
 
@@ -171,14 +204,15 @@
 
         // initialize and customize controls
         controls = new THREE.OrbitControls( camera, renderer.domElement );
-        controls.minDistance = 5;
-        controls.maxDistance = 40;
-        controls.maxPolarAngle = Math.PI/2;
+        controls.minDistance = 2;
+        controls.maxDistance = 5;
+        controls.maxPolarAngle = 11*Math.PI/24;
         controls.enablePan = true;
         controls.enableDamping = true;
         controls.dampingFactor = 0.25;
         controls.target.x =  1;
         controls.enableZoom = true;
+        //controls.minPolarAngle = Math.PI / 12;
 
         // add ambient light
         //scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
@@ -334,7 +368,7 @@
           else
           {
             controls.enableRotate = true;
-            controls.enablePan = false;
+            //controls.enablePan = false;
             console.log("b");
           }
         }
@@ -375,6 +409,9 @@
           {
             started = false;
           }
+
+          // put opennav where
+
         }
 
         //
@@ -417,10 +454,12 @@
             if (clicked && started || prevobj != selectedObject)
             {
               outlinePass.selectedObjects = selectedObjects;
+              openNav();
             }
             else
             {
               outlinePass.selectedObjects = [];
+              closeNav();
             }
             clicked = !clicked;
           }
@@ -565,6 +604,14 @@
           yd = 1;
         }
 
+        if (color)
+        {
+          scene.background = new THREE.Color(0x0000FF);
+        }
+        else {
+          scene.background = new THREE.Color(0x00FF00);
+        }
+
         /*
         light.target.x = controls.target.x;
         light.target.y = controls.target.y;
@@ -574,7 +621,11 @@
         //onWindowResize();
         if (controls.enablePan)
         {
-          scene.background = new THREE.Color(0xFF00FF);
+          //scene.background = new THREE.Color(0xFF00FF);
+        }
+        else
+        {
+          //scene.background = new THREE.Color(0x0000FF);
         }
 
         //light.position.x = light.position.x + 1;
@@ -583,4 +634,6 @@
     </script>
 
 </body>
+
+
 </html>
