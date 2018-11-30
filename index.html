@@ -156,6 +156,7 @@ for (i = 0; i < dropdown.length; i++) {
       var obj3d = new THREE.Object3D();
       var divWidth = window.innerWidth * 3 / 4;// / 2;//500;
       var divHeight = window.innerHeight * 5 / 7// / 2;//500;
+      var clock = new THREE.Clock();
 
       var xd = 1;
       var yd = 1;
@@ -181,8 +182,6 @@ for (i = 0; i < dropdown.length; i++) {
         renderer = new THREE.WebGLRenderer();
         renderer.serSize(divWidth, divHeight);
         // initialize cutout as div
-        container = document.getElementById( 'canvas' );
-        document.body.appendChild( container );
         document.body.appendChild( renderer.domElement );
         container.appendChild( renderer.domElement );
         */
@@ -244,12 +243,13 @@ for (i = 0; i < dropdown.length; i++) {
 
         scene.add( light );
 
-        // idk wtf this does
+        //add the group of all models into the scene
         scene.add( group );
 
         // add and position model
 
         var loader = new THREE.GLTFLoader();
+
         function loadGltf(path, position, modelGroup){
           loader.load( path, function ( gltf )
           {
@@ -284,35 +284,10 @@ for (i = 0; i < dropdown.length; i++) {
             });
           });
         }
-        loadGltf('models/Nangaku.gltf', new THREE.Vector3(2,0,-2), group);
-                /*
 
-        var loader = new THREE.OBJLoader();
-        loader.load( 'models/nu.obj', function ( mesh )
-        {
-          mesh.position.set( 240, 0, 240);
-          mesh.rotation.set( 0, - Math.PI / 2, 0 );
-          mesh.scale.set( 200, 200, 200 );
-          mesh.traverse( function (child)
-          {
-            if (child instanceof THREE.Mesh)
-            {
-              if (child.geometry.isGeometry)
-              {
-                child.geometry.center();
-                child.geometry.computeBoundingSphere();
-                scale = 2 * child.geometry.boundingSphere.radius;
-                var phongMaterial = new THREE.MeshPhongMaterial({color: 0xffff99, specular: 0xffffcc, shininess: 5 });
-                child.material = phongMaterial;
-                child.receiveShadow = true;
-                child.castShadow = true;
-              }
-            }
-          });
-          //mesh.receiveShadow = true;
-          group.add(mesh);
-          //obj3d.add( object );
-        }); */
+        loadGltf('models/Nangaku.gltf', new THREE.Vector3(1,1,0), group);
+
+        mixer = new THREE.AnimationMixer();
 
         // add and position floor
         var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
@@ -323,10 +298,6 @@ for (i = 0; i < dropdown.length; i++) {
         floorMesh.receiveShadow = true;
         scene.add(floorMesh);
 
-
-        // initialize stats
-        stats = new Stats();
-        container.appendChild( stats.dom );
 
         // initialize postprocessing
         composer = new THREE.EffectComposer( renderer );
@@ -349,8 +320,29 @@ for (i = 0; i < dropdown.length; i++) {
         window.addEventListener( 'mousedown', onmesh);
         window.addEventListener( 'mousemove', stopstart);
 
+
+
+        function playAnimation( rootObject ){
+          var loops = 0
+          loops++;
+          var action = mixer.clipAction( clips[0], rootObject );
+          action.paused = false;
+          action.clampWhenFinished = true;
+          action.setLoop(THREE.LoopOnce, loops);
+          if(rootObject.alreadyUp){
+            loops++;
+            action.setLoop(THREE.LoopOnce, loops);
+            action.timeScale = -1;
+            action.paused = false;
+          }
+          else{action.timeScale = 1;}
+
+          rootObject.alreadyUp = !rootObject.alreadyUp;
+          //console.log(rootObject.alreadyUp);
+          action.play();
+        }
+
         // event triggered functions
-        // {
 
         var clicked = true;
         var started = false;
@@ -415,6 +407,7 @@ for (i = 0; i < dropdown.length; i++) {
         }
 
         //
+
         function onTouchMove( event )
         {
           var x, y;
@@ -453,7 +446,14 @@ for (i = 0; i < dropdown.length; i++) {
             addSelectedObject( selectedObject );
             if (clicked && started || prevobj != selectedObject)
             {
+              outlinePass.selectedObjects = selectedObject.parent.children;
               outlinePass.selectedObjects = selectedObjects;
+              selectedObject.parent.children.forEach(function(child){
+                if (child.name.slice(0, child.name.length - 3) == 'floorTwo'){
+                  playAnimation(child);
+                }
+              });
+
               openNav();
             }
             else
@@ -469,9 +469,22 @@ for (i = 0; i < dropdown.length; i++) {
             {
               outlinePass.selectedObjects = [];
             }
+
+          else
+          {
+            outlinePass.selectedObjects = [];
           }
           prevobj = selectedObject;
+          }
         }
+
+        /*function selectedObjectAnimate(selectedObject){
+          selectedObject.parent.children.forEach(function (child){
+            if(child.name.slice(0, child.name.length - 3) != 'floorOne'){
+              playAnimation(child, 'Roof');
+            }
+          });
+        }*/
 
         // }
 
@@ -562,7 +575,7 @@ for (i = 0; i < dropdown.length; i++) {
       function animate()
       {
         requestAnimationFrame( animate );
-        stats.begin();
+        //stats.begin();
         var timer = performance.now();
 
         //var newX = target.x + panx;
@@ -583,7 +596,8 @@ for (i = 0; i < dropdown.length; i++) {
 
         controls.update();
         composer.render();
-        stats.end();
+        mixer.update(clock.getDelta());
+        //stats.end();
         //xx += xd * (divWidth / 32);
         //yy += xd * (divHeight / 32);
         if (xx > divWidth )
@@ -627,9 +641,8 @@ for (i = 0; i < dropdown.length; i++) {
         {
           //scene.background = new THREE.Color(0x0000FF);
         }
-
-        //light.position.x = light.position.x + 1;
       }
+
 
     </script>
 
