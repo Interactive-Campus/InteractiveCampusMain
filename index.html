@@ -52,7 +52,7 @@
 
     <script src="js/three.js"></script>
     <script src="js/controls/OrbitControls.js"></script>
-    <script src="js/loaders/OBJLoader.js"></script>
+    <script src="js/loaders/GLTFLoader.js"></script>
     <script src="js/shaders/CopyShader.js"></script>
     <script src="js/shaders/FXAAShader.js"></script>
     <script src="js/postprocessing/EffectComposer.js"></script>
@@ -78,6 +78,9 @@
       var obj3d = new THREE.Object3D();
       var divWidth = 500;//window.innerWidth;//500;
       var divHeight = 500;//window.innerHeight;//500;
+      //animation handler
+      var mixer, clips;
+      var clock = new THREE.Clock(true);
 
       init();
       animate();
@@ -88,8 +91,6 @@
         renderer = new THREE.WebGLRenderer();
 
         // initialize cutout as div
-        container = document.getElementById( 'canvas' );
-        document.body.appendChild( container );
         document.body.appendChild( renderer.domElement );
 
         // set to cutout size in the future
@@ -124,35 +125,51 @@
         light.castShadow = true;
         scene.add( light );
 
-        // idk wtf this does
+        //add the group of all models into the scene
         scene.add( group );
 
         // add and position model
-        var loader = new THREE.OBJLoader();
-        loader.load( 'models/slls.obj', function ( mesh )
-        {
-          mesh.position.set( 0, - 1.5, 0);
-          mesh.rotation.set( 0, - Math.PI / 2, 0 );
-          mesh.scale.set( 0.5, 0.5, 0.5 );
-          mesh.traverse( function (child)
+
+        var loader = new THREE.GLTFLoader();
+
+        function loadGltf(path, position, modelGroup){
+
+          loader.load( path, function ( gltf )
           {
-            if (child instanceof THREE.Mesh)
-            {
-              if (child.geometry.isGeometry)
-              {
-                child.geometry.center();
-                child.geometry.computeBoundingSphere();
-                scale = 2 * child.geometry.boundingSphere.radius;
-                var phongMaterial = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0x111111, shininess: 5 });
-                child.material = phongMaterial;
-                child.receiveShadow = true;
-                child.castShadow = true;
+            console.log(gltf.animations[0]);
+            clips = gltf.animations;
+            gltf.animations.forEach(function(anim){console.log(anim.name)});
+            //for each scene in the array of scene
+            gltf.scenes.forEach(function (curScene){
+              //adds the objects to a new group
+              var sceneGroup = new THREE.Group();
+              var sceneLength = curScene.children.length;
+              for(var i = 0; i < sceneLength; i++){
+                curScene.children.userData = {alreadyUp:false};
+                sceneGroup.add(curScene.children[0]);
               }
-            }
+              sceneGroup.position.copy(position);
+              //for each object in the scene
+              sceneGroup.traverse( function (child){
+                if (child instanceof THREE.Mesh){
+                  if (child.geometry.isGeometry){
+                    child.geometry.center();
+                    child.geometry.computeBoundingSphere();
+                    scale = 2 * child.geometry.boundingSphere.radius;
+                    child.material = phongMaterial;
+                    child.receiveShadow = true;
+                    child.castShadow = true;
+                  }
+                }
+              });
+              modelGroup.add(sceneGroup);
+            });
           });
-          group.add(mesh);
-          //obj3d.add( object );
-        });
+        }
+
+        loadGltf('models/Nangaku.gltf', new THREE.Vector3(1,1,0), group);
+
+        mixer = new THREE.AnimationMixer();
 
         // add and position floor
         var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
@@ -162,10 +179,6 @@
         floorMesh.position.y = 0;
         //scene.add(floorMesh);
         floorMesh.receiveShadow = true;
-
-        // initialize stats
-        stats = new Stats();
-        container.appendChild( stats.dom );
 
         // initialize postprocessing
         composer = new THREE.EffectComposer( renderer );
@@ -185,10 +198,30 @@
         window.addEventListener( 'mousedown', onTouchMove );
         window.addEventListener( 'touchmove', onTouchMove );
 
-        // event triggered functions
-        // {
 
-        //
+
+        function playAnimation( rootObject ){
+          var loops = 0
+          loops++;
+          var action = mixer.clipAction( clips[0], rootObject );
+          action.paused = false;
+          action.clampWhenFinished = true;
+          action.setLoop(THREE.LoopOnce, loops);
+          if(rootObject.alreadyUp){
+            loops++;
+            action.setLoop(THREE.LoopOnce, loops);
+            action.timeScale = -1;
+            action.paused = false;
+          }
+          else{action.timeScale = 1;}
+
+          rootObject.alreadyUp = !rootObject.alreadyUp;
+          //console.log(rootObject.alreadyUp);
+          action.play();
+        }
+
+        // event triggered functions
+
         function onTouchMove( event )
         {
           var x, y;
@@ -221,17 +254,38 @@
           var intersects = raycaster.intersectObjects( [ group ], true );
           if ( intersects.length > 0 )
           {
-            var selectedObject = intersects[ 0 ].object;
-            //camera.position.copy(selectedObject.position);
-            //controls.target = selectedObject;
-            addSelectedObject( selectedObject );
-            outlinePass.selectedObjects = selectedObjects;
+            //gets first selected object
+            var selectedObject = intersects[0].object;
+            selectedObject.parent.children.forEach(function(child){
+              if (child.name.slice(0, child.name.length - 3) == 'floorTwo'){
+                playAnimation(child);
+              }
+            });
+
+
+            addSelectedObject(selectedObject);
+
+            //add the selected object to list of highlighted objects
+            outlinePass.selectedObjects = selectedObject.parent.children;
+
           }
           else
           {
+<<<<<<< HEAD
             // outlinePass.selectedObjects = [];b
+=======
+            outlinePass.selectedObjects = [];
+>>>>>>> pathfinding
           }
         }
+
+        /*function selectedObjectAnimate(selectedObject){
+          selectedObject.parent.children.forEach(function (child){
+            if(child.name.slice(0, child.name.length - 3) != 'floorOne'){
+              playAnimation(child, 'Roof');
+            }
+          });
+        }*/
 
         // }
 
@@ -259,11 +313,9 @@
       function animate()
       {
         requestAnimationFrame( animate );
-        stats.begin();
-        var timer = performance.now();
         controls.update();
         composer.render();
-        stats.end();
+        mixer.update(clock.getDelta());
       }
 
     </script>
