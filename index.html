@@ -154,7 +154,7 @@ for (i = 0; i < dropdown.length; i++) {
       var group = new THREE.Group();
       var obj3d = new THREE.Object3D();
       var clips;
-      //var mixer = THREE.AnimationMixer();
+      var mixer = new THREE.AnimationMixer();
       var clock = new THREE.Clock(true);
       var divWidth = window.innerWidth * 3 / 4;// / 2;//500;
       var divHeight = window.innerHeight * 5 / 7// / 2;//500;
@@ -285,7 +285,7 @@ for (i = 0; i < dropdown.length; i++) {
             });
           });
         }
-        loadGltf('models/Nangaku2.gltf', new THREE.Vector3(2,0,-2), group);
+        loadGltf('models/Nangaku.gltf', new THREE.Vector3(2,0,-2), group);
 
         // add and position floor
         var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
