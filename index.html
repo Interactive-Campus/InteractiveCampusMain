@@ -136,23 +136,8 @@ for (i = 0; i < dropdown.length; i++) {
     const changeText = () => {
         //const p = document.querySelector('p');
 
-<<<<<<< HEAD
-    <script src="js/three.js"></script>
-    <script src="js/controls/OrbitControls.js"></script>
-    <script src="js/loaders/GLTFLoader.js"></script>
-    <script src="js/shaders/CopyShader.js"></script>
-    <script src="js/shaders/FXAAShader.js"></script>
-    <script src="js/postprocessing/EffectComposer.js"></script>
-    <script src="js/postprocessing/RenderPass.js"></script>
-    <script src="js/postprocessing/ShaderPass.js"></script>
-    <script src="js/postprocessing/OutlinePass.js"></script>
-    <script src="js/libs/stats.min.js"></script>
-    <script src='js/libs/dat.gui.min.js'></script>
-=======
         //p.textContent = "I changed because of an inline event handler.";
         color = !color;
->>>>>>> 25e886e47ddd07a535e6c2f1ed4578a0f0e1150d
-
         // joel paste here
 
 
@@ -168,17 +153,11 @@ for (i = 0; i < dropdown.length; i++) {
       var composer, effectFXAA, outlinePass;
       var group = new THREE.Group();
       var obj3d = new THREE.Object3D();
-<<<<<<< HEAD
-      var divWidth = 500;//window.innerWidth;//500;
-      var divHeight = 500;//window.innerHeight;//500;
-      //animation handler
-      var mixer, clips;
+      var clips;
+      //var mixer = THREE.AnimationMixer();
       var clock = new THREE.Clock(true);
-=======
       var divWidth = window.innerWidth * 3 / 4;// / 2;//500;
       var divHeight = window.innerHeight * 5 / 7// / 2;//500;
->>>>>>> 25e886e47ddd07a535e6c2f1ed4578a0f0e1150d
-
       var xd = 1;
       var yd = 1;
       var xx = 0;
@@ -189,7 +168,6 @@ for (i = 0; i < dropdown.length; i++) {
 
       function init()
       {
-
         //startClosed();
 
         container = document.getElementById( 'canvas' );
@@ -270,7 +248,6 @@ for (i = 0; i < dropdown.length; i++) {
         // add and position model
 
         var loader = new THREE.GLTFLoader();
-<<<<<<< HEAD
 
         function loadGltf(path, position, modelGroup){
 
@@ -287,20 +264,6 @@ for (i = 0; i < dropdown.length; i++) {
               for(var i = 0; i < sceneLength; i++){
                 curScene.children.userData = {alreadyUp:false};
                 sceneGroup.add(curScene.children[0]);
-=======
-        function loadGltf(path, position, modelGroup){
-          loader.load( path, function ( gltf )
-          {
-            clips = gltf.animations;
-            gltf.animations.forEach(function(anim){console.log(anim.name)});
-            //for each scene in the array of scene
-            gltf.scenes.forEach(function (curScene){
-              //adds the objects to a new group
-              var sceneGroup = new THREE.Group();
-              var sceneLength = curScene.children.length;
-              for(var i = 0; i < sceneLength; i++){
-                sceneGroup.add(curScene.children[0]);
-                console.log(curScene.children.length);
               }
               sceneGroup.position.copy(position);
               //for each object in the scene
@@ -322,59 +285,7 @@ for (i = 0; i < dropdown.length; i++) {
             });
           });
         }
-        loadGltf('models/Nangaku.gltf', new THREE.Vector3(2,0,-2), group);
-                /*
-
-        var loader = new THREE.OBJLoader();
-        loader.load( 'models/nu.obj', function ( mesh )
-        {
-          mesh.position.set( 240, 0, 240);
-          mesh.rotation.set( 0, - Math.PI / 2, 0 );
-          mesh.scale.set( 200, 200, 200 );
-          mesh.traverse( function (child)
-          {
-            if (child instanceof THREE.Mesh)
-            {
-              if (child.geometry.isGeometry)
-              {
-                child.geometry.center();
-                child.geometry.computeBoundingSphere();
-                scale = 2 * child.geometry.boundingSphere.radius;
-                var phongMaterial = new THREE.MeshPhongMaterial({color: 0xffff99, specular: 0xffffcc, shininess: 5 });
-                child.material = phongMaterial;
-                child.receiveShadow = true;
-                child.castShadow = true;
->>>>>>> 25e886e47ddd07a535e6c2f1ed4578a0f0e1150d
-              }
-              sceneGroup.position.copy(position);
-              //for each object in the scene
-              sceneGroup.traverse( function (child){
-                if (child instanceof THREE.Mesh){
-                  if (child.geometry.isGeometry){
-                    child.geometry.center();
-                    child.geometry.computeBoundingSphere();
-                    scale = 2 * child.geometry.boundingSphere.radius;
-                    child.material = phongMaterial;
-                    child.receiveShadow = true;
-                    child.castShadow = true;
-                  }
-                }
-              });
-              modelGroup.add(sceneGroup);
-            });
-          });
-<<<<<<< HEAD
-        }
-
-        loadGltf('models/Nangaku.gltf', new THREE.Vector3(1,1,0), group);
-
-        mixer = new THREE.AnimationMixer();
-=======
-          //mesh.receiveShadow = true;
-          group.add(mesh);
-          //obj3d.add( object );
-        }); */
->>>>>>> 25e886e47ddd07a535e6c2f1ed4578a0f0e1150d
+        loadGltf('models/Nangaku2.gltf', new THREE.Vector3(2,0,-2), group);
 
         // add and position floor
         var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
@@ -431,8 +342,6 @@ for (i = 0; i < dropdown.length; i++) {
 
         // event triggered functions
 
-<<<<<<< HEAD
-=======
         var clicked = true;
         var started = false;
         var lfclick = true;
@@ -496,7 +405,7 @@ for (i = 0; i < dropdown.length; i++) {
         }
 
         //
->>>>>>> 25e886e47ddd07a535e6c2f1ed4578a0f0e1150d
+
         function onTouchMove( event )
         {
           var x, y;
@@ -529,31 +438,16 @@ for (i = 0; i < dropdown.length; i++) {
           var intersects = raycaster.intersectObjects( [ group ], true );
           if ( intersects.length > 0 )
           {
-<<<<<<< HEAD
-            //gets first selected object
-            var selectedObject = intersects[0].object;
+
+            outlinePass.selectedObjects = [];
+
+            var selectedObject = intersects[ 0 ].object;
+
             selectedObject.parent.children.forEach(function(child){
               if (child.name.slice(0, child.name.length - 3) == 'floorTwo'){
                 playAnimation(child);
               }
             });
-
-
-            addSelectedObject(selectedObject);
-
-            //add the selected object to list of highlighted objects
-            outlinePass.selectedObjects = selectedObject.parent.children;
-
-          }
-          else
-          {
-<<<<<<< HEAD
-            // outlinePass.selectedObjects = [];b
-=======
-            outlinePass.selectedObjects = [];
->>>>>>> pathfinding
-=======
-            var selectedObject = intersects[ 0 ].object;
             //camera.position.copy(selectedObject.position);
             //controls.target = selectedObject;
             addSelectedObject( selectedObject );
@@ -575,7 +469,6 @@ for (i = 0; i < dropdown.length; i++) {
             {
               outlinePass.selectedObjects = [];
             }
->>>>>>> 25e886e47ddd07a535e6c2f1ed4578a0f0e1150d
           }
           prevobj = selectedObject;
         }
@@ -677,12 +570,7 @@ for (i = 0; i < dropdown.length; i++) {
       function animate()
       {
         requestAnimationFrame( animate );
-<<<<<<< HEAD
-        controls.update();
-        composer.render();
-        mixer.update(clock.getDelta());
-=======
-        stats.begin();
+        //stats.begin();
         var timer = performance.now();
 
         //var newX = target.x + panx;
@@ -703,7 +591,8 @@ for (i = 0; i < dropdown.length; i++) {
 
         controls.update();
         composer.render();
-        stats.end();
+        //stats.end();
+        mixer.update(clock.getDelta());
         //xx += xd * (divWidth / 32);
         //yy += xd * (divHeight / 32);
         if (xx > divWidth )
@@ -749,7 +638,7 @@ for (i = 0; i < dropdown.length; i++) {
         }
 
         //light.position.x = light.position.x + 1;
->>>>>>> 25e886e47ddd07a535e6c2f1ed4578a0f0e1150d
+
       }
 
     </script>
