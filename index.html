@@ -341,25 +341,7 @@ for (i = 0; i < dropdown.length; i++) {
 
 
 
-        function playAnimation( rootObject ){
-          var loops = 0
-          loops++;
-          var action = mixer.clipAction( clips[0], rootObject );
-          action.paused = false;
-          action.clampWhenFinished = true;
-          action.setLoop(THREE.LoopOnce, loops);
-          if(rootObject.alreadyUp){
-            loops++;
-            action.setLoop(THREE.LoopOnce, loops);
-            action.timeScale = -1;
-            action.paused = false;
-          }
-          else{action.timeScale = 1;}
 
-          rootObject.alreadyUp = !rootObject.alreadyUp;
-          //console.log(rootObject.alreadyUp);
-          action.play();
-        }
 
         // event triggered functions
 
@@ -367,6 +349,39 @@ for (i = 0; i < dropdown.length; i++) {
         var started = false;
         var lfclick = true;
         var prevobj = null;
+
+        //plays animation on a object forwards or backwards stopping on last frame
+        function playAnimation( rootObject, isUp, clipName ){
+          var loops = 0
+          loops++;
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
+          action.paused = false;
+          action.clampWhenFinished = true;
+          action.setLoop(THREE.LoopOnce, loops);
+          if(isUp){
+            loops++;
+            action.setLoop(THREE.LoopOnce, loops);
+            action.timeScale = -1;
+            action.paused = false;
+          }
+          else{action.timeScale = 1;}
+          rootObject.alreadyUp = !rootObject.alreadyUp;
+          action.play();
+        }
+
+        //takes a group of a building and applies an animation to each floor
+        function animateFloors(buildingGroup){
+          buildingGroup.children.forEach(function(child){
+
+            //plays animations by the name of the floors, each floor is named after its animation
+            if (child.name.slice(0, (child.name.length - 3))
+             != 'floorOne'){
+              playAnimation(child, child.alreadyUp, child.name.slice(0, (child.name.length - 3)));
+              console.log(child.name.slice(0, (child.name.length - 3)));
+            }
+            else{child.alreadyUp = !child.alreadyUp;}
+          });
+        }
 
         function stopstart (event)
         {
@@ -380,7 +395,7 @@ for (i = 0; i < dropdown.length; i++) {
           {
             controls.enableRotate = true;
             //controls.enablePan = false;
-            console.log("b");
+            //console.log("b");
           }
         }
 
@@ -463,12 +478,9 @@ for (i = 0; i < dropdown.length; i++) {
             outlinePass.selectedObjects = [];
 
             var selectedObject = intersects[ 0 ].object;
-
-            selectedObject.parent.children.forEach(function(child){
-              if (child.name.slice(0, child.name.length - 3) == 'floorTwo'){
-                playAnimation(child);
-              }
-            });
+            if(!selectedObject.alreadyUp){
+              animateFloors(selectedObject.parent);
+            }
             //camera.position.copy(selectedObject.position);
             //controls.target = selectedObject;
             addSelectedObject( selectedObject );
@@ -493,16 +505,6 @@ for (i = 0; i < dropdown.length; i++) {
           }
           prevobj = selectedObject;
         }
-
-        /*function selectedObjectAnimate(selectedObject){
-          selectedObject.parent.children.forEach(function (child){
-            if(child.name.slice(0, child.name.length - 3) != 'floorOne'){
-              playAnimation(child, 'Roof');
-            }
-          });
-        }*/
-
-        // }
 
         var width = divWidth;
         var height = divHeight;
@@ -647,7 +649,7 @@ for (i = 0; i < dropdown.length; i++) {
         light.target.y = controls.target.y;
         light.target.z = controls.target.z;*/
 
-          console.log(controls.target.x);
+          //console.log(controls.target.x);
         //onWindowResize();
         if (controls.enablePan)
         {
