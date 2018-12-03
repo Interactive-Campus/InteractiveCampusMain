@@ -32,6 +32,10 @@
         transition: 0.3s;
     }
 
+    .dropdown-container{
+      display:none;
+    }
+    
     .sidenav a:hover {
         color: #f1f1f1;
     }
@@ -46,10 +50,12 @@
 
     p
     {
-      font-size: 20px;
+      font-size: 18px;
       padding-left: 10px;
       padding-right: 3px;
-      color: #FFFFFF
+      padding-top: 0px;
+      padding-bottom: 0px;
+      color: #818181;
     }
 
     #main {
@@ -68,18 +74,33 @@
   <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 
-
-
   <a class="dropdown-btn">Garrett's Amazing 10/10 English 9 Presentation
     <i class="fa fa-caret-down"></i>
   </a>
 
   <div class="dropdown-container">
-    <a href="#">Location: N-110</a>
+    <p>10:10-11:15am</p>
+    <p>Location: N-110</p>
     <a href="#">Directions</a>
-  </div>
 </div>
+    <a class="dropdown-btn">Chinese Club Lunch
+      <i class="fa fa-caret-down"></i>
+    </a>
 
+    <div class="dropdown-container">
+      <p>12:15-1:00pm</p>
+      <p>Location: N-203</p>
+      <a href="#">Directions</a>
+</div>
+<a class="dropdown-btn">Keables' Scholar Discussion
+  <i class="fa fa-caret-down"></i>
+</a>
+
+<div class="dropdown-container">
+  <p>12:15-1:00pm</p>
+  <p>Location: N-105</p>
+  <a href="#">Directions</a>
+</div>
 
 
 <script>
