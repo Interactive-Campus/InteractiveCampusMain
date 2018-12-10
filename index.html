@@ -235,10 +235,10 @@ for (i = 0; i < dropdown.length; i++) {
         //controls.minPolarAngle = Math.PI / 12;
 
         // add ambient light
-        scene.add( new THREE.AmbientLight( 0xffffff, .1 ) );
+        scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
 
         // add point light
-        var light = new THREE.SpotLight( 0xffffff );
+      /*  var light = new THREE.SpotLight( 0xffffff );
         //var light = new //THREE.HemisphereLight(0xffffff, 0x808020, 1);//PointLight(0xffffff);
         light.position.set( -800, 800, 800 );
         light.rotation.set( -Math.PI / 4, 0, -Math.PI / 4 );
@@ -254,21 +254,22 @@ for (i = 0; i < dropdown.length; i++) {
         light.castShadow = true;
 
         light.shadow.mapSize.width = 1024;
-        light.shadow.mapSize.height = 1024;
+        light.shadow.mapSize.height = 1024;*/
 
         var light = new THREE.DirectionalLight(0xffffff,1);
-        light.position.set(50, 500, 22);
-        light.target.position.set(300, 400, 200);
-
-        light.shadow.camera.near = 0.01;       
+        light.position.set(0, 500, 200);
+        light.target.position.set(0, 0, 0);
+        light.shadow.mapSize.width = 1024*3;
+        light.shadow.mapSize.height = 1024*3;
+/*
+        light.shadow.camera.near = 0.01;
         light.shadow.camera.far = 5000;
         light.shadow.camera.left = -500;
         light.shadow.camera.bottom = -500;
         light.shadow.camera.right = 500;
         light.shadow.camera.top = 500;
-
+*/
         light.castShadow = true;
-        scene.add(light);
 
         light.shadow.camera.near = 0;
         light.shadow.camera.far = 4000;
@@ -323,7 +324,7 @@ for (i = 0; i < dropdown.length; i++) {
 
         // add and position floor
         var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
-        var floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
+        var floorGeometry = new THREE.PlaneBufferGeometry(20, 20, 1000, 1000);
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         floorMesh.rotation.x -= Math.PI * 0.5;
         floorMesh.position.y = 0;
@@ -488,7 +489,7 @@ for (i = 0; i < dropdown.length; i++) {
           var intersects = raycaster.intersectObjects( [ group ], true );
           if ( intersects.length > 0 )
           {
-
+            console.log(selectedObject);
             outlinePass.selectedObjects = [];
 
             var selectedObject = intersects[ 0 ].object;
