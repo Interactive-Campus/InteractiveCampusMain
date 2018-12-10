@@ -212,6 +212,7 @@ for (i = 0; i < dropdown.length; i++) {
 
         // enable shadows
         renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.BasicShadowMap;
 
         // initialize scene
         scene = new THREE.Scene();
@@ -234,7 +235,7 @@ for (i = 0; i < dropdown.length; i++) {
         //controls.minPolarAngle = Math.PI / 12;
 
         // add ambient light
-        //scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
+        scene.add( new THREE.AmbientLight( 0xffffff, .1 ) );
 
         // add point light
         var light = new THREE.SpotLight( 0xffffff );
@@ -262,11 +263,23 @@ for (i = 0; i < dropdown.length; i++) {
         light.shadow.mapSize.width = 1024;
         light.shadow.mapSize.height = 1024;
 
+        var light = new THREE.DirectionalLight(0xffffff,1);
+        light.position.set(50, 500, 22);
+        light.target.position.set(300, 400, 200);
 
+        light.shadow.camera.near = 0.01;       
+        light.shadow.camera.far = 5000;
+        light.shadow.camera.left = -500;
+        light.shadow.camera.bottom = -500;
+        light.shadow.camera.right = 500;
+        light.shadow.camera.top = 500;
 
-        light.shadow.camera.near = 500;
+        light.castShadow = true;
+        scene.add(light);
+
+        light.shadow.camera.near = 0;
         light.shadow.camera.far = 4000;
-        light.shadow.camera.fov = 30;
+        light.shadow.camera.fov = 90;
 
 
 
@@ -300,10 +313,21 @@ for (i = 0; i < dropdown.length; i++) {
               sceneGroup.children.forEach( function (child){
                 if (child instanceof THREE.Mesh){
                   if (child.geometry.isBufferGeometry){
+<<<<<<< HEAD
 
                     var scc = 20;
                     child.scale.set(scc, scc, scc);
                     console.log("is a mesh");
+=======
+                    //child.geometry.center();
+                    //child.geometry.computeBoundingSphere();
+                    //scale = 2 * child.geometry.boundingSphere.radius
+                    child.receiveShadow = true;
+                    child.castShadow = true;
+                    console.log(child.receiveShadow);
+                    //var scc = 20;
+                    //child.scale.set(scc, scc, scc);
+>>>>>>> e8e22b1cc8b7b22b0b1360afe443829e26b7aff6
                   }
                   //console.log("is a mesh2");
                   //child.geometry.center();
@@ -387,13 +411,14 @@ for (i = 0; i < dropdown.length; i++) {
         }
 
         //takes a group of a building and applies an animation to each floor
-        function animateFloors(buildingGroup){
+        //isUp determines direaction of animation, true is forward, false is reverse, putting the child.alreadyUp makes it ping pong
+        function animateFloors(buildingGroup, isUp){
           buildingGroup.children.forEach(function(child){
 
             //plays animations by the name of the floors, each floor is named after its animation
             if (child.name.slice(0, (child.name.length - 3))
              != 'floorOne'){
-              playAnimation(child, child.alreadyUp, child.name.slice(0, (child.name.length - 3)));
+              playAnimation(child, isUp, child.name.slice(0, (child.name.length - 3)));
               console.log(child.name.slice(0, (child.name.length - 3)));
             }
             else{child.alreadyUp = !child.alreadyUp;}
@@ -495,9 +520,7 @@ for (i = 0; i < dropdown.length; i++) {
             outlinePass.selectedObjects = [];
 
             var selectedObject = intersects[ 0 ].object;
-            if(!selectedObject.alreadyUp){
-              animateFloors(selectedObject.parent);
-            }
+            animateFloors(selectedObject.parent, false);
             //camera.position.copy(selectedObject.position);
             //controls.target = selectedObject;
             addSelectedObject( selectedObject );
