@@ -252,22 +252,22 @@ for (i = 0; i < dropdown.length; i++) {
         //light.rotation.z = -400;
         //light.position.x = -100;
 
-        light.shadow.mapSize.width = 512;  // default
-        light.shadow.mapSize.height = 512; // default
+        //light.shadow.mapSize.width = 512;  // default
+        //light.shadow.mapSize.height = 512; // default
         light.shadow.camera.near = 0.5;       // default
         light.shadow.camera.far = 500;
 
 
         light.castShadow = true;
-
-        light.shadow.mapSize.width = 1024;
-        light.shadow.mapSize.height = 1024;
+        var smapsize = 2048;
+        light.shadow.mapSize.width = smapsize;
+        light.shadow.mapSize.height = smapsize;
 
         var light = new THREE.DirectionalLight(0xffffff,1);
         light.position.set(50, 500, 22);
         light.target.position.set(300, 400, 200);
 
-        light.shadow.camera.near = 0.01;       
+        light.shadow.camera.near = 0.01;
         light.shadow.camera.far = 5000;
         light.shadow.camera.left = -500;
         light.shadow.camera.bottom = -500;
@@ -313,12 +313,6 @@ for (i = 0; i < dropdown.length; i++) {
               sceneGroup.children.forEach( function (child){
                 if (child instanceof THREE.Mesh){
                   if (child.geometry.isBufferGeometry){
-<<<<<<< HEAD
-
-                    var scc = 20;
-                    child.scale.set(scc, scc, scc);
-                    console.log("is a mesh");
-=======
                     //child.geometry.center();
                     //child.geometry.computeBoundingSphere();
                     //scale = 2 * child.geometry.boundingSphere.radius
@@ -327,7 +321,6 @@ for (i = 0; i < dropdown.length; i++) {
                     console.log(child.receiveShadow);
                     //var scc = 20;
                     //child.scale.set(scc, scc, scc);
->>>>>>> e8e22b1cc8b7b22b0b1360afe443829e26b7aff6
                   }
                   //console.log("is a mesh2");
                   //child.geometry.center();
@@ -349,7 +342,7 @@ for (i = 0; i < dropdown.length; i++) {
 
         // add and position floor
         var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
-        var floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
+        var floorGeometry = new THREE.PlaneBufferGeometry(20, 20, 1000, 1000);
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         floorMesh.rotation.x -= Math.PI * 0.5;
         floorMesh.position.y = 0;
