@@ -8113,8 +8113,8 @@
 		this.layers = new Layers();
 		this.visible = true;
 
-		this.castShadow = false;
-		this.receiveShadow = false;
+		this.castShadow = true;
+		this.receiveShadow = true;
 
 		this.frustumCulled = true;
 		this.renderOrder = 0;

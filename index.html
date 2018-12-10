@@ -35,7 +35,7 @@
     .dropdown-container{
       display:none;
     }
-    
+
     .sidenav a:hover {
         color: #f1f1f1;
     }
@@ -239,6 +239,7 @@ for (i = 0; i < dropdown.length; i++) {
         // add point light
         var light = new THREE.SpotLight( 0xffffff );
         //var light = new //THREE.HemisphereLight(0xffffff, 0x808020, 1);//PointLight(0xffffff);
+        scene.add( light );
         light.position.set( -800, 800, 800 );
         light.rotation.set( -Math.PI / 4, 0, -Math.PI / 4 );
 
@@ -249,6 +250,12 @@ for (i = 0; i < dropdown.length; i++) {
         light.penumbra = 100;
         //light.rotation.z = -400;
         //light.position.x = -100;
+
+        light.shadow.mapSize.width = 512;  // default
+        light.shadow.mapSize.height = 512; // default
+        light.shadow.camera.near = 0.5;       // default
+        light.shadow.camera.far = 500;
+
 
         light.castShadow = true;
 
@@ -261,7 +268,7 @@ for (i = 0; i < dropdown.length; i++) {
         light.shadow.camera.far = 4000;
         light.shadow.camera.fov = 30;
 
-        scene.add( light );
+
 
         //add the group of all models into the scene
         scene.add( group );
@@ -285,21 +292,29 @@ for (i = 0; i < dropdown.length; i++) {
               for(var i = 0; i < sceneLength; i++){
                 curScene.children.userData = {alreadyUp:false};
                 sceneGroup.add(curScene.children[0]);
+                //curScene.children.castShadow = true;
+                //curScene.children.receiveShadow = true;
               }
               sceneGroup.position.copy(position);
               //for each object in the scene
               sceneGroup.children.forEach( function (child){
                 if (child instanceof THREE.Mesh){
-                  if (child.geometry.isGeometry){
-                    child.geometry.center();
-                    child.geometry.computeBoundingSphere();
-                    scale = 2 * child.geometry.boundingSphere.radius;
-                    child.material = phongMaterial;
-                    child.receiveShadow = true;
-                    child.castShadow = true;
+                  if (child.geometry.isBufferGeometry){
+
                     var scc = 20;
                     child.scale.set(scc, scc, scc);
+                    console.log("is a mesh");
                   }
+                  //console.log("is a mesh2");
+                  //child.geometry.center();
+                  //child.geometry.computeBoundingSphere();
+                  //scale = 2 * child.geometry.boundingSphere.radius;
+                  //child.material = phongMaterial;
+                  child.receiveShadow = true;
+                  child.castShadow = true;
+                  //console.log(child.receiveShadow);
+                  //child.receiveShadow = true;
+                  //child.castShadow = true;
                 }
               });
               modelGroup.add(sceneGroup);
@@ -315,7 +330,9 @@ for (i = 0; i < dropdown.length; i++) {
         floorMesh.rotation.x -= Math.PI * 0.5;
         floorMesh.position.y = 0;
         floorMesh.receiveShadow = true;
+        floorMesh.castShadow = true;
         scene.add(floorMesh);
+
 
 
         // initialize postprocessing
