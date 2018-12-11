@@ -194,17 +194,10 @@ for (i = 0; i < dropdown.length; i++) {
         container = document.getElementById( 'canvas' );
         document.body.appendChild( container );
 
-        renderer = new THREE.WebGLRenderer();
+        renderer = new THREE.WebGLRenderer({ alpha: true });
         //renderer.setSize( 200, 200 );
         container.appendChild( renderer.domElement );
-        /*
-        // initialize renderer
-        renderer = new THREE.WebGLRenderer();
-        renderer.serSize(divWidth, divHeight);
-        // initialize cutout as div
-        document.body.appendChild( renderer.domElement );
-        container.appendChild( renderer.domElement );
-        */
+
 
         // set to cutout size in the future
         var width = divWidth;
@@ -216,6 +209,7 @@ for (i = 0; i < dropdown.length; i++) {
 
         // initialize scene
         scene = new THREE.Scene();
+
 
         // initialize and position camera
          camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
@@ -237,50 +231,17 @@ for (i = 0; i < dropdown.length; i++) {
         // add ambient light
         scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
 
-        // add point light
-      /*  var light = new THREE.SpotLight( 0xffffff );
-        //var light = new //THREE.HemisphereLight(0xffffff, 0x808020, 1);//PointLight(0xffffff);
-        scene.add( light );
-        light.position.set( -800, 800, 800 );
-        light.rotation.set( -Math.PI / 4, 0, -Math.PI / 4 );
-
-
-        light.intensity = 1.2;
-        light.angle = Math.PI / 2;
-        //light.position.y = 200;
-        light.penumbra = 100;
-        //light.rotation.z = -400;
-        //light.position.x = -100;
-
-        light.shadow.mapSize.width = 512;  // default
-        light.shadow.mapSize.height = 512; // default
-        light.shadow.camera.near = 0.5;       // default
-        light.shadow.camera.far = 500;
-
-
-        light.castShadow = true;
-
-        light.shadow.mapSize.width = 1024;
-        light.shadow.mapSize.height = 1024;*/
-
         var light = new THREE.DirectionalLight(0xffffff,1);
         light.position.set(0, 500, 200);
         light.target.position.set(0, 0, 0);
         light.shadow.mapSize.width = 1024*3;
         light.shadow.mapSize.height = 1024*3;
-/*
-        light.shadow.camera.near = 0.01;
-        light.shadow.camera.far = 5000;
-        light.shadow.camera.left = -500;
-        light.shadow.camera.bottom = -500;
-        light.shadow.camera.right = 500;
-        light.shadow.camera.top = 500;
-*/
         light.castShadow = true;
 
         light.shadow.camera.near = 0;
         light.shadow.camera.far = 4000;
         light.shadow.camera.fov = 90;
+        scene.add(light);
 
 
 
@@ -314,32 +275,10 @@ for (i = 0; i < dropdown.length; i++) {
               sceneGroup.children.forEach( function (child){
                 if (child instanceof THREE.Mesh){
                   if (child.geometry.isBufferGeometry){
-<<<<<<< HEAD
 
-                    var scc = 20;
-                    child.scale.set(scc, scc, scc);
-                    console.log("is a mesh");
-=======
-                    //child.geometry.center();
-                    //child.geometry.computeBoundingSphere();
-                    //scale = 2 * child.geometry.boundingSphere.radius
                     child.receiveShadow = true;
                     child.castShadow = true;
-                    console.log(child.receiveShadow);
-                    //var scc = 20;
-                    //child.scale.set(scc, scc, scc);
->>>>>>> e8e22b1cc8b7b22b0b1360afe443829e26b7aff6
                   }
-                  //console.log("is a mesh2");
-                  //child.geometry.center();
-                  //child.geometry.computeBoundingSphere();
-                  //scale = 2 * child.geometry.boundingSphere.radius;
-                  //child.material = phongMaterial;
-                  child.receiveShadow = true;
-                  child.castShadow = true;
-                  //console.log(child.receiveShadow);
-                  //child.receiveShadow = true;
-                  //child.castShadow = true;
                 }
               });
               modelGroup.add(sceneGroup);
@@ -349,8 +288,8 @@ for (i = 0; i < dropdown.length; i++) {
         loadGltf('models/Nangaku.gltf', new THREE.Vector3(2,0,-2), group);
 
         // add and position floor
-        var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
-        var floorGeometry = new THREE.PlaneBufferGeometry(20, 20, 1000, 1000);
+        var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
+        var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         floorMesh.rotation.x -= Math.PI * 0.5;
         floorMesh.position.y = 0;
@@ -417,8 +356,7 @@ for (i = 0; i < dropdown.length; i++) {
           buildingGroup.children.forEach(function(child){
 
             //plays animations by the name of the floors, each floor is named after its animation
-            if (child.name.slice(0, (child.name.length - 3))
-             != 'floorOne'){
+            if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
               playAnimation(child, isUp, child.name.slice(0, (child.name.length - 3)));
               console.log(child.name.slice(0, (child.name.length - 3)));
             }
@@ -517,10 +455,10 @@ for (i = 0; i < dropdown.length; i++) {
           var intersects = raycaster.intersectObjects( [ group ], true );
           if ( intersects.length > 0 )
           {
-            console.log(selectedObject);
             outlinePass.selectedObjects = [];
 
             var selectedObject = intersects[ 0 ].object;
+            console.log(selectedObject.parent);
             animateFloors(selectedObject.parent, false);
             //camera.position.copy(selectedObject.position);
             //controls.target = selectedObject;
@@ -682,7 +620,7 @@ for (i = 0; i < dropdown.length; i++) {
           scene.background = new THREE.Color(0x0000FF);
         }
         else {
-          scene.background = new THREE.Color(0x00FF00);
+          scene.background = new THREE.Color(0x9cbbf4);
         }
 
         /*
