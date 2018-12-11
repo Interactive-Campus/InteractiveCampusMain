@@ -256,7 +256,6 @@ for (i = 0; i < dropdown.length; i++) {
 
           loader.load( path, function ( gltf )
           {
-            console.log(gltf.animations[0]);
             clips = gltf.animations;
             gltf.animations.forEach(function(anim){console.log(anim.name)});
             //for each scene in the array of scene
@@ -267,15 +266,16 @@ for (i = 0; i < dropdown.length; i++) {
               for(var i = 0; i < sceneLength; i++){
                 curScene.children.userData = {alreadyUp:false};
                 sceneGroup.add(curScene.children[0]);
-                //curScene.children.castShadow = true;
-                //curScene.children.receiveShadow = true;
               }
               sceneGroup.position.copy(position);
               //for each object in the scene
               sceneGroup.children.forEach( function (child){
                 if (child instanceof THREE.Mesh){
                   if (child.geometry.isBufferGeometry){
-
+                    console.log(child.name);
+                    if(child.name == "Cylinder001"){
+                      child.visible = false;
+                    }
                     child.receiveShadow = true;
                     child.castShadow = true;
                   }
@@ -285,8 +285,7 @@ for (i = 0; i < dropdown.length; i++) {
             });
           });
         }
-        loadGltf('models/Nangaku.gltf', new THREE.Vector3(2,0,-2), group);
-
+        loadGltf('models/Nangaku6.gltf', new THREE.Vector3(2,0,-2), group);
         // add and position floor
         var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
         var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
@@ -331,9 +330,19 @@ for (i = 0; i < dropdown.length; i++) {
         var lfclick = true;
         var prevobj = null;
 
+        function playAnimation(rootObject, clipName){
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, 'Arrow'), rootObject );
+          action.play();
+        }
+
+        function stopAnimation(rootObject, clipName){
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, 'Arrow'), rootObject );
+          action.stop();
+        }
+
         //plays animation on a object forwards or backwards stopping on last frame
-        function playAnimation( rootObject, isUp, clipName ){
-          var loops = 0
+        function playFloorAnimation( rootObject, isUp, clipName ){
+          var loops = 0;
           loops++;
           var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
           action.paused = false;
@@ -357,8 +366,8 @@ for (i = 0; i < dropdown.length; i++) {
 
             //plays animations by the name of the floors, each floor is named after its animation
             if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
-              playAnimation(child, isUp, child.name.slice(0, (child.name.length - 3)));
-              console.log(child.name.slice(0, (child.name.length - 3)));
+              playFloorAnimation(child, isUp, child.name.slice(0, (child.name.length - 3)));
+              console.log("working");
             }
             else{child.alreadyUp = !child.alreadyUp;}
           });
@@ -459,7 +468,15 @@ for (i = 0; i < dropdown.length; i++) {
 
             var selectedObject = intersects[ 0 ].object;
             console.log(selectedObject.parent);
-            animateFloors(selectedObject.parent, false);
+            animateFloors(selectedObject.parent, selectedObject.alreadyUp);
+            if(selectedObject.alreadyUp){
+              selectedObject.parent.parent.children[1].children[0].visible = true;
+              playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+            }
+            else{
+              selectedObject.parent.parent.children[1].children[0].visible = false;
+              stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+            }
             //camera.position.copy(selectedObject.position);
             //controls.target = selectedObject;
             addSelectedObject( selectedObject );
