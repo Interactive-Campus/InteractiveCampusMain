@@ -194,17 +194,10 @@ for (i = 0; i < dropdown.length; i++) {
         container = document.getElementById( 'canvas' );
         document.body.appendChild( container );
 
-        renderer = new THREE.WebGLRenderer();
+        renderer = new THREE.WebGLRenderer({ alpha: true });
         //renderer.setSize( 200, 200 );
         container.appendChild( renderer.domElement );
-        /*
-        // initialize renderer
-        renderer = new THREE.WebGLRenderer();
-        renderer.serSize(divWidth, divHeight);
-        // initialize cutout as div
-        document.body.appendChild( renderer.domElement );
-        container.appendChild( renderer.domElement );
-        */
+
 
         // set to cutout size in the future
         var width = divWidth;
@@ -216,6 +209,7 @@ for (i = 0; i < dropdown.length; i++) {
 
         // initialize scene
         scene = new THREE.Scene();
+
 
         // initialize and position camera
          camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
@@ -268,11 +262,6 @@ for (i = 0; i < dropdown.length; i++) {
         light.position.set(50, 500, 22);
         light.target.position.set(300, 400, 200);
 
-=======
-
-        light.shadow.mapSize.width = 1024;
-        light.shadow.mapSize.height = 1024;*/
-
         var light = new THREE.DirectionalLight(0xffffff,1);
         light.position.set(0, 500, 200);
         light.target.position.set(0, 0, 0);
@@ -292,6 +281,7 @@ for (i = 0; i < dropdown.length; i++) {
         light.shadow.camera.near = 0;
         light.shadow.camera.far = 4000;
         light.shadow.camera.fov = 90;
+        scene.add(light);
 
 
 
@@ -306,7 +296,6 @@ for (i = 0; i < dropdown.length; i++) {
 
           loader.load( path, function ( gltf )
           {
-            console.log(gltf.animations[0]);
             clips = gltf.animations;
             gltf.animations.forEach(function(anim){console.log(anim.name)});
             //for each scene in the array of scene
@@ -317,44 +306,29 @@ for (i = 0; i < dropdown.length; i++) {
               for(var i = 0; i < sceneLength; i++){
                 curScene.children.userData = {alreadyUp:false};
                 sceneGroup.add(curScene.children[0]);
-                //curScene.children.castShadow = true;
-                //curScene.children.receiveShadow = true;
               }
               sceneGroup.position.copy(position);
               //for each object in the scene
               sceneGroup.children.forEach( function (child){
                 if (child instanceof THREE.Mesh){
                   if (child.geometry.isBufferGeometry){
-                    //child.geometry.center();
-                    //child.geometry.computeBoundingSphere();
-                    //scale = 2 * child.geometry.boundingSphere.radius
+                    console.log(child.name);
+                    if(child.name == "Cylinder001"){
+                      child.visible = false;
+                    }
                     child.receiveShadow = true;
                     child.castShadow = true;
-                    console.log(child.receiveShadow);
-                    //var scc = 20;
-                    //child.scale.set(scc, scc, scc);
                   }
-                  //console.log("is a mesh2");
-                  //child.geometry.center();
-                  //child.geometry.computeBoundingSphere();
-                  //scale = 2 * child.geometry.boundingSphere.radius;
-                  //child.material = phongMaterial;
-                  child.receiveShadow = true;
-                  child.castShadow = true;
-                  //console.log(child.receiveShadow);
-                  //child.receiveShadow = true;
-                  //child.castShadow = true;
                 }
               });
               modelGroup.add(sceneGroup);
             });
           });
         }
-        loadGltf('models/Nangaku.gltf', new THREE.Vector3(2,0,-2), group);
-
+        loadGltf('models/Nangaku6.gltf', new THREE.Vector3(2,0,-2), group);
         // add and position floor
-        var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
-        var floorGeometry = new THREE.PlaneBufferGeometry(20, 20, 1000, 1000);
+        var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
+        var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         floorMesh.rotation.x -= Math.PI * 0.5;
         floorMesh.position.y = 0;
@@ -396,9 +370,19 @@ for (i = 0; i < dropdown.length; i++) {
         var lfclick = true;
         var prevobj = null;
 
+        function playAnimation(rootObject, clipName){
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, 'Arrow'), rootObject );
+          action.play();
+        }
+
+        function stopAnimation(rootObject, clipName){
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, 'Arrow'), rootObject );
+          action.stop();
+        }
+
         //plays animation on a object forwards or backwards stopping on last frame
-        function playAnimation( rootObject, isUp, clipName ){
-          var loops = 0
+        function playFloorAnimation( rootObject, isUp, clipName ){
+          var loops = 0;
           loops++;
           var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
           action.paused = false;
@@ -421,10 +405,9 @@ for (i = 0; i < dropdown.length; i++) {
           buildingGroup.children.forEach(function(child){
 
             //plays animations by the name of the floors, each floor is named after its animation
-            if (child.name.slice(0, (child.name.length - 3))
-             != 'floorOne'){
-              playAnimation(child, isUp, child.name.slice(0, (child.name.length - 3)));
-              console.log(child.name.slice(0, (child.name.length - 3)));
+            if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
+              playFloorAnimation(child, isUp, child.name.slice(0, (child.name.length - 3)));
+              console.log("working");
             }
             else{child.alreadyUp = !child.alreadyUp;}
           });
@@ -521,11 +504,19 @@ for (i = 0; i < dropdown.length; i++) {
           var intersects = raycaster.intersectObjects( [ group ], true );
           if ( intersects.length > 0 )
           {
-            console.log(selectedObject);
             outlinePass.selectedObjects = [];
 
             var selectedObject = intersects[ 0 ].object;
-            animateFloors(selectedObject.parent, false);
+            console.log(selectedObject.parent);
+            animateFloors(selectedObject.parent, selectedObject.alreadyUp);
+            if(selectedObject.alreadyUp){
+              selectedObject.parent.parent.children[1].children[0].visible = true;
+              playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+            }
+            else{
+              selectedObject.parent.parent.children[1].children[0].visible = false;
+              stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+            }
             //camera.position.copy(selectedObject.position);
             //controls.target = selectedObject;
             addSelectedObject( selectedObject );
@@ -686,7 +677,7 @@ for (i = 0; i < dropdown.length; i++) {
           scene.background = new THREE.Color(0x0000FF);
         }
         else {
-          scene.background = new THREE.Color(0x00FF00);
+          scene.background = new THREE.Color(0x9cbbf4);
         }
 
         /*
