@@ -205,7 +205,7 @@ for (i = 0; i < dropdown.length; i++) {
 
         // enable shadows
         renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.BasicShadowMap;
+        //renderer.shadowMap.type = THREE.BasicShadowMap;
 
         // initialize scene
         scene = new THREE.Scene();
@@ -253,6 +253,7 @@ for (i = 0; i < dropdown.length; i++) {
 
 
         light.castShadow = true;
+<<<<<<< Updated upstream
 <<<<<<< HEAD
         var smapsize = 2048;
         light.shadow.mapSize.width = smapsize;
@@ -261,14 +262,18 @@ for (i = 0; i < dropdown.length; i++) {
         var light = new THREE.DirectionalLight(0xffffff,1);
         light.position.set(50, 500, 22);
         light.target.position.set(300, 400, 200);
+=======
+
+        light.shadow.mapSize.width = 1024;
+        light.shadow.mapSize.height = 1024;*/
+>>>>>>> Stashed changes
 
         var light = new THREE.DirectionalLight(0xffffff,1);
         light.position.set(0, 500, 200);
         light.target.position.set(0, 0, 0);
-        light.shadow.mapSize.width = 1024*3;
-        light.shadow.mapSize.height = 1024*3;
+        light.shadow.mapSize.width = 1024*2;
+        light.shadow.mapSize.height = 1024*2;
 /*
->>>>>>> 750486f33ab0f84857d3a2c5a40c0abbac4a6e70
         light.shadow.camera.near = 0.01;
         light.shadow.camera.far = 5000;
         light.shadow.camera.left = -500;
@@ -281,6 +286,8 @@ for (i = 0; i < dropdown.length; i++) {
         light.shadow.camera.near = 0;
         light.shadow.camera.far = 4000;
         light.shadow.camera.fov = 90;
+        scene.add(light);
+
         scene.add(light);
 
 
@@ -327,13 +334,18 @@ for (i = 0; i < dropdown.length; i++) {
         }
         loadGltf('models/Nangaku6.gltf', new THREE.Vector3(2,0,-2), group);
         // add and position floor
+<<<<<<< Updated upstream
         var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
         var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
+=======
+        var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
+        var floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
+>>>>>>> Stashed changes
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         floorMesh.rotation.x -= Math.PI * 0.5;
         floorMesh.position.y = 0;
-        floorMesh.receiveShadow = true;
-        floorMesh.castShadow = true;
+        //floorMesh.receiveShadow = true;
+        //floorMesh.castShadow = true;
         scene.add(floorMesh);
 
 
