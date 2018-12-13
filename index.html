@@ -205,7 +205,7 @@ for (i = 0; i < dropdown.length; i++) {
 
         // enable shadows
         renderer.shadowMap.enabled = true;
-        //renderer.shadowMap.type = THREE.BasicShadowMap;
+        renderer.shadowMap.type = THREE.BasicShadowMap;
 
         // initialize scene
         scene = new THREE.Scene();
@@ -231,63 +231,16 @@ for (i = 0; i < dropdown.length; i++) {
         // add ambient light
         scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
 
-        // add point light
-      /*  var light = new THREE.SpotLight( 0xffffff );
-        //var light = new //THREE.HemisphereLight(0xffffff, 0x808020, 1);//PointLight(0xffffff);
-        scene.add( light );
-        light.position.set( -800, 800, 800 );
-        light.rotation.set( -Math.PI / 4, 0, -Math.PI / 4 );
-
-
-        light.intensity = 1.2;
-        light.angle = Math.PI / 2;
-        //light.position.y = 200;
-        light.penumbra = 100;
-        //light.rotation.z = -400;
-        //light.position.x = -100;
-
-        //light.shadow.mapSize.width = 512;  // default
-        //light.shadow.mapSize.height = 512; // default
-        light.shadow.camera.near = 0.5;       // default
-        light.shadow.camera.far = 500;
-
-
-        light.castShadow = true;
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-        var smapsize = 2048;
-        light.shadow.mapSize.width = smapsize;
-        light.shadow.mapSize.height = smapsize;
-
-        var light = new THREE.DirectionalLight(0xffffff,1);
-        light.position.set(50, 500, 22);
-        light.target.position.set(300, 400, 200);
-=======
-
-        light.shadow.mapSize.width = 1024;
-        light.shadow.mapSize.height = 1024;*/
->>>>>>> Stashed changes
-
         var light = new THREE.DirectionalLight(0xffffff,1);
         light.position.set(0, 500, 200);
         light.target.position.set(0, 0, 0);
-        light.shadow.mapSize.width = 1024*2;
-        light.shadow.mapSize.height = 1024*2;
-/*
-        light.shadow.camera.near = 0.01;
-        light.shadow.camera.far = 5000;
-        light.shadow.camera.left = -500;
-        light.shadow.camera.bottom = -500;
-        light.shadow.camera.right = 500;
-        light.shadow.camera.top = 500;
-*/
+        light.shadow.mapSize.width = 1024*4;
+        light.shadow.mapSize.height = 1024*4;
         light.castShadow = true;
 
         light.shadow.camera.near = 0;
         light.shadow.camera.far = 4000;
         light.shadow.camera.fov = 90;
-        scene.add(light);
-
         scene.add(light);
 
 
@@ -296,6 +249,10 @@ for (i = 0; i < dropdown.length; i++) {
         scene.add( group );
 
         // add and position model
+
+        /*
+        *Model Loaders
+        */
 
         var loader = new THREE.GLTFLoader();
 
@@ -322,6 +279,7 @@ for (i = 0; i < dropdown.length; i++) {
                     console.log(child.name);
                     if(child.name == "Cylinder001"){
                       child.visible = false;
+                      child.material = new THREE.MeshBasicMaterial({color: 0xe01638});
                     }
                     child.receiveShadow = true;
                     child.castShadow = true;
@@ -334,18 +292,13 @@ for (i = 0; i < dropdown.length; i++) {
         }
         loadGltf('models/Nangaku6.gltf', new THREE.Vector3(2,0,-2), group);
         // add and position floor
-<<<<<<< Updated upstream
         var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
         var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
-=======
-        var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
-        var floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
->>>>>>> Stashed changes
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         floorMesh.rotation.x -= Math.PI * 0.5;
         floorMesh.position.y = 0;
-        //floorMesh.receiveShadow = true;
-        //floorMesh.castShadow = true;
+        floorMesh.receiveShadow = true;
+        floorMesh.castShadow = true;
         scene.add(floorMesh);
 
 
@@ -382,36 +335,40 @@ for (i = 0; i < dropdown.length; i++) {
         var lfclick = true;
         var prevobj = null;
 
+        /*
+        * Animation
+        */
+
         function playAnimation(rootObject, clipName){
-          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, 'Arrow'), rootObject );
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
           action.play();
         }
 
         function stopAnimation(rootObject, clipName){
-          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, 'Arrow'), rootObject );
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
           action.stop();
         }
 
         //plays animation on a object forwards or backwards stopping on last frame
         function playFloorAnimation( rootObject, isUp, clipName ){
-          var loops = 0;
-          loops++;
+          //creates a clip Action which is an instance of an Animation
           var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
           action.paused = false;
           action.clampWhenFinished = true;
-          action.setLoop(THREE.LoopOnce, loops);
+          action.setLoop(THREE.LoopOnce);
+          //If the animation is down it goes up, if up it goes down
           if(isUp){
-            loops++;
-            action.setLoop(THREE.LoopOnce, loops);
+            action.setLoop(THREE.LoopOnce);
             action.timeScale = -1;
             action.paused = false;
           }
           else{action.timeScale = 1;}
+          //already up is a custom variable given to all meshes imported
           rootObject.alreadyUp = !rootObject.alreadyUp;
           action.play();
         }
 
-        //takes a group of a building and applies an animation to each floor
+        //Takes a group of a building and applies an animation to each floor
         //isUp determines direaction of animation, true is forward, false is reverse, putting the child.alreadyUp makes it ping pong
         function animateFloors(buildingGroup, isUp){
           buildingGroup.children.forEach(function(child){
@@ -419,11 +376,11 @@ for (i = 0; i < dropdown.length; i++) {
             //plays animations by the name of the floors, each floor is named after its animation
             if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
               playFloorAnimation(child, isUp, child.name.slice(0, (child.name.length - 3)));
-              console.log("working");
             }
             else{child.alreadyUp = !child.alreadyUp;}
           });
         }
+
 
         function stopstart (event)
         {
@@ -520,7 +477,7 @@ for (i = 0; i < dropdown.length; i++) {
 
             var selectedObject = intersects[ 0 ].object;
             console.log(selectedObject.parent);
-            animateFloors(selectedObject.parent, selectedObject.alreadyUp);
+            animateFloors(selectedObject.parent, false);
             if(selectedObject.alreadyUp){
               selectedObject.parent.parent.children[1].children[0].visible = true;
               playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
