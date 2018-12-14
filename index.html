@@ -1,695 +1,602 @@
 <!DOCTYPE html>
 <html>
-<title>Nangaku Building</title>
-  <head>
+    <title>Nangaku Building</title>
+      <head>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <style>
-    body {
-        font-family: "Gill Sans", sans-serif;
-    }
+        <style>
+        body {
+            font-family: "Gill Sans", sans-serif;
+        }
 
-    .sidenav {
-        height: 100%;
-        width: 0;
-        position: fixed;
-        z-index: 1;
-        top: 0;
-        right: 0;
-        background-color: #111;
-        overflow-x: hidden;
-        transition: 0.5s;
-        padding-top: 60px;
-    }
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
 
-    .sidenav a {
-        padding: 4px 10px 4px 10px;
-        text-decoration: none;
-        font-size: 25px;
-        color: #818181;
-        display: block;
-        transition: 0.3s;
-    }
+        .sidenav a {
+            padding: 4px 10px 4px 10px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
 
-    .dropdown-container{
-      display:none;
-    }
+        .dropdown-container{
+          display:none;
+        }
 
-    .sidenav a:hover {
-        color: #f1f1f1;
-    }
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
 
-    .sidenav .closebtn {
-        position: absolute;
-        top: 0;
-        right: 10px;
-        font-size: 36px;
-        margin-left: 50px;
-    }
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 10px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
 
-    p
-    {
-      font-size: 18px;
-      padding-left: 10px;
-      padding-right: 3px;
-      padding-top: 0px;
-      padding-bottom: 0px;
-      color: #818181;
-    }
+        p
+        {
+          font-size: 18px;
+          padding-left: 10px;
+          padding-right: 3px;
+          padding-top: 0px;
+          padding-bottom: 0px;
+          color: #818181;
+        }
 
-    #main {
-        transition: margin-left .5s;
-        padding: 16px;
-    }
+        #main {
+            transition: margin-left .5s;
+            padding: 16px;
+        }
 
-    @media screen and (max-height: 450px) {
-      .sidenav {padding-top: 15px;}
-      .sidenav a {font-size: 18px;}
-    }
-    </style>
-  </head>
-<body>
+        @media screen and (max-height: 450px) {
+          .sidenav {padding-top: 15px;}
+          .sidenav a {font-size: 18px;}
+        }
+        </style>
+      </head>
+    <body>
 
-  <div id="mySidenav" class="sidenav">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 
-  <a class="dropdown-btn">Garrett's Amazing 10/10 English 9 Presentation
-    <i class="fa fa-caret-down"></i>
-  </a>
+      <a class="dropdown-btn">Garrett's Amazing 10/10 English 9 Presentation
+        <i class="fa fa-caret-down"></i>
+      </a>
 
-  <div class="dropdown-container">
-    <p>10:10-11:15am</p>
-    <p>Location: N-110</p>
-    <a href="#">Directions</a>
-</div>
-    <a class="dropdown-btn">Chinese Club Lunch
+      <div class="dropdown-container">
+        <p>10:10-11:15am</p>
+        <p>Location: N-110</p>
+        <a href="#">Directions</a>
+    </div>
+        <a class="dropdown-btn">Chinese Club Lunch
+          <i class="fa fa-caret-down"></i>
+        </a>
+
+        <div class="dropdown-container">
+          <p>12:15-1:00pm</p>
+          <p>Location: N-203</p>
+          <a href="#">Directions</a>
+    </div>
+    <a class="dropdown-btn">Keables' Scholar Discussion
       <i class="fa fa-caret-down"></i>
     </a>
 
     <div class="dropdown-container">
       <p>12:15-1:00pm</p>
-      <p>Location: N-203</p>
+      <p>Location: N-105</p>
       <a href="#">Directions</a>
-</div>
-<a class="dropdown-btn">Keables' Scholar Discussion
-  <i class="fa fa-caret-down"></i>
-</a>
-
-<div class="dropdown-container">
-  <p>12:15-1:00pm</p>
-  <p>Location: N-105</p>
-  <a href="#">Directions</a>
-</div>
+    </div>
 
 
-<script>
-function openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-    document.getElementById("main").style.marginRight = "250px";
-}
-function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-    document.getElementById("main").style.marginLRight= "0";
-}
-
-//startClosed();
-</script>
-
-<script>
-
-var dropdown = document.getElementsByClassName("dropdown-btn");
-var i;
-for (i = 0; i < dropdown.length; i++) {
-  dropdown[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var dropdownContent = this.nextElementSibling;
-    if (dropdownContent.style.display === "none") {
-      dropdownContent.style.display = "block";
-    } else {
-      dropdownContent.style.display = "none";
-    }
-  });
-}
-
-</script>
-
-  <script src="js/three.js"></script>
-  <script src="js/controls/OrbitControls.js"></script>
-  <script src="js/loaders/GLTFLoader.js"></script>
-  <script src="js/shaders/CopyShader.js"></script>
-  <script src="js/shaders/FXAAShader.js"></script>
-  <script src="js/postprocessing/EffectComposer.js"></script>
-  <script src="js/postprocessing/RenderPass.js"></script>
-  <script src="js/postprocessing/ShaderPass.js"></script>
-  <script src="js/postprocessing/OutlinePass.js"></script>
-  <script src="js/libs/stats.min.js"></script>
-  <script src='js/libs/dat.gui.min.js'></script>
-
-  <div id = 'canvas'>
     <script>
-    // https://stackoverflow.com/questions/13542175/three-js-ray-intersect-fails-by-adding-div/13544277#13544277
-
-    // heap clears frequently, nodes do not
-
-    var color = false;
-    // dummy buttons
-    const changeText = () => {
-        //const p = document.querySelector('p');
-
-        //p.textContent = "I changed because of an inline event handler.";
-        color = !color;
-        // joel paste here
-
-
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+        document.getElementById("main").style.marginRight = "250px";
     }
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        document.getElementById("main").style.marginLRight= "0";
+    }
+    </script>
 
-      // declaring big boy variables
-      var t;
-      var container, stats;
-      var camera, scene, renderer, controls;
-      var raycaster = new THREE.Raycaster();
-      var mouse = new THREE.Vector2();
-      var selectedObjects = [];
-      var composer, effectFXAA, outlinePass;
-      var group = new THREE.Group();
-      var obj3d = new THREE.Object3D();
-      var clips;
-      var mixer = new THREE.AnimationMixer();
-      var clock = new THREE.Clock(true);
-      var divWidth = window.innerWidth * 3 / 4;// / 2;//500;
-      var divHeight = window.innerHeight * 5 / 7// / 2;//500;
-      var xd = 1;
-      var yd = 1;
-      var xx = 0;
-      var yy = 0;
-      init();
-      onWindowResize();
-      animate();
+    <script>
 
-      function init()
-      {
-        //startClosed();
-
-        container = document.getElementById( 'canvas' );
-        document.body.appendChild( container );
-
-        renderer = new THREE.WebGLRenderer({ alpha: true });
-        //renderer.setSize( 200, 200 );
-        container.appendChild( renderer.domElement );
-
-
-        // set to cutout size in the future
-        var width = divWidth;
-        var height = divHeight;
-
-        // enable shadows
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.BasicShadowMap;
-
-        // initialize scene
-        scene = new THREE.Scene();
-
-
-        // initialize and position camera
-         camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
-        //var camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, -1000, 1000 );
-        camera.position.set( 0, 0, 8 );
-
-        // initialize and customize controls
-        controls = new THREE.OrbitControls( camera, renderer.domElement );
-        controls.minDistance = 2;
-        controls.maxDistance = 5;
-        controls.maxPolarAngle = 11*Math.PI/24;
-        controls.enablePan = true;
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.25;
-        controls.target.x =  1;
-        controls.enableZoom = true;
-        //controls.minPolarAngle = Math.PI / 12;
-
-        // add ambient light
-        scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
-
-        var light = new THREE.DirectionalLight(0xffffff,1);
-        light.position.set(0, 500, 200);
-        light.target.position.set(0, 0, 0);
-        light.shadow.mapSize.width = 1024*4;
-        light.shadow.mapSize.height = 1024*4;
-        light.castShadow = true;
-
-        light.shadow.camera.near = 0;
-        light.shadow.camera.far = 4000;
-        light.shadow.camera.fov = 90;
-        scene.add(light);
-
-
-
-        //add the group of all models into the scene
-        scene.add( group );
-
-
-        /*
-        *Model Loaders
-        */
-
-
-
-        /*
-        Main function to load in the school model.
-        path takes a string of the file path of the model (GLTF format)
-        position takes a Vector3 and sets the the model centered to that position
-        modelGroup takes a Group and makes it the top of the tree
-
-        Each mesh in the model is added to a group based on the scene that it is in
-        each scene is then added to modelGroup
-        */
-
-        var loader = new THREE.GLTFLoader();
-
-        function loadGltf(path, position, modelGroup){
-
-          loader.load( path, function ( gltf )
-          {
-            clips = gltf.animations;
-
-            gltf.scenes.forEach(function (curScene){
-              var sceneGroup = new THREE.Group();
-              var sceneLength = curScene.children.length;
-              for(var i = 0; i < sceneLength; i++){
-                //add an object to describe if it is already up in animation
-                //add any other variables that need to be tied to each room
-                curScene.children.userData = {alreadyUp:false};
-              }
-              sceneGroup.position.copy(position);
-              sceneGroup.children.forEach( function (child){
-                if (child instanceof THREE.Mesh){
-                  child.receiveShadow = true;
-                  child.castShadow = true;
-                }
-              });
-              modelGroup.add(sceneGroup);
-              modelGroup.position.copy(position);
-            });
-          });
+    // create dropdown within sidebar and add listener for toggle
+    var dropdown = document.getElementsByClassName("dropdown-btn");
+    var i;
+    for (i = 0; i < dropdown.length; i++) {
+      dropdown[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var dropdownContent = this.nextElementSibling;
+        if (dropdownContent.style.display === "block") {
+          dropdownContent.style.display = "none";
+        } else {
+          dropdownContent.style.display = "block";
         }
-
-        loadGltf('models/Nangaku6.gltf', new THREE.Vector3(2,0,-2), group);
-
-        //Ground Plane
-
-        var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
-        var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
-        var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
-        floorMesh.rotation.x -= Math.PI * 0.5;
-        floorMesh.position.y = 0;
-        floorMesh.receiveShadow = true;
-        floorMesh.castShadow = true;
-        scene.add(floorMesh);
-
-        /*
-        *Postprocessing
-        */
-
-        // initialize postprocessing
-        composer = new THREE.EffectComposer( renderer );
-        //render pass renders scene
-        var renderPass = new THREE.RenderPass( scene, camera );
-        composer.addPass( renderPass );
-
-        //outline pass add the outline to rooms
-        outlinePass = new THREE.OutlinePass( new THREE.Vector2( divWidth, divHeight ), scene, camera );
-        composer.addPass( outlinePass );
-
-        // initialize antialiasing
-        effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
-        effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
-        effectFXAA.renderToScreen = true;
-        composer.addPass( effectFXAA );
-
-
-        /*
-        * Animation
-        */
-
-        function playAnimation(rootObject, clipName){
-          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
-          action.play();
-        }
-
-        function stopAnimation(rootObject, clipName){
-          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
-          action.stop();
-        }
-
-        //plays animation on a object forwards or backwards stopping on last frame
-        function playFloorAnimation( rootObject, isUp, clipName ){
-          //creates a clip Action which is an instance of an Animation
-          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
-          action.paused = false;
-          action.clampWhenFinished = true;
-          action.setLoop(THREE.LoopOnce);
-          //If the animation is down it goes up, if up it goes down
-          if(isUp){
-            action.setLoop(THREE.LoopOnce);
-            action.timeScale = -1;
-            action.paused = false;
-          }
-          else{action.timeScale = 1;}
-          //already up is a custom variable given to all meshes imported
-          rootObject.alreadyUp = !rootObject.alreadyUp;
-          action.play();
-        }
-
-        //Takes a group of a building and applies an animation to each floor
-        //isUp determines direaction of animation, true is forward, false is reverse, putting the child.alreadyUp makes it ping pong
-        function animateFloors(buildingGroup, isUp){
-          buildingGroup.children.forEach(function(child){
-
-            //plays animations by the name of the floors, each floor is named after its animation
-            if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
-              playFloorAnimation(child, isUp, child.name.slice(0, (child.name.length - 3)));
-            }
-            else{child.alreadyUp = !child.alreadyUp;}
-          });
-        }
-
-
-        /*
-        *Event Listeners
-        */
-
-        // initialize event listeners
-        window.addEventListener( 'resize', onWindowResize, false );
-        window.addEventListener( 'mouseup', onTouchMove );
-        window.addEventListener( 'touchend', onTouchMove );
-        window.addEventListener( 'touchstart', onmesh);
-        window.addEventListener( 'mousedown', onmesh);
-        window.addEventListener( 'mousemove', stopstart);
-
-
-
-
-
-        // event triggered functions
-
-        var clicked = true;
-        var started = false;
-        var lfclick = true;
-        var prevobj = null;
-
-        function stopstart (event)
-        {
-          if (!lfclick)
-          {
-            controls.enableRotate = false;
-            controls.enablePan = true;
-            console.log("a");
-          }
-          else
-          {
-            controls.enableRotate = true;
-            //controls.enablePan = false;
-            //console.log("b");
-          }
-        }
-
-        function onmesh (event)
-        {
-          var x, y;
-
-          if (event.button == 2)
-          {
-            lfclick = false;
-          }
-          else
-          {
-            lfclick = true;
-          }
-
-          if ( event.changedTouches )
-          {
-            x = event.changedTouches[ 0 ].pageX;
-            y = event.changedTouches[ 0 ].pageY;
-          }
-          else
-          {
-            x = event.clientX;
-            y = event.clientY;
-          }
-          mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
-          mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
-
-          raycaster.setFromCamera( mouse, camera );
-          var intersects = raycaster.intersectObjects( [ group ], true );
-          if ( intersects.length > 0 )
-          {
-            started = true;
-          }
-          else
-          {
-            started = false;
-          }
-
-          // put opennav where
-
-        }
-
-        //
-
-        function onTouchMove( event )
-        {
-          var x, y;
-          if ( event.changedTouches )
-          {
-            x = event.changedTouches[ 0 ].pageX;
-            y = event.changedTouches[ 0 ].pageY;
-          }
-          else
-          {
-            x = event.clientX;
-            y = event.clientY;
-          }
-          mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
-          mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
-          checkIntersection();
-        }
-
-        //
-        function addSelectedObject( object )
-        {
-          selectedObjects = [];
-          selectedObjects.push( object );
-        }
-
-        //
-        function checkIntersection()
-        {
-          raycaster.setFromCamera( mouse, camera );
-          var intersects = raycaster.intersectObjects( [ group ], true );
-          if ( intersects.length > 0 )
-          {
-            outlinePass.selectedObjects = [];
-
-            var selectedObject = intersects[ 0 ].object;
-            console.log(selectedObject.parent);
-            animateFloors(selectedObject.parent, false);
-            if(selectedObject.alreadyUp){
-              selectedObject.parent.parent.children[1].children[0].visible = true;
-              playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
-            }
-            else{
-              selectedObject.parent.parent.children[1].children[0].visible = false;
-              stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
-            }
-            //camera.position.copy(selectedObject.position);
-            //controls.target = selectedObject;
-            addSelectedObject( selectedObject );
-            if (clicked && started || prevobj != selectedObject)
-            {
-              outlinePass.selectedObjects = selectedObjects;
-              openNav();
-            }
-            else
-            {
-              outlinePass.selectedObjects = [];
-              closeNav();
-            }
-            clicked = !clicked;
-          }
-          else
-          {
-            if (!started)
-            {
-              outlinePass.selectedObjects = [];
-            }
-          }
-          prevobj = selectedObject;
-        }
-
-        var width = divWidth;
-        var height = divHeight;
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-        renderer.setSize( width, height );
-        composer.setSize( width, height );
-        renderer.domElement.style.width = width + 'px';
-        renderer.domElement.style.height = height + 'px';
-      }
-
-      // resize the screen correctly
-      var i = 0;
-      function onWindowResize()
-      {
-        divWidth = window.innerWidth;// / 2;
-        divHeight = window.innerHeight; // 2;
-        var width = divWidth;
-        var height = divHeight;
-        var w2 = 0;//200/7;//= xx;
-        var h2 = 0;//= yy;
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-        renderer.setSize( width, height );
-        composer.setSize( width, height );
-        renderer.domElement.style.width = width + 'px';
-        renderer.domElement.style.height = height + 'px';
-        //renderer.domElement.style.offsetLeft = w2 + 'px';
-        //renderer.domElement.style.offsetTop = h2 + 'px';
-        effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
-
-
-        var css = '#canvas {background-color: #f0f; margin-left: ' + w2.toString() + 'vw; width: 0px; height: 0px; padding: 0px; margin-top: ' + h2.toString() + 'vw; position: static;}',
-        head = document.head || document.getElementsByTagName('head')[0],
-        style = document.createElement('style');
-
-        var y;
-
-
-        style.type = 'text/css';
-        if (style.styleSheet)
-        {
-          // This is required for IE8 and below.
-          style.styleSheet.cssText = css;
-        }
-        else
-        {
-          t = document.createTextNode(css);
-          style.appendChild(t);
-
-          if (style.childNodes.length <1)
-          {
-            //y = style.childNode[0];
-            style.removeChild(style.childNode[style.childNodes.length - 1]);
-            head.style.childNodes[0].kill();
-            head.style.childNodes[i].kill();
-            style.removeChild(style.childNode[0]);
-            head.style.childNodes[i-1].kill();
-            style.removeChild(style.childNode[i]);
-            style.removeChild(style.childNode[i-1]);
-            head.style.childNodes[style.childNodes.length - 1].kill();
-            //console.log(style.childNodes.length);
-
-            i++;
-          }
-
-          console.log(style.childNodes.length);
-
-          //head.style.textContent = css;
-        }
-
-        head.appendChild(style);
-
-        if (head.childNodes.length > 1)
-        {
-          //y = style.childNodes[0];
-          //head.removeChild(y);
-        }
-      }
-
-      var panx = 1;
-      var panz = 1;
-
-      /*
-      *Main Draw Loop
-      */
-
-      function animate()
-      {
-        requestAnimationFrame( animate );
-        //stats.begin();
-        var timer = performance.now();
-
-        //var newX = target.x + panx;
-        //var newY = target.y + pany;
-        if (controls.target.x > panx) {
-            controls.target.x = panx;
-        }
-        if (controls.target.x < -1 * panx) {
-            controls.target.x = -1 * panx;
-        }
-        if (controls.target.z > panz) {
-            controls.target.z = panz;
-        }
-        if (controls.target.z < -1 * panz) {
-            controls.target.z = -1 * panz;
-        }
-        controls.target.y = 0;
-
-        controls.update();
-        composer.render();
-        //stats.end();
-        mixer.update(clock.getDelta());
-        //xx += xd * (divWidth / 32);
-        //yy += xd * (divHeight / 32);
-        if (xx > divWidth )
-        {
-          xd = -1;
-        }
-        if (xx < 0)
-        {
-          xd = 1;
-        }
-
-        if (yy > divHeight)
-        {
-          yd = -1;
-        }
-        if (yy < 0)
-        {
-          yd = 1;
-        }
-
-        if (color)
-        {
-          scene.background = new THREE.Color(0x0000FF);
-        }
-        else {
-          scene.background = new THREE.Color(0x9cbbf4);
-        }
-
-        /*
-        light.target.x = controls.target.x;
-        light.target.y = controls.target.y;
-        light.target.z = controls.target.z;*/
-
-          //console.log(controls.target.x);
-        //onWindowResize();
-        if (controls.enablePan)
-        {
-          //scene.background = new THREE.Color(0xFF00FF);
-        }
-        else
-        {
-          //scene.background = new THREE.Color(0x0000FF);
-        }
-
-        //light.position.x = light.position.x + 1;
-
-      }
+      });
+    }
 
     </script>
 
-</body>
+      <script src="js/three.js"></script>
+      <script src="js/controls/OrbitControls.js"></script>
+      <script src="js/loaders/GLTFLoader.js"></script>
+      <script src="js/shaders/CopyShader.js"></script>
+      <script src="js/shaders/FXAAShader.js"></script>
+      <script src="js/postprocessing/EffectComposer.js"></script>
+      <script src="js/postprocessing/RenderPass.js"></script>
+      <script src="js/postprocessing/ShaderPass.js"></script>
+      <script src="js/postprocessing/OutlinePass.js"></script>
+      <script src="js/libs/stats.min.js"></script>
+      <script src='js/libs/dat.gui.min.js'></script>
 
+      <div id = 'canvas'>
+        <script>
+        // https://stackoverflow.com/questions/13542175/three-js-ray-intersect-fails-by-adding-div/13544277#13544277
+
+        // heap clears frequently, nodes do not
+
+        // use this function to interact with JavaScript from sidebar interaction
+        const changeText = () => {
+
+        }
+
+          // declaring big boy variables
+          var t;
+          var container, stats;
+          var camera, scene, renderer, controls;
+          var raycaster = new THREE.Raycaster();
+          var mouse = new THREE.Vector2();
+          var selectedObjects = [];
+          var composer, effectFXAA, outlinePass;
+          var group = new THREE.Group();
+          var obj3d = new THREE.Object3D();
+          var clips;
+          var mixer = new THREE.AnimationMixer();
+          var clock = new THREE.Clock(true);
+          var divWidth = window.innerWidth;
+          var divHeight = window.innerHeight;
+
+
+          init();
+          onWindowResize();
+          animate();
+
+          function init()
+          {
+            // create container
+            container = document.getElementById( 'canvas' );
+            document.body.appendChild( container );
+
+            // create renderer
+            renderer = new THREE.WebGLRenderer({ alpha: true });
+            container.appendChild( renderer.domElement );
+
+            // set to cutout size in the future
+            var width = divWidth;
+            var height = divHeight;
+
+            // enable shadows
+            renderer.shadowMap.enabled = true;
+            //renderer.shadowMap.type = THREE.BasicShadowMap;
+
+            // initialize scene
+            scene = new THREE.Scene();
+
+            // initialize and position camera
+            camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
+            //var camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, -1000, 1000 );
+            camera.position.set( 0, 0, 8 );
+
+            // initialize and customize controls
+            controls = new THREE.OrbitControls( camera, renderer.domElement );
+            controls.minDistance = 2;
+            controls.maxDistance = 5;
+            controls.maxPolarAngle = 11*Math.PI/24;
+            controls.enablePan = true;
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.25;
+            controls.target.x =  1;
+            controls.enableZoom = true;
+
+            // add ambient light
+            scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
+
+            //add the group for all models to join
+            scene.add( group );
+
+            // initialize gltf loader
+            var loader = new THREE.GLTFLoader();
+
+            // define function that loads in models (gltf)
+            function loadGltf(path, position, modelGroup){
+              loader.load( path, function ( gltf )
+              {
+                clips = gltf.animations;
+                gltf.animations.forEach(function(anim){console.log(anim.name)});
+                //for each scene in the array of scene
+                gltf.scenes.forEach(function (curScene){
+                  //adds the objects to a new group
+                  var sceneGroup = new THREE.Group();
+                  var sceneLength = curScene.children.length;
+                  for(var i = 0; i < sceneLength; i++){
+                    curScene.children.userData = {alreadyUp:false};
+                    sceneGroup.add(curScene.children[0]);
+                  }
+                  sceneGroup.position.copy(position);
+                  //for each object in the scene
+                  sceneGroup.children.forEach( function (child){
+                    if (child instanceof THREE.Mesh){
+                      if (child.geometry.isBufferGeometry){
+                        console.log(child.name);
+                        if(child.name == "Cylinder001"){
+                          child.visible = false;
+                        }
+                        child.receiveShadow = true;
+                        child.castShadow = true;
+                      }
+                    }
+                  });
+                  modelGroup.add(sceneGroup);
+                });
+              });
+            }
+
+            // add Nangaku model
+            loadGltf('models/Nangaku6.gltf', new THREE.Vector3(2,0,-2), group);
+
+            // add and position floor
+            var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
+            var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
+            var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
+            var floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
+            var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+            floorMesh.rotation.x -= Math.PI * 0.5;
+            floorMesh.position.y = 0;
+            floorMesh.receiveShadow = true;
+            floorMesh.castShadow = true;
+            scene.add(floorMesh);
+
+
+
+            // initialize postprocessing
+            composer = new THREE.EffectComposer( renderer );
+            var renderPass = new THREE.RenderPass( scene, camera );
+            composer.addPass( renderPass );
+            outlinePass = new THREE.OutlinePass( new THREE.Vector2( divWidth, divHeight ), scene, camera );
+            composer.addPass( outlinePass );
+
+            // initialize antialiasing
+            effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
+            effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
+            effectFXAA.renderToScreen = true;
+            composer.addPass( effectFXAA );
+
+            // initialize event listeners
+            window.addEventListener( 'resize', onWindowResize, false );
+            window.addEventListener( 'mouseup', onTouchMove );
+            window.addEventListener( 'touchend', onTouchMove );
+            window.addEventListener( 'touchstart', onmesh);
+            window.addEventListener( 'mousedown', onmesh);
+            window.addEventListener( 'mousemove', stopstart);
+
+            // variables for listner functions
+            var clicked = true;
+            var started = false;
+            var lfclick = true;
+            var prevobj = null;
+
+
+<<<<<<< Updated upstream
+
+            /////////////////////////////////
+            //  animation shets  //
+=======
+            
+            /////////////////////////////////
+            //  event triggered functions  //
+>>>>>>> Stashed changes
+            /////////////////////////////////
+
+            function playAnimation(rootObject, clipName){
+              var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, 'Arrow'), rootObject );
+              action.play();
+            }
+
+            function stopAnimation(rootObject, clipName){
+              var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, 'Arrow'), rootObject );
+              action.stop();
+            }
+
+            //plays animation on a object forwards or backwards stopping on last frame
+            function playFloorAnimation( rootObject, isUp, clipName ){
+              var loops = 0;
+              loops++;
+              var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
+              action.paused = false;
+              action.clampWhenFinished = true;
+              action.setLoop(THREE.LoopOnce, loops);
+              if(isUp){
+                loops++;
+                action.setLoop(THREE.LoopOnce, loops);
+                action.timeScale = -1;
+                action.paused = false;
+              }
+              else{action.timeScale = 1;}
+              rootObject.alreadyUp = !rootObject.alreadyUp;
+              action.play();
+            }
+
+            //takes a group of a building and applies an animation to each floor
+            //isUp determines direaction of animation, true is forward, false is reverse, putting the child.alreadyUp makes it ping pong
+            function animateFloors(buildingGroup, isUp){
+              buildingGroup.children.forEach(function(child){
+
+                //plays animations by the name of the floors, each floor is named after its animation
+                if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
+                  playFloorAnimation(child, isUp, child.name.slice(0, (child.name.length - 3)));
+                  console.log("working");
+                }
+                else{child.alreadyUp = !child.alreadyUp;}
+              });
+            }
+
+            function stopstart (event)
+            {
+              if (!lfclick)
+              {
+                controls.enableRotate = false;
+                controls.enablePan = true;
+                console.log("a");
+              }
+              else
+              {
+                controls.enableRotate = true;
+                //controls.enablePan = false;
+                //console.log("b");
+              }
+            }
+
+            function onmesh (event)
+            {
+              var x, y;
+
+              if (event.button == 2)
+              {
+                lfclick = false;
+              }
+              else
+              {
+                lfclick = true;
+              }
+
+              if ( event.changedTouches )
+              {
+                x = event.changedTouches[ 0 ].pageX;
+                y = event.changedTouches[ 0 ].pageY;
+              }
+              else
+              {
+                x = event.clientX;
+                y = event.clientY;
+              }
+              mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
+              mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
+
+              raycaster.setFromCamera( mouse, camera );
+              var intersects = raycaster.intersectObjects( [ group ], true );
+              if ( intersects.length > 0 )
+              {
+                started = true;
+              }
+              else
+              {
+                started = false;
+              }
+
+              // put opennav where
+
+            }
+
+            //
+
+            function onTouchMove( event )
+            {
+              var x, y;
+              if ( event.changedTouches )
+              {
+                x = event.changedTouches[ 0 ].pageX;
+                y = event.changedTouches[ 0 ].pageY;
+              }
+              else
+              {
+                x = event.clientX;
+                y = event.clientY;
+              }
+              mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
+              mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
+              checkIntersection();
+            }
+
+            //
+            function addSelectedObject( object )
+            {
+              selectedObjects = [];
+              selectedObjects.push( object );
+            }
+
+            //
+            function checkIntersection()
+            {
+              raycaster.setFromCamera( mouse, camera );
+              var intersects = raycaster.intersectObjects( [ group ], true );
+              if ( intersects.length > 0 )
+              {
+                outlinePass.selectedObjects = [];
+
+                var selectedObject = intersects[ 0 ].object;
+                console.log(selectedObject.parent);
+                animateFloors(selectedObject.parent, selectedObject.alreadyUp);
+                if(selectedObject.alreadyUp){
+                  selectedObject.parent.parent.children[1].children[0].visible = true;
+                  playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+                }
+                else{
+                  selectedObject.parent.parent.children[1].children[0].visible = false;
+                  stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+                }
+                //camera.position.copy(selectedObject.position);
+                //controls.target = selectedObject;
+                addSelectedObject( selectedObject );
+                if (clicked && started || prevobj != selectedObject)
+                {
+                  outlinePass.selectedObjects = selectedObjects;
+                  openNav();
+                }
+                else
+                {
+                  outlinePass.selectedObjects = [];
+                  closeNav();
+                }
+                clicked = !clicked;
+              }
+              else
+              {
+                if (!started)
+                {
+                  outlinePass.selectedObjects = [];
+                }
+              }
+              prevobj = selectedObject;
+            }
+
+            var width = divWidth;
+            var height = divHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize( width, height );
+            composer.setSize( width, height );
+            renderer.domElement.style.width = width + 'px';
+            renderer.domElement.style.height = height + 'px';
+          }
+
+          // resize the screen correctly
+          var i = 0;
+          function onWindowResize()
+          {
+            divWidth = window.innerWidth;// / 2;
+            divHeight = window.innerHeight; // 2;
+            var width = divWidth;
+            var height = divHeight;
+            var w2 = 0;//200/7;//= xx;
+            var h2 = 0;//= yy;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize( width, height );
+            composer.setSize( width, height );
+            renderer.domElement.style.width = width + 'px';
+            renderer.domElement.style.height = height + 'px';
+            //renderer.domElement.style.offsetLeft = w2 + 'px';
+            //renderer.domElement.style.offsetTop = h2 + 'px';
+            effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
+
+
+            var css = '#canvas {background-color: #f0f; margin-left: ' + w2.toString() + 'vw; width: 0px; height: 0px; padding: 0px; margin-top: ' + h2.toString() + 'vw; position: static;}',
+            head = document.head || document.getElementsByTagName('head')[0],
+            style = document.createElement('style');
+
+            var y;
+
+
+            style.type = 'text/css';
+            if (style.styleSheet)
+            {
+              // This is required for IE8 and below.
+              style.styleSheet.cssText = css;
+            }
+            else
+            {
+              t = document.createTextNode(css);
+              style.appendChild(t);
+
+              if (style.childNodes.length <1)
+              {
+                //y = style.childNode[0];
+                style.removeChild(style.childNode[style.childNodes.length - 1]);
+                head.style.childNodes[0].kill();
+                head.style.childNodes[i].kill();
+                style.removeChild(style.childNode[0]);
+                head.style.childNodes[i-1].kill();
+                style.removeChild(style.childNode[i]);
+                style.removeChild(style.childNode[i-1]);
+                head.style.childNodes[style.childNodes.length - 1].kill();
+                //console.log(style.childNodes.length);
+
+                i++;
+              }
+
+              console.log(style.childNodes.length);
+
+              //head.style.textContent = css;
+            }
+
+            head.appendChild(style);
+
+            if (head.childNodes.length > 1)
+            {
+              //y = style.childNodes[0];
+              //head.removeChild(y);
+            }
+          }
+
+          // variables needed before draw loop
+          var panx = 1;
+          var panz = 1;
+
+          // draw loop
+          function animate()
+          {
+            requestAnimationFrame( animate );
+            //stats.begin();
+            var timer = performance.now();
+
+            if (controls.target.x > panx) {
+                controls.target.x = panx;
+            }
+            if (controls.target.x < -1 * panx) {
+                controls.target.x = -1 * panx;
+            }
+            if (controls.target.z > panz) {
+                controls.target.z = panz;
+            }
+            if (controls.target.z < -1 * panz) {
+                controls.target.z = -1 * panz;
+            }
+            controls.target.y = 0;
+
+            controls.update();
+            composer.render();
+            //stats.end();
+            mixer.update(clock.getDelta());
+          }
+
+        </script>
+
+    </body>
 
 </html>
