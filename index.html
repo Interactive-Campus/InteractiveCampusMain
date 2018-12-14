@@ -248,10 +248,21 @@ for (i = 0; i < dropdown.length; i++) {
         //add the group of all models into the scene
         scene.add( group );
 
-        // add and position model
 
         /*
         *Model Loaders
+        */
+
+
+
+        /*
+        Main function to load in the school model.
+        path takes a string of the file path of the model (GLTF format)
+        position takes a Vector3 and sets the the model centered to that position
+        modelGroup takes a Group and makes it the top of the tree
+
+        Each mesh in the model is added to a group based on the scene that it is in
+        each scene is then added to modelGroup
         */
 
         var loader = new THREE.GLTFLoader();
@@ -261,37 +272,32 @@ for (i = 0; i < dropdown.length; i++) {
           loader.load( path, function ( gltf )
           {
             clips = gltf.animations;
-            gltf.animations.forEach(function(anim){console.log(anim.name)});
-            //for each scene in the array of scene
+
             gltf.scenes.forEach(function (curScene){
-              //adds the objects to a new group
               var sceneGroup = new THREE.Group();
               var sceneLength = curScene.children.length;
               for(var i = 0; i < sceneLength; i++){
+                //add an object to describe if it is already up in animation
+                //add any other variables that need to be tied to each room
                 curScene.children.userData = {alreadyUp:false};
-                sceneGroup.add(curScene.children[0]);
               }
               sceneGroup.position.copy(position);
-              //for each object in the scene
               sceneGroup.children.forEach( function (child){
                 if (child instanceof THREE.Mesh){
-                  if (child.geometry.isBufferGeometry){
-                    console.log(child.name);
-                    if(child.name == "Cylinder001"){
-                      child.visible = false;
-                      child.material = new THREE.MeshBasicMaterial({color: 0xe01638});
-                    }
-                    child.receiveShadow = true;
-                    child.castShadow = true;
-                  }
+                  child.receiveShadow = true;
+                  child.castShadow = true;
                 }
               });
               modelGroup.add(sceneGroup);
+              modelGroup.position.copy(position);
             });
           });
         }
+
         loadGltf('models/Nangaku6.gltf', new THREE.Vector3(2,0,-2), group);
-        // add and position floor
+
+        //Ground Plane
+
         var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
         var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -301,12 +307,17 @@ for (i = 0; i < dropdown.length; i++) {
         floorMesh.castShadow = true;
         scene.add(floorMesh);
 
-
+        /*
+        *Postprocessing
+        */
 
         // initialize postprocessing
         composer = new THREE.EffectComposer( renderer );
+        //render pass renders scene
         var renderPass = new THREE.RenderPass( scene, camera );
         composer.addPass( renderPass );
+
+        //outline pass add the outline to rooms
         outlinePass = new THREE.OutlinePass( new THREE.Vector2( divWidth, divHeight ), scene, camera );
         composer.addPass( outlinePass );
 
@@ -316,24 +327,6 @@ for (i = 0; i < dropdown.length; i++) {
         effectFXAA.renderToScreen = true;
         composer.addPass( effectFXAA );
 
-        // initialize event listeners
-        window.addEventListener( 'resize', onWindowResize, false );
-        window.addEventListener( 'mouseup', onTouchMove );
-        window.addEventListener( 'touchend', onTouchMove );
-        window.addEventListener( 'touchstart', onmesh);
-        window.addEventListener( 'mousedown', onmesh);
-        window.addEventListener( 'mousemove', stopstart);
-
-
-
-
-
-        // event triggered functions
-
-        var clicked = true;
-        var started = false;
-        var lfclick = true;
-        var prevobj = null;
 
         /*
         * Animation
@@ -381,6 +374,29 @@ for (i = 0; i < dropdown.length; i++) {
           });
         }
 
+
+        /*
+        *Event Listeners
+        */
+
+        // initialize event listeners
+        window.addEventListener( 'resize', onWindowResize, false );
+        window.addEventListener( 'mouseup', onTouchMove );
+        window.addEventListener( 'touchend', onTouchMove );
+        window.addEventListener( 'touchstart', onmesh);
+        window.addEventListener( 'mousedown', onmesh);
+        window.addEventListener( 'mousemove', stopstart);
+
+
+
+
+
+        // event triggered functions
+
+        var clicked = true;
+        var started = false;
+        var lfclick = true;
+        var prevobj = null;
 
         function stopstart (event)
         {
@@ -590,10 +606,12 @@ for (i = 0; i < dropdown.length; i++) {
         }
       }
 
-      // draw loop
-
       var panx = 1;
       var panz = 1;
+
+      /*
+      *Main Draw Loop
+      */
 
       function animate()
       {
