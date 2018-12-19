@@ -230,8 +230,6 @@
         light.shadow.camera.fov = 90;
         scene.add(light);
 
-
-
         //add the group of all models into the scene
         scene.add( group );
 
@@ -240,12 +238,12 @@
         */
 
         /*
-        Main function to load in the school model.
-        path takes a string of the file path of the model (GLTF format)
-        position takes a Vector3 and sets the the model centered to that position
-        modelGroup takes a Group and makes it the top of the tree
-        Each mesh in the model is added to a group based on the scene that it is in
-        each scene is then added to modelGroup
+        *Main function to load in the school model.
+        *path takes a string of the file path of the model (GLTF format)
+        *position takes a Vector3 and sets the the model centered to that position
+        *modelGroup takes a Group and makes it the top of the tree
+        *Each mesh in the model is added to a group based on the scene that it is in
+        *each scene is then added to modelGroup
         */
         var loader = new THREE.GLTFLoader();
 
@@ -260,7 +258,7 @@
               *Each mesh has a prefix indicating the building it is a part of and the floor
               *e.g. N2 means Nangaku second floor
               *Each room is named after its room number e.g. N203 or N204
-              *Each non room mesh is named with its prf
+              *Each non room mesh is named with its prefix and followed by part
               */
               for(var i = 0; i < sceneLength; i++){
                 //tests if the mesh is a room or just an aesthetic part
@@ -349,7 +347,7 @@
         function playFloorAnimation( rootObject, isUp, clipName ){
 
           var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
-          
+
           action.clampWhenFinished = true;
           action.setLoop(THREE.LoopOnce);
 
@@ -368,24 +366,59 @@
           action.timeScale = -1;
           action.clampWhenFinished = true;
           action.paused = false;
+          action.play();
+          rootObject.alreadyUp =  false;
+          action.setLoop(THREE.LoopOnce);
         }
 
         function raiseFloor(rootObject, clipName){
           var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
           action.timeScale = 1;
+          rootObject.alreadyUp =  true;
+          action.setLoop(THREE.LoopOnce);
           action.clampWhenFinished = true;
+          action.play();
           action.paused = false;
         }
 
-        function animateFloors(buildingGroup, isUp){
-          buildingGroup.children.forEach(function(child){
-            //plays animations by the name of the floors, each floor's suffix has a matching animation
-            if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
-              playFloorAnimation(child, isUp, child.name.slice(0, (child.name.length - 3)));
-            }
-            else{child.alreadyUp = !child.alreadyUp;}
+        /*
+        *Animates all floors in the building Group
+        *putting 'pingPong' for animation mode toggles the animation Up and down
+        * 'lower' only lowers the floors if they are up
+        *'raise' raises the floors if they are dowb.
+        */
 
-          });
+        function animateFloors(selectedRoom, animationMode){
+          if(animationMode  == 'pingPong'){
+            selectedRoom.parent.children.forEach(function(child){
+              //plays animations by the name of the floors, each floor's suffix has a matching animation
+              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
+                playFloorAnimation(child, child.alreadyUp, child.name.slice(0, (child.name.length - 3)));
+              }
+              else{child.alreadyUp = !child.alreadyUp;}
+            });
+          }
+
+          else if(animationMode == 'lower'){
+            selectedRoom.parent.children.forEach(function(child){
+              //plays animations by the name of the floors, each floor's suffix has a matching animation
+              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
+                lowerFloor(child, child.name.slice(0, (child.name.length - 3)));
+              }
+              else {child.alreadyUp =  false}
+            });
+          }
+
+          else if (animationMode == 'raise') {
+            selectedRoom.parent.children.forEach(function(child){
+              //plays animations by the name of the floors, each floor's suffix has a matching animation
+              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
+                raiseFloor(child, child.name.slice(0, (child.name.length - 3)));
+              }
+              else {child.alreadyUp =  true}
+            });
+          }
+          else {console.log("Invalid Input, use pingPong, raise, or lower")}
         }
 
         /////////////////////////////////
@@ -487,7 +520,7 @@
 
             var selectedObject = intersects[ 0 ].object;
 
-            animateFloors(selectedObject.parent, selectedObject.alreadyUp);
+            animateFloors(selectedObject.parent, 'raise');
 
             addSelectedObject( selectedObject );
             if (clicked && started || prevobj != selectedObject)
