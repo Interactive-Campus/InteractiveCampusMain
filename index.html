@@ -380,7 +380,7 @@
               }
             }
 
-            //
+            // checks intersection when click up
             function onTouchMove( event )
             {
               var x, y;
@@ -399,14 +399,14 @@
               checkIntersection();
             }
 
-            //
+            // adds object to outline list
             function addSelectedObject( object )
             {
               selectedObjects = [];
               selectedObjects.push( object );
             }
 
-            //
+            // checks intersection and outlines/play animation accordingly
             function checkIntersection()
             {
               raycaster.setFromCamera( mouse, camera );
@@ -591,6 +591,7 @@
             //stats.begin();
             var timer = performance.now();
 
+						// weak attempt at pan limiting
             if (controls.target.x > panx) {
                 controls.target.x = panx;
             }
