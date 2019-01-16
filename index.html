@@ -102,37 +102,6 @@
       <a href="#">Directions</a>
     </div>
 
-
-    <script>
-    function openNav() {
-        document.getElementById("mySidenav").style.width = "250px";
-        document.getElementById("main").style.marginRight = "250px";
-    }
-    function closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        document.getElementById("main").style.marginLRight= "0";
-    }
-    </script>
-
-    <script>
-
-    // create dropdown within sidebar and add listener for toggle
-    var dropdown = document.getElementsByClassName("dropdown-btn");
-    var i;
-    for (i = 0; i < dropdown.length; i++) {
-      dropdown[i].addEventListener("click", function() {
-        this.classList.toggle("active");
-        var dropdownContent = this.nextElementSibling;
-        if (dropdownContent.style.display === "block") {
-          dropdownContent.style.display = "none";
-        } else {
-          dropdownContent.style.display = "block";
-        }
-      });
-    }
-
-    </script>
-
       <script src="js/three.js"></script>
       <script src="js/controls/OrbitControls.js"></script>
       <script src="js/loaders/GLTFLoader.js"></script>
@@ -150,6 +119,28 @@
         // https://stackoverflow.com/questions/13542175/three-js-ray-intersect-fails-by-adding-div/13544277#13544277
 
         // heap clears frequently, nodes do not
+
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+
+        // create dropdown within sidebar and add listener for toggle
+        var dropdown = document.getElementsByClassName("dropdown-btn");
+        var i;
+        for (i = 0; i < dropdown.length; i++) {
+          dropdown[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var dropdownContent = this.nextElementSibling;
+            if (dropdownContent.style.display === "block") {
+              dropdownContent.style.display = "none";
+            } else {
+              dropdownContent.style.display = "block";
+            }
+          });
+        }
 
         // use this function to interact with JavaScript from sidebar interaction
         const changeText = () => {
@@ -272,8 +263,6 @@
             floorMesh.castShadow = true;
             scene.add(floorMesh);
 
-
-
             // initialize postprocessing
             composer = new THREE.EffectComposer( renderer );
             var renderPass = new THREE.RenderPass( scene, camera );
@@ -287,30 +276,10 @@
             effectFXAA.renderToScreen = true;
             composer.addPass( effectFXAA );
 
-            // initialize event listeners
-            window.addEventListener( 'resize', onWindowResize, false );
-            window.addEventListener( 'mouseup', onTouchMove );
-            window.addEventListener( 'touchend', onTouchMove );
-            window.addEventListener( 'touchstart', onmesh);
-            window.addEventListener( 'mousedown', onmesh);
-            window.addEventListener( 'mousemove', stopstart);
-
-            // variables for listner functions
-            var clicked = true;
-            var started = false;
-            var lfclick = true;
-            var prevobj = null;
-
-
-<<<<<<< Updated upstream
+          }
 
             /////////////////////////////////
-            //  animation shets  //
-=======
-            
-            /////////////////////////////////
-            //  event triggered functions  //
->>>>>>> Stashed changes
+            //     animation functions     //
             /////////////////////////////////
 
             function playAnimation(rootObject, clipName){
@@ -356,34 +325,31 @@
               });
             }
 
-            function stopstart (event)
-            {
-              if (!lfclick)
-              {
-                controls.enableRotate = false;
-                controls.enablePan = true;
-                console.log("a");
-              }
-              else
-              {
-                controls.enableRotate = true;
-                //controls.enablePan = false;
-                //console.log("b");
-              }
-            }
+            /////////////////////////////////
+            /////////////////////////////////
+            /////////////////////////////////
 
+            // initialize event listeners
+            window.addEventListener( 'resize', onWindowResize, false );
+            window.addEventListener( 'mouseup', onTouchMove );
+            window.addEventListener( 'touchend', onTouchMove );
+            window.addEventListener( 'touchstart', onmesh);
+            window.addEventListener( 'mousedown', onmesh);
+
+            // variables for listner functions
+            var clicked = true;
+            var started = false;
+            var startobj = null;
+            var prevobj = null;
+
+            /////////////////////////////////
+            //  event triggered functions  //
+            /////////////////////////////////
+
+            // checks if mouse/touch start is on a mesh
             function onmesh (event)
             {
               var x, y;
-
-              if (event.button == 2)
-              {
-                lfclick = false;
-              }
-              else
-              {
-                lfclick = true;
-              }
 
               if ( event.changedTouches )
               {
@@ -395,6 +361,7 @@
                 x = event.clientX;
                 y = event.clientY;
               }
+
               mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
               mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
 
@@ -403,18 +370,17 @@
               if ( intersects.length > 0 )
               {
                 started = true;
+                startobj = intersects[0].object;
+                //clicked = !clicked;
               }
               else
               {
                 started = false;
+                startobj = null;
               }
-
-              // put opennav where
-
             }
 
             //
-
             function onTouchMove( event )
             {
               var x, y;
@@ -447,42 +413,91 @@
               var intersects = raycaster.intersectObjects( [ group ], true );
               if ( intersects.length > 0 )
               {
-                outlinePass.selectedObjects = [];
+                //outlinePass.selectedObjects = [];
 
                 var selectedObject = intersects[ 0 ].object;
                 console.log(selectedObject.parent);
-                animateFloors(selectedObject.parent, selectedObject.alreadyUp);
-                if(selectedObject.alreadyUp){
-                  selectedObject.parent.parent.children[1].children[0].visible = true;
-                  playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
-                }
-                else{
-                  selectedObject.parent.parent.children[1].children[0].visible = false;
-                  stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
-                }
-                //camera.position.copy(selectedObject.position);
-                //controls.target = selectedObject;
-                addSelectedObject( selectedObject );
-                if (clicked && started || prevobj != selectedObject)
+
+                addSelectedObject(selectedObject);
+                if (started)
                 {
-                  outlinePass.selectedObjects = selectedObjects;
-                  openNav();
+                  if (startobj == selectedObject)
+                  {
+                    if (clicked)
+                    {
+                      if (prevobj = selectedObject)
+                      {
+                        outlinePass.selectedObjects = selectedObjects;
+                        openNav();
+                        animateFloors(selectedObject.parent, false);
+                        if(selectedObject.alreadyUp)
+                        {
+                          selectedObject.parent.parent.children[1].children[0].visible = true;
+                          playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+                        }
+                        else
+                        {
+                          selectedObject.parent.parent.children[1].children[0].visible = false;
+                          stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+                        }
+                        clicked = true;
+                      }
+                      else
+                      {
+                        outlinePass.selectedObjects = [];
+                        closeNav();
+                        animateFloors(selectedObject.parent, true);
+                        if(selectedObject.alreadyUp)
+                        {
+                          selectedObject.parent.parent.children[1].children[0].visible = true;
+                          playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+                        }
+                        else
+                        {
+                          selectedObject.parent.parent.children[1].children[0].visible = false;
+                          stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+                        }
+                        clicked = false;
+                      }
+                    }
+                    else
+                    {
+                      outlinePass.selectedObjects = selectedObjects;
+                      openNav();
+                      animateFloors(selectedObject.parent, false);
+                      if(selectedObject.alreadyUp)
+                      {
+                        selectedObject.parent.parent.children[1].children[0].visible = true;
+                        playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+                      }
+                      else
+                      {
+                        selectedObject.parent.parent.children[1].children[0].visible = false;
+                        stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+                      }
+                      clicked = true;
+                    }
+                  }
                 }
                 else
                 {
                   outlinePass.selectedObjects = [];
                   closeNav();
+                  animateFloors(selectedObject.parent, true);
+                  if(selectedObject.alreadyUp)
+                  {
+                    selectedObject.parent.parent.children[1].children[0].visible = true;
+                    playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+                  }
+                  else
+                  {
+                    selectedObject.parent.parent.children[1].children[0].visible = false;
+                    stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+                  }
+                  clicked = false;
                 }
-                clicked = !clicked;
-              }
-              else
-              {
-                if (!started)
-                {
-                  outlinePass.selectedObjects = [];
-                }
-              }
               prevobj = selectedObject;
+
             }
 
             var width = divWidth;
@@ -568,6 +583,7 @@
           var panx = 1;
           var panz = 1;
 
+
           // draw loop
           function animate()
           {
@@ -593,6 +609,8 @@
             composer.render();
             //stats.end();
             mixer.update(clock.getDelta());
+
+            scene.background = new THREE.Color(0xc0d9ff);
           }
 
         </script>
