@@ -103,6 +103,7 @@
     </div>
 
       <script src="js/three.js"></script>
+      <script src="js/curve.js"></script>
       <script src="js/controls/OrbitControls.js"></script>
       <script src="js/loaders/GLTFLoader.js"></script>
       <script src="js/shaders/CopyShader.js"></script>
@@ -163,6 +164,26 @@
           var divWidth = window.innerWidth;
           var divHeight = window.innerHeight;
 
+          var geometr = new THREE.SphereGeometry( 1, 32, 32 );
+          var materia = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+          var spher = new THREE.Mesh( geometr, materia );
+
+          var curve = new THREE.CatmullRomCurve3( [
+            new THREE.Vector3( -10, 0 , -10),
+            new THREE.Vector3( -10, 0 , -5),
+            new THREE.Vector3( -5, 5 , 0),
+            new THREE.Vector3( 0, 0 , 5),
+            new THREE.Vector3( 5, -5 , 10),
+            new THREE.Vector3( 10, 0 , 5)
+          ] );
+
+          var points = curve.getPoints( 50 );
+          var gege = new THREE.BufferGeometry().setFromPoints( points );
+
+          var material = new THREE.LineBasicMaterial( { color : 0x00ff00 } );
+
+          // Create the final object to add to the scene
+          var splineObject = new THREE.Line( gege, material );
 
           init();
           onWindowResize();
@@ -170,6 +191,8 @@
 
           function init()
           {
+
+
             // create container
             container = document.getElementById( 'canvas' );
             document.body.appendChild( container );
@@ -196,9 +219,9 @@
 
             // initialize and customize controls
             controls = new THREE.OrbitControls( camera, renderer.domElement );
-            controls.minDistance = 2;
-            controls.maxDistance = 5;
-            controls.maxPolarAngle = 11*Math.PI/24;
+            //controls.minDistance = 2;
+            //controls.maxDistance = 5;
+            //controls.maxPolarAngle = 11*Math.PI/24;
             controls.enablePan = true;
             controls.enableDamping = true;
             controls.dampingFactor = 0.25;
@@ -508,6 +531,8 @@
             composer.setSize( width, height );
             renderer.domElement.style.width = width + 'px';
             renderer.domElement.style.height = height + 'px';
+
+            scene.add( spher );
           }
 
           // resize the screen correctly
@@ -577,12 +602,18 @@
               //y = style.childNodes[0];
               //head.removeChild(y);
             }
+
+
+
+
+            scene.add(splineObject);
           }
 
           // variables needed before draw loop
           var panx = 1;
           var panz = 1;
-
+          var i  = 0.0;
+          var spor = 1;
 
           // draw loop
           function animate()
@@ -606,12 +637,34 @@
             }
             controls.target.y = 0;
 
+            if (i >= 1)
+            {
+              i = 1;
+              spor = -1;
+            }
+            i = (i + (spor * .01));
+            if (i <= 0)
+            {
+              i = 0;
+              spor = 1;
+            }
+
+            // console.log(i);
+
+            // spline movement
+            spher.position.x = curve.getPoint(i).x;
+            spher.position.y = curve.getPoint(i).y;
+            spher.position.z = curve.getPoint(i).z;
+
+
             controls.update();
             composer.render();
             //stats.end();
             mixer.update(clock.getDelta());
 
             scene.background = new THREE.Color(0xc0d9ff);
+
+
           }
 
         </script>
