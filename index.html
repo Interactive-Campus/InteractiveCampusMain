@@ -114,6 +114,7 @@
       <script src="js/postprocessing/OutlinePass.js"></script>
       <script src="js/libs/stats.min.js"></script>
       <script src='js/libs/dat.gui.min.js'></script>
+      <script src="js/loaders/OBJLoader.js"></script>
 
       <div id = 'canvas'>
         <script>
@@ -163,10 +164,12 @@
           var clock = new THREE.Clock(true);
           var divWidth = window.innerWidth;
           var divHeight = window.innerHeight;
+          var objloader = new THREE.OBJLoader();
 
           var geometr = new THREE.SphereGeometry( 1, 32, 32 );
           var materia = new THREE.MeshBasicMaterial( {color: 0xffff00} );
           var spher = new THREE.Mesh( geometr, materia );
+          var nucurve = new THREE.CatmullRomCurve3;
 
           var curve = new THREE.CatmullRomCurve3( [
             new THREE.Vector3( -10, 0 , -10),
@@ -270,6 +273,29 @@
                 });
               });
             }
+
+            objloader.load(
+          	// resource URL
+          	'models/sample_curve.obj',
+          	// called when resource is loaded
+          	function ( object ) {
+              nucurve = object;
+          		scene.add( object );
+
+          	},
+          	// called when loading is in progresses
+          	function ( xhr ) {
+
+          		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+          	},
+          	// called when loading has errors
+          	function ( error ) {
+
+          		console.log( 'An error happened' );
+
+          	}
+          );
 
             // add Nangaku model
             loadGltf('models/Nangaku6.gltf', new THREE.Vector3(2,0,-2), group);
