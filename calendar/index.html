@@ -27,9 +27,9 @@
 
       var authorizeButton = document.getElementById('authorize_button');
       var signoutButton = document.getElementById('signout_button');
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', "https://www.googleapis.com/calendar/v3/calendars/acg4tehdnkv29rfpasrt7eo1kb81qv0l%40import.calendar.google.com/events?timeMax=2019-01-17T23%3A59%3A59Z&key={AIzaSyAbfHCvJAxKTcbFHJBtLjTdbiwKoq93vmc)", true);
-      xhr.send();
+      //var xhr = new XMLHttpRequest();
+      //xhr.open('GET', "https://www.googleapis.com/calendar/v3/calendars/acg4tehdnkv29rfpasrt7eo1kb81qv0l%40import.calendar.google.com/events?timeMax=2019-01-17T23%3A59%3A59Z&key={AIzaSyAbfHCvJAxKTcbFHJBtLjTdbiwKoq93vmc)", true);
+      //xhr.send();
       /**
        *  On load, called to load the auth2 library and API client library.
        */
@@ -110,7 +110,7 @@
         gapi.client.calendar.events.list({
           'calendarId': 'acg4tehdnkv29rfpasrt7eo1kb81qv0l@import.calendar.google.com',
           'timeMin': (new Date()).toISOString(),
-          'timeMax': (new Date())
+      //    'timeMax': (new Date())
           'showDeleted': false,
           'singleEvents': true,
           'maxResults': 100,
@@ -120,13 +120,27 @@
           appendPre('Upcoming events:');
 
           if (events.length > 0) {
+            // if there are events on calendar execute
             for (i = 0; i < events.length; i++) {
+              // run through every event in list
               var event = events[i];
-              var when = event.start.dateTime;
-              if (!when) {
-                when = event.start.date;
+              // "event" variable is the current event in the array
+              if (!event.location) {
+                // if the event has no location, delete array portion
+                event.summary = '';
+                event.start.dateTime = '';
+                event.location = '';
               }
-              appendPre(event.summary + ' (' + when + ')')
+              else {
+                // if the event has a location, keep
+                var when = event.start.dateTime;
+                if (!when) {
+                  // if there is no start time, put date for all day event
+                  when = event.start.date;
+                }
+                appendPre(event.summary + ' (' + when + ')' + ' (' + event.location + ')');
+                // print the event
+              }
             }
           } else {
             appendPre('No upcoming events found.');
