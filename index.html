@@ -152,341 +152,409 @@
         // heap clears frequently, nodes do not
 
         // use this function to interact with JavaScript from sidebar interaction
-        const changeText = () => {
+        const changeText = () => {}
+
+      // declaring big boy variables
+      var t;
+      var container, stats;
+      var camera, scene, renderer, controls;
+      var raycaster = new THREE.Raycaster();
+      var mouse = new THREE.Vector2();
+      var selectedObjects = [];
+      var composer, effectFXAA, outlinePass;
+      var group = new THREE.Group();
+      var obj3d = new THREE.Object3D();
+      var clips;
+      var mixer = new THREE.AnimationMixer();
+      var clock = new THREE.Clock(true);
+      var divWidth = window.innerWidth * 3 / 4;// / 2;//500;
+      var divHeight = window.innerHeight * 5 / 7// / 2;//500;
+      var xd = 1;
+      var yd = 1;
+      var xx = 0;
+      var yy = 0;
+      init();
+      onWindowResize();
+      animate();
+
+      function init()
+      {
+        //startClosed();
+
+        container = document.getElementById( 'canvas' );
+        document.body.appendChild( container );
+
+        renderer = new THREE.WebGLRenderer({ alpha: true });
+        container.appendChild( renderer.domElement );
+
+
+        // set to cutout size in the future
+        var width = divWidth;
+        var height = divHeight;
+
+        // enable shadows
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.BasicShadowMap;
+
+        // initialize scene
+        scene = new THREE.Scene();
+
+
+        // initialize and position camera
+         camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
+        camera.position.set( 0, 0, 8 );
+
+        // initialize and customize controls
+        controls = new THREE.OrbitControls( camera, renderer.domElement );
+        controls.minDistance = 2;
+        controls.maxDistance = 5;
+        controls.maxPolarAngle = 11*Math.PI/24;
+        controls.enablePan = true;
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
+        controls.target.x =  1;
+        controls.enableZoom = true;
+
+        // add ambient light
+        scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
+
+        var light = new THREE.DirectionalLight(0xffffff,1);
+        light.position.set(0, 500, 200);
+        light.target.position.set(0, 0, 0);
+        light.shadow.mapSize.width = 1024*4;
+        light.shadow.mapSize.height = 1024*4;
+        light.castShadow = true;
+
+        light.shadow.camera.near = 0;
+        light.shadow.camera.far = 4000;
+        light.shadow.camera.fov = 90;
+        scene.add(light);
+
+        //add the group of all models into the scene
+        scene.add( group );
+
+        /*
+        *Model Loaders
+        */
+
+        /*
+        *Main function to load in the school model.
+        *path takes a string of the file path of the model (GLTF format)
+        *position takes a Vector3 and sets the the model centered to that position
+        *modelGroup takes a Group and makes it the top of the tree
+        *Each mesh in the model is added to a group based on the scene that it is in
+        *each scene is then added to modelGroup
+        */
+        var loader = new THREE.GLTFLoader();
+
+        function loadCampus(path, position, modelGroup){
+          loader.load( path, function ( gltf )
+          {
+            clips = gltf.animations;
+            gltf.scenes.forEach(function (curScene){
+              var sceneGroup = new THREE.Group();
+              var sceneLength = curScene.children.length;
+
+              /*
+              *Each mesh has a prefix indicating the building it is a part of and the floor
+              *e.g. N2 means Nangaku second floor
+              *Each room is named after its room number e.g. N203 or N204
+              *Each non room mesh is named with its prefix and followed by part
+              */
+              for(var i = 0; i < sceneLength; i++){
+                //tests if the mesh is a room or just an aesthetic part
+                if(curScene.children[0].name.slice(3, -3) != 'part'){
+                  curScene.children[0].userData = {alreadyUp:false, room:true};
+                  //Adds custom object containing if it is a selectable room and if it is already animated
+                }
+                else {curScene.children[0].userData = {alreadyUp:false, room:false};}
+
+                sceneGroup.add(curScene.children[0]);
+              }
+              sceneGroup.position.copy(position);
+              sceneGroup.children.forEach( function (child){
+                if (child instanceof THREE.Mesh){
+                  child.receiveShadow = true;
+                  child.castShadow = true;
+                }
+              });
+              modelGroup.add(sceneGroup);
+              modelGroup.position.copy(position);
+            });
+          });
+        }
+
+        // add Nangaku model
+        loadCampus('models/Nangaku6.gltf', new THREE.Vector3(1,0,-1), group);
+
+        // add and position floor
+        var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
+        var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
+        var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
+        var floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
+        var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+        floorMesh.rotation.x -= Math.PI * 0.5;
+        floorMesh.position.y = 0;
+        floorMesh.receiveShadow = true;
+        floorMesh.castShadow = true;
+        scene.add(floorMesh);
+
+
+
+        // initialize postprocessing
+        composer = new THREE.EffectComposer( renderer );
+        var renderPass = new THREE.RenderPass( scene, camera );
+        composer.addPass( renderPass );
+        outlinePass = new THREE.OutlinePass( new THREE.Vector2( divWidth, divHeight ), scene, camera );
+        composer.addPass( outlinePass );
+
+        // initialize antialiasing
+        effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
+        effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
+        effectFXAA.renderToScreen = true;
+        composer.addPass( effectFXAA );
+
+        // initialize event listeners
+        window.addEventListener( 'resize', onWindowResize, false );
+        window.addEventListener( 'mouseup', onTouchMove );
+        window.addEventListener( 'touchend', onTouchMove );
+        window.addEventListener( 'touchstart', onmesh);
+        window.addEventListener( 'mousedown', onmesh);
+        window.addEventListener( 'mousemove', stopstart);
+
+        // variables for listner functions
+        var clicked = true;
+        var started = false;
+        var lfclick = true;
+        var prevobj = null;
+
+
+
+        /*
+        * Animation Functions
+        */
+
+        function playAnimation(rootObject, clipName){
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
+          action.play();
+        }
+
+        function stopAnimation(rootObject, clipName){
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
+          action.stop();
+        }
+
+        //plays animation on a object forwards or backwards stopping on last frame
+        function playFloorAnimation( rootObject, isUp, clipName ){
+
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
+
+          action.clampWhenFinished = true;
+          action.setLoop(THREE.LoopOnce);
+
+          if(isUp){
+            action.timeScale = -1;
+          }
+
+          else{action.timeScale = 1;}
+          rootObject.alreadyUp = !rootObject.alreadyUp;
+          action.play();
+          action.paused = false;
+        }
+
+        function lowerFloor(rootObject, clipName){
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
+          action.timeScale = -1;
+          action.clampWhenFinished = true;
+          action.paused = false;
+          action.play();
+          rootObject.alreadyUp =  false;
+          action.setLoop(THREE.LoopOnce);
+        }
+
+        function raiseFloor(rootObject, clipName){
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
+          action.timeScale = 1;
+          rootObject.alreadyUp =  true;
+          action.setLoop(THREE.LoopOnce);
+          action.clampWhenFinished = true;
+          action.play();
+          action.paused = false;
+        }
+
+        /*
+        *Animates all floors in the building Group
+        *putting 'pingPong' for animation mode toggles the animation Up and down
+        * 'lower' only lowers the floors if they are up
+        *'raise' raises the floors if they are dowb.
+        */
+
+        function animateFloors(selectedRoom, animationMode){
+          if(animationMode  == 'PingPong'){
+            selectedRoom.parent.children.forEach(function(child){
+              //plays animations by the name of the floors, each floor's suffix has a matching animation
+              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -2)) != null){
+                playFloorAnimation(child, child.alreadyUp, child.name.slice(0, -2));
+              }
+              else{child.alreadyUp = !child.alreadyUp;}
+            });
+          }
+
+          else if(animationMode == 'Lower'){
+            selectedRoom.parent.children.forEach(function(child){
+              //plays animations by the name of the floors, each floor's suffix has a matching animation
+              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
+                lowerFloor(child, child.name.slice(0, (child.name.length - 3)));
+              }
+              else {child.alreadyUp =  false}
+            });
+          }
+
+          else if (animationMode == 'Raise') {
+            selectedRoom.parent.children.forEach(function(child){
+              //plays animations by the name of the floors, each floor's suffix has a matching animation e.g. Nangaku second floor is N2
+              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
+                raiseFloor(child, child.name.slice(0, (child.name.length - 3)));
+              }
+              else {child.alreadyUp =  true}
+            });
+          }
+          else {console.log("Invalid Input, use pingPong, raise, or lower")}
+        }
+
+        /////////////////////////////////
+        //  event triggered functions  //
+        /////////////////////////////////
+
+        function stopstart (event)
+        {
+          if (!lfclick)
+          {
+            controls.enableRotate = false;
+            controls.enablePan = true;
+            console.log("a");
+          }
+          else
+          {
+            controls.enableRotate = true;
+            //controls.enablePan = false;
+            //console.log("b");
+          }
+        }
+
+        function onmesh (event)
+        {
+          var x, y;
+
+          if (event.button == 2)
+          {
+            lfclick = false;
+          }
+          else
+          {
+            lfclick = true;
+          }
+
+          if ( event.changedTouches )
+          {
+            x = event.changedTouches[ 0 ].pageX;
+            y = event.changedTouches[ 0 ].pageY;
+          }
+          else
+          {
+            x = event.clientX;
+            y = event.clientY;
+          }
+          mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
+          mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
+
+          raycaster.setFromCamera( mouse, camera );
+          var intersects = raycaster.intersectObjects( [ group ], true );
+          if ( intersects.length > 0 )
+          {
+            started = true;
+          }
+          else
+          {
+            started = false;
+          }
+
+          // put opennav where
 
         }
 
-          // declaring big boy variables
-          var t;
-          var container, stats;
-          var camera, scene, renderer, controls;
-          var raycaster = new THREE.Raycaster();
-          var mouse = new THREE.Vector2();
-          var selectedObjects = [];
-          var composer, effectFXAA, outlinePass;
-          var group = new THREE.Group();
-          var obj3d = new THREE.Object3D();
-          var clips;
-          var mixer = new THREE.AnimationMixer();
-          var clock = new THREE.Clock(true);
-          var divWidth = window.innerWidth;
-          var divHeight = window.innerHeight;
+        //
 
-
-          init();
-          onWindowResize();
-          animate();
-
-          function init()
+        function onTouchMove( event )
+        {
+          var x, y;
+          if ( event.changedTouches )
           {
-            // create container
-            container = document.getElementById( 'canvas' );
-            document.body.appendChild( container );
-
-            // create renderer
-            renderer = new THREE.WebGLRenderer({ alpha: true });
-            container.appendChild( renderer.domElement );
-
-            // set to cutout size in the future
-            var width = divWidth;
-            var height = divHeight;
-
-            // enable shadows
-            renderer.shadowMap.enabled = true;
-            //renderer.shadowMap.type = THREE.BasicShadowMap;
-
-            // initialize scene
-            scene = new THREE.Scene();
-
-            // initialize and position camera
-            camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
-            //var camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, -1000, 1000 );
-            camera.position.set( 0, 0, 8 );
-
-            // initialize and customize controls
-            controls = new THREE.OrbitControls( camera, renderer.domElement );
-            controls.minDistance = 2;
-            controls.maxDistance = 5;
-            controls.maxPolarAngle = 11*Math.PI/24;
-            controls.enablePan = true;
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.25;
-            controls.target.x =  1;
-            controls.enableZoom = true;
-
-            // add ambient light
-            scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
-
-            //add the group for all models to join
-            scene.add( group );
-
-            // initialize gltf loader
-            var loader = new THREE.GLTFLoader();
-
-            // define function that loads in models (gltf)
-            function loadGltf(path, position, modelGroup){
-              loader.load( path, function ( gltf )
-              {
-                clips = gltf.animations;
-                gltf.animations.forEach(function(anim){console.log(anim.name)});
-                //for each scene in the array of scene
-                gltf.scenes.forEach(function (curScene){
-                  //adds the objects to a new group
-                  var sceneGroup = new THREE.Group();
-                  var sceneLength = curScene.children.length;
-                  for(var i = 0; i < sceneLength; i++){
-                    curScene.children.userData = {alreadyUp:false};
-                    sceneGroup.add(curScene.children[0]);
-                  }
-                  sceneGroup.position.copy(position);
-                  //for each object in the scene
-                  sceneGroup.children.forEach( function (child){
-                    if (child instanceof THREE.Mesh){
-                      if (child.geometry.isBufferGeometry){
-                        console.log(child.name);
-                        if(child.name == "Cylinder001"){
-                          child.visible = false;
-                        }
-                        child.receiveShadow = true;
-                        child.castShadow = true;
-                      }
-                    }
-                  });
-                  modelGroup.add(sceneGroup);
-                });
-              });
-            }
-
-            // add Nangaku model
-            loadGltf('models/Nangaku6.gltf', new THREE.Vector3(2,0,-2), group);
-
-            // add and position floor
-            var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
-            var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
-            var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
-            var floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
-            var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
-            floorMesh.rotation.x -= Math.PI * 0.5;
-            floorMesh.position.y = 0;
-            floorMesh.receiveShadow = true;
-            floorMesh.castShadow = true;
-            scene.add(floorMesh);
-
-
-
-            // initialize postprocessing
-            composer = new THREE.EffectComposer( renderer );
-            var renderPass = new THREE.RenderPass( scene, camera );
-            composer.addPass( renderPass );
-            outlinePass = new THREE.OutlinePass( new THREE.Vector2( divWidth, divHeight ), scene, camera );
-            composer.addPass( outlinePass );
-
-            // initialize antialiasing
-            effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
-            effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
-            effectFXAA.renderToScreen = true;
-            composer.addPass( effectFXAA );
-
-            // initialize event listeners
-            window.addEventListener( 'resize', onWindowResize, false );
-            window.addEventListener( 'mouseup', onTouchMove );
-            window.addEventListener( 'touchend', onTouchMove );
-            window.addEventListener( 'touchstart', onmesh);
-            window.addEventListener( 'mousedown', onmesh);
-            window.addEventListener( 'mousemove', stopstart);
-
-            // variables for listner functions
-            var clicked = true;
-            var started = false;
-            var lfclick = true;
-            var prevobj = null;
-
-            
-            /////////////////////////////////
-            //  event triggered functions  //
-            /////////////////////////////////
-
-            function playAnimation(rootObject, clipName){
-              var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, 'Arrow'), rootObject );
-              action.play();
-            }
-
-            function stopAnimation(rootObject, clipName){
-              var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, 'Arrow'), rootObject );
-              action.stop();
-            }
-
-            //plays animation on a object forwards or backwards stopping on last frame
-            function playFloorAnimation( rootObject, isUp, clipName ){
-              var loops = 0;
-              loops++;
-              var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
-              action.paused = false;
-              action.clampWhenFinished = true;
-              action.setLoop(THREE.LoopOnce, loops);
-              if(isUp){
-                loops++;
-                action.setLoop(THREE.LoopOnce, loops);
-                action.timeScale = -1;
-                action.paused = false;
-              }
-              else{action.timeScale = 1;}
-              rootObject.alreadyUp = !rootObject.alreadyUp;
-              action.play();
-            }
-
-            //takes a group of a building and applies an animation to each floor
-            //isUp determines direaction of animation, true is forward, false is reverse, putting the child.alreadyUp makes it ping pong
-            function animateFloors(buildingGroup, isUp){
-              buildingGroup.children.forEach(function(child){
-
-                //plays animations by the name of the floors, each floor is named after its animation
-                if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
-                  playFloorAnimation(child, isUp, child.name.slice(0, (child.name.length - 3)));
-                  console.log("working");
-                }
-                else{child.alreadyUp = !child.alreadyUp;}
-              });
-            }
-
-            function stopstart (event)
-            {
-              if (!lfclick)
-              {
-                controls.enableRotate = false;
-                controls.enablePan = true;
-                console.log("a");
-              }
-              else
-              {
-                controls.enableRotate = true;
-                //controls.enablePan = false;
-                //console.log("b");
-              }
-            }
-
-            function onmesh (event)
-            {
-              var x, y;
-
-              if (event.button == 2)
-              {
-                lfclick = false;
-              }
-              else
-              {
-                lfclick = true;
-              }
-
-              if ( event.changedTouches )
-              {
-                x = event.changedTouches[ 0 ].pageX;
-                y = event.changedTouches[ 0 ].pageY;
-              }
-              else
-              {
-                x = event.clientX;
-                y = event.clientY;
-              }
-              mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
-              mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
-
-              raycaster.setFromCamera( mouse, camera );
-              var intersects = raycaster.intersectObjects( [ group ], true );
-              if ( intersects.length > 0 )
-              {
-                started = true;
-              }
-              else
-              {
-                started = false;
-              }
-
-              // put opennav where
-
-            }
-
-            //
-
-            function onTouchMove( event )
-            {
-              var x, y;
-              if ( event.changedTouches )
-              {
-                x = event.changedTouches[ 0 ].pageX;
-                y = event.changedTouches[ 0 ].pageY;
-              }
-              else
-              {
-                x = event.clientX;
-                y = event.clientY;
-              }
-              mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
-              mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
-              checkIntersection();
-            }
-
-            //
-            function addSelectedObject( object )
-            {
-              selectedObjects = [];
-              selectedObjects.push( object );
-            }
-
-            //
-            function checkIntersection()
-            {
-              raycaster.setFromCamera( mouse, camera );
-              var intersects = raycaster.intersectObjects( [ group ], true );
-              if ( intersects.length > 0 )
-              {
-                outlinePass.selectedObjects = [];
-
-                var selectedObject = intersects[ 0 ].object;
-                console.log(selectedObject.parent);
-                animateFloors(selectedObject.parent, selectedObject.alreadyUp);
-                if(selectedObject.alreadyUp){
-                  selectedObject.parent.parent.children[1].children[0].visible = true;
-                  playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
-                }
-                else{
-                  selectedObject.parent.parent.children[1].children[0].visible = false;
-                  stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
-                }
-                //camera.position.copy(selectedObject.position);
-                //controls.target = selectedObject;
-                addSelectedObject( selectedObject );
-                if (clicked && started || prevobj != selectedObject)
-                {
-                  outlinePass.selectedObjects = selectedObjects;
-                  openNav();
-                }
-                else
-                {
-                  outlinePass.selectedObjects = [];
-                  closeNav();
-                }
-                clicked = !clicked;
-              }
-              else
-              {
-                if (!started)
-                {
-                  outlinePass.selectedObjects = [];
-                }
-              }
-              prevobj = selectedObject;
-            }
-
-            var width = divWidth;
-            var height = divHeight;
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-            renderer.setSize( width, height );
-            composer.setSize( width, height );
-            renderer.domElement.style.width = width + 'px';
-            renderer.domElement.style.height = height + 'px';
+            x = event.changedTouches[ 0 ].pageX;
+            y = event.changedTouches[ 0 ].pageY;
           }
+          else
+          {
+            x = event.clientX;
+            y = event.clientY;
+          }
+          mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
+          mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
+          checkIntersection();
+        }
+
+        //
+        function addSelectedObject( object )
+        {
+          selectedObjects = [];
+          selectedObjects.push( object );
+        }
+
+        //
+        function checkIntersection()
+        {
+          raycaster.setFromCamera( mouse, camera );
+          var intersects = raycaster.intersectObjects( [ group ], true );
+          if ( intersects.length > 0 )
+          {
+            outlinePass.selectedObjects = [];
+
+            var selectedObject = intersects[ 0 ].object;
+
+            animateFloors(selectedObject, 'PingPong');
+
+            addSelectedObject( selectedObject );
+            if (clicked && started || prevobj != selectedObject)
+            {
+              outlinePass.selectedObjects = selectedObjects;
+              openNav();
+            }
+            else
+            {
+              outlinePass.selectedObjects = [];
+              closeNav();
+            }
+            clicked = !clicked;
+          }
+          else
+          {
+            if (!started)
+            {
+              outlinePass.selectedObjects = [];
+            }
+          }
+          prevobj = selectedObject;
+        }
+
+        var width = divWidth;
+        var height = divHeight;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize( width, height );
+        composer.setSize( width, height );
+        renderer.domElement.style.width = width + 'px';
+        renderer.domElement.style.height = height + 'px';
+      }
 
           // resize the screen correctly
           var i = 0;
@@ -564,6 +632,7 @@
           // draw loop
           function animate()
           {
+
             requestAnimationFrame( animate );
             //stats.begin();
             var timer = performance.now();
@@ -571,6 +640,7 @@
             if (controls.target.x > panx) {
                 controls.target.x = panx;
             }
+
             if (controls.target.x < -1 * panx) {
                 controls.target.x = -1 * panx;
             }
