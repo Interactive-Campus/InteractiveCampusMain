@@ -170,7 +170,8 @@
           var materia = new THREE.MeshBasicMaterial( {color: 0xffff00} );
           var spher = new THREE.Mesh( geometr, materia );
           var nucurve;
-          var curveptarray;
+          var curveptarray = Array();
+          var curvee = new THREE.CatmullRomCurve3();
 
 
           var curve = new THREE.CatmullRomCurve3( [
@@ -183,6 +184,7 @@
           ] );
 
           var points = curve.getPoints( 50 );
+          console.log(curve);
           var gege = new THREE.BufferGeometry().setFromPoints( points );
 
           var material = new THREE.LineBasicMaterial( { color : 0x00ff00 } );
@@ -286,9 +288,21 @@
 
               nucurve = new THREE.Line(object, matt);
               console.log(object.children[0].geometry.attributes.position.array[0]);
+              comppts(object.children[0].geometry.attributes.position.array.length);
+
+
               scene.add(object);
 
               //line constructioon here
+              var ie;
+              function comppts (q)
+              {
+                for (ie = 0; ie < (q / 3) - 1; ie++)
+                {
+                  curveptarray[ie] = new THREE.Vector3(object.children[0].geometry.attributes.position.array[3 * ie], object.children[0].geometry.attributes.position.array[3 * ie + 1], object.children[0].geometry.attributes.position.array[3 * ie + 2])
+                }
+                console.log("pronted");
+              }
 
 
 
@@ -307,13 +321,21 @@
           	}
           );
 
-          function comppts ()
-          {
-            for (int i = 0; i < 5; i++)
-            {
 
-            }
-          }
+
+          curvee = new THREE.CatmullRomCurve3();
+          curvee.points = curveptarray;
+          console.log(curvee);
+
+          var pointse = curvee.getPoints( 50 );
+          var gegee = new THREE.BufferGeometry().setFromPoints( pointse );
+
+          var materiale = new THREE.LineBasicMaterial( { color : 0x00ff00 } );
+
+          // Create the final object to add to the scene
+          var splineObjecte = new THREE.Line( gegee, materiale );
+
+          scene.add(splineObjecte);
 
 
             // add Nangaku model
