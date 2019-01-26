@@ -251,8 +251,13 @@
           loader.load( path, function ( gltf )
           {
             clips = gltf.animations;
+            /*
+            *Each Scene is named a 1 letter code for what building it represents
+            *E.G. Weinberg is W, Nangaku is N
+            */
             gltf.scenes.forEach(function (curScene){
               var sceneGroup = new THREE.Group();
+              sceneGroup.name = curScene.name;
               var sceneLength = curScene.children.length;
 
               /*
@@ -271,7 +276,6 @@
 
                 sceneGroup.add(curScene.children[0]);
               }
-              sceneGroup.position.copy(position);
               sceneGroup.children.forEach( function (child){
                 if (child instanceof THREE.Mesh){
                   child.receiveShadow = true;
@@ -279,9 +283,9 @@
                 }
               });
               modelGroup.add(sceneGroup);
-              modelGroup.position.copy(position);
             });
           });
+          modelGroup.position.copy(position);
         }
 
         // add Nangaku model
@@ -322,18 +326,32 @@
         window.addEventListener( 'mousedown', onmesh);
         window.addEventListener( 'mousemove', stopstart);
 
-        // variables for listner functions
+        // variables for listener functions
         var clicked = true;
         var started = false;
         var lfclick = true;
         var prevobj = null;
 
-
+        //function returns a room when given a name (e.g. n203, w315)
+        function findRoom(roomID){
+          group.children.forEach(function (scene){
+            if(scene.name  ==  roomID.slice(0, -3)){
+              scene.forEach(function (room){
+                if(room.name == roomID){
+                  return room;
+                }
+                else return null;
+              });
+            }
+            else return null;
+          });
+        }
 
         /*
         * Animation Functions
         */
 
+        //given a name and am object plays an animation
         function playAnimation(rootObject, clipName){
           var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
           action.play();
@@ -393,8 +411,8 @@
           if(animationMode  == 'PingPong'){
             selectedRoom.parent.children.forEach(function(child){
               //plays animations by the name of the floors, each floor's suffix has a matching animation
-              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -2)) != null){
-                playFloorAnimation(child, child.alreadyUp, child.name.slice(0, -2));
+              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -3)) != null){
+                playFloorAnimation(child, child.alreadyUp, child.name.slice(0, -3));
               }
               else{child.alreadyUp = !child.alreadyUp;}
             });
@@ -403,8 +421,8 @@
           else if(animationMode == 'Lower'){
             selectedRoom.parent.children.forEach(function(child){
               //plays animations by the name of the floors, each floor's suffix has a matching animation
-              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
-                lowerFloor(child, child.name.slice(0, (child.name.length - 3)));
+              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -3)) != null){
+                lowerFloor(child, child.name.slice(0, -3));
               }
               else {child.alreadyUp =  false}
             });
@@ -413,8 +431,8 @@
           else if (animationMode == 'Raise') {
             selectedRoom.parent.children.forEach(function(child){
               //plays animations by the name of the floors, each floor's suffix has a matching animation e.g. Nangaku second floor is N2
-              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
-                raiseFloor(child, child.name.slice(0, (child.name.length - 3)));
+              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -3)) != null){
+                raiseFloor(child, child.name.slice(0, -3));
               }
               else {child.alreadyUp =  true}
             });
@@ -520,7 +538,7 @@
             outlinePass.selectedObjects = [];
 
             var selectedObject = intersects[ 0 ].object;
-
+            console.log(selectedObject.parent.name);
             animateFloors(selectedObject, 'PingPong');
 
             addSelectedObject( selectedObject );
