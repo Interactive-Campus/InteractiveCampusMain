@@ -110,7 +110,7 @@
         gapi.client.calendar.events.list({
           'calendarId': 'acg4tehdnkv29rfpasrt7eo1kb81qv0l@import.calendar.google.com',
           'timeMin': (new Date()).toISOString(),
-      //    'timeMax': (new Date())
+          //'timeMax': (new Date ()).toISOString(),
           'showDeleted': false,
           'singleEvents': true,
           'maxResults': 100,
@@ -118,33 +118,76 @@
         }).then(function(response) {
           var events = response.result.items;
           appendPre('Upcoming events:');
-
           if (events.length > 0) {
             // if there are events on calendar execute
             for (i = 0; i < events.length; i++) {
               // run through every event in list
               var event = events[i];
               // "event" variable is the current event in the array
+
               if (!event.location) {
                 // if the event has no location, delete array portion
                 event.summary = '';
                 event.start.dateTime = '';
                 event.location = '';
-              }
-              else {
-                // if the event has a location, keep
-                var when = event.start.dateTime;
-                if (!when) {
-                  // if there is no start time, put date for all day event
-                  when = event.start.date;
+              } else {
+                if (event.location != '' && event.summary != '') {
+
+                  //if (event.start.date != events[0].start.date) {
+                  var today = (new Date()).toISOString();
+                  // grab the date of the instant it reloads and compare it to the date of the event!
+                  var date = event.start.dateTime;
+                  //var dateOnly = date.substr(0, 10);
+                  appendPre(date);
+                  start = event.start.date;
+                  if (start == dateOnly){
+
+                    appendPre ( 'good' + start);
+                  } else {
+                  //var date = today.toLocaleTimeString();
+
                 }
-                appendPre(event.summary + ' (' + when + ')' + ' (' + event.location + ')');
+                //}
+                }
+                /*
+                var startDay = event.start.date;
+                var startString = startDay.toISOString();
+                var today = new Date();
+                var todayString = today.toISOString();
+                appendPre (startString + todayString);
+                if (startString != todayString) {
+                  event.summary = '';
+                  event.start.dateTime = '';
+                  event.location =
+                  appendPre (startString + todayString);
+                } else {
+
+                // if the event has a location, keep
+
+                // from https://salesforce.stackexchange.com/questions/35158/convert-event-startdatetime-and-enddatetime-from-gmt-to-the-local-timezone
+                // start
+                /* public DateTime start {get;set;}
+                public String defined_format{get;set;}
+                if (defined_format == null) {
+                  return date_time.format(); //return the full date/time in user's locale and time zone
+                } else {
+                  return date_time.format(defined_format,'HST');  //Specify Time zone like IST,CST
+                } */
+                // end
+                var start = event.start.dateTime;
+                if (!start) {
+                  // if there is no start time, put date for all day event
+                  start = event.start.date;
+                }
+                appendPre(event.summary + ' (' + start + ')' + ' (' + event.location + ')');
                 // print the event
               }
             }
+
           } else {
             appendPre('No upcoming events found.');
           }
+
         });
       }
 
