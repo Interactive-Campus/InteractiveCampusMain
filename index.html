@@ -268,12 +268,6 @@
               *Each non room mesh is named with its prefix and followed by part
               */
               for(var i = 0; i < sceneLength; i++){
-                //tests if the mesh is a room or just an aesthetic part
-                if(curScene.children[0].name.slice(3, -3) != 'part'){
-                  curScene.children[0].userData = {alreadyUp:false, room:true};
-                  //Adds custom object containing if it is a selectable room and if it is already animated
-                }
-                else {curScene.children[0].userData = {alreadyUp:false, room:false};}
 
                 sceneGroup.add(curScene.children[0]);
               }
@@ -281,6 +275,15 @@
                 if (child instanceof THREE.Mesh){
                   child.receiveShadow = true;
                   child.castShadow = true;
+                  //tests if the mesh is a room or just an aesthetic part
+                  if(child.name.slice(3, -3) == 'part'){
+                    child.userData = {alreadyUp:false, room:false};
+                    //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
+                  }
+
+                  else{
+                      child.userData = {alreadyUp:false, room:true, names:findNames(child.name)};
+                  }
                 }
               });
               modelGroup.add(sceneGroup);
@@ -335,17 +338,7 @@
 
         //function returns a room when given a name (e.g. n203, w315)
         function findRoom(roomID){
-          group.children.forEach(function (scene){
-            if(scene.name  ==  roomID.slice(0, -3)){
-              scene.forEach(function (room){
-                if(room.name == roomID){
-                  return room;
-                }
-                else return null;
-              });
-            }
-            else return null;
-          });
+
         }
 
         /*
