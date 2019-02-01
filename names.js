@@ -8,5 +8,4 @@ function findNames(name){
 
 var nameList  = [
   {name:"", names:["",""]},
-
 ]
