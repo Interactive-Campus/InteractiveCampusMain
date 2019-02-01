@@ -230,6 +230,7 @@
         light.shadow.camera.fov = 90;
         scene.add(light);
 
+
         //add the group of all models into the scene
         scene.add( group );
 
@@ -251,8 +252,13 @@
           loader.load( path, function ( gltf )
           {
             clips = gltf.animations;
+            /*
+            *Each Scene is named a 1 letter code for what building it represents
+            *E.G. Weinberg is W, Nangaku is N
+            */
             gltf.scenes.forEach(function (curScene){
               var sceneGroup = new THREE.Group();
+              sceneGroup.name = curScene.name;
               var sceneLength = curScene.children.length;
 
               /*
@@ -262,26 +268,28 @@
               *Each non room mesh is named with its prefix and followed by part
               */
               for(var i = 0; i < sceneLength; i++){
-                //tests if the mesh is a room or just an aesthetic part
-                if(curScene.children[0].name.slice(3, -3) != 'part'){
-                  curScene.children[0].userData = {alreadyUp:false, room:true};
-                  //Adds custom object containing if it is a selectable room and if it is already animated
-                }
-                else {curScene.children[0].userData = {alreadyUp:false, room:false};}
 
                 sceneGroup.add(curScene.children[0]);
               }
-              sceneGroup.position.copy(position);
               sceneGroup.children.forEach( function (child){
                 if (child instanceof THREE.Mesh){
                   child.receiveShadow = true;
                   child.castShadow = true;
+                  //tests if the mesh is a room or just an aesthetic part
+                  if(child.name.slice(3, -3) == 'part'){
+                    child.userData = {alreadyUp:false, room:false};
+                    //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
+                  }
+
+                  else{
+                      child.userData = {alreadyUp:false, room:true, names:findNames(child.name)};
+                  }
                 }
               });
               modelGroup.add(sceneGroup);
-              modelGroup.position.copy(position);
             });
           });
+          modelGroup.position.copy(position);
         }
 
         // add Nangaku model
@@ -322,18 +330,22 @@
         window.addEventListener( 'mousedown', onmesh);
         window.addEventListener( 'mousemove', stopstart);
 
-        // variables for listner functions
+        // variables for listener functions
         var clicked = true;
         var started = false;
         var lfclick = true;
         var prevobj = null;
 
+        //function returns a room when given a name (e.g. n203, w315)
+        function findRoom(roomID){
 
+        }
 
         /*
         * Animation Functions
         */
 
+        //given a name and am object plays an animation
         function playAnimation(rootObject, clipName){
           var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
           action.play();
@@ -393,8 +405,8 @@
           if(animationMode  == 'PingPong'){
             selectedRoom.parent.children.forEach(function(child){
               //plays animations by the name of the floors, each floor's suffix has a matching animation
-              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -2)) != null){
-                playFloorAnimation(child, child.alreadyUp, child.name.slice(0, -2));
+              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -3)) != null){
+                playFloorAnimation(child, child.alreadyUp, child.name.slice(0, -3));
               }
               else{child.alreadyUp = !child.alreadyUp;}
             });
@@ -403,8 +415,8 @@
           else if(animationMode == 'Lower'){
             selectedRoom.parent.children.forEach(function(child){
               //plays animations by the name of the floors, each floor's suffix has a matching animation
-              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
-                lowerFloor(child, child.name.slice(0, (child.name.length - 3)));
+              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -3)) != null){
+                lowerFloor(child, child.name.slice(0, -3));
               }
               else {child.alreadyUp =  false}
             });
@@ -413,8 +425,8 @@
           else if (animationMode == 'Raise') {
             selectedRoom.parent.children.forEach(function(child){
               //plays animations by the name of the floors, each floor's suffix has a matching animation e.g. Nangaku second floor is N2
-              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
-                raiseFloor(child, child.name.slice(0, (child.name.length - 3)));
+              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -3)) != null){
+                raiseFloor(child, child.name.slice(0, -3));
               }
               else {child.alreadyUp =  true}
             });
@@ -520,7 +532,7 @@
             outlinePass.selectedObjects = [];
 
             var selectedObject = intersects[ 0 ].object;
-
+            console.log(selectedObject.parent.name);
             animateFloors(selectedObject, 'PingPong');
 
             addSelectedObject( selectedObject );
