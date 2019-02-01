@@ -144,7 +144,7 @@
       <script src="js/postprocessing/OutlinePass.js"></script>
       <script src="js/libs/stats.min.js"></script>
       <script src='js/libs/dat.gui.min.js'></script>
-
+      <script src='js/NameList.js'></script>
       <div id = 'canvas'>
         <script>
         // https://stackoverflow.com/questions/13542175/three-js-ray-intersect-fails-by-adding-div/13544277#13544277
@@ -277,12 +277,13 @@
                   child.castShadow = true;
                   //tests if the mesh is a room or just an aesthetic part
                   if(child.name.slice(3, -3) == 'part'){
-                    child.userData = {alreadyUp:false, room:false};
                     //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
+                    child.userData = {alreadyUp:false, room:false};
                   }
 
                   else{
-                      child.userData = {alreadyUp:false, room:true, names:findNames(child.name)};
+                    //Accesses a list of names and adds each one to the model
+                    child.userData = {alreadyUp:false, room:true, names:findNames(child.name)};
                   }
                 }
               });
