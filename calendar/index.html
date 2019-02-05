@@ -132,23 +132,24 @@
                 event.location = '';
               } else {
                 if (event.location != '' && event.summary != '') {
-
-                  //if (event.start.date != events[0].start.date) {
                   var today = (new Date()).toISOString();
                   // grab the date of the instant it reloads and compare it to the date of the event!
-                  var date = event.start.dateTime;
-                  //var dateOnly = date.substr(0, 10);
-                  appendPre(date);
-                  start = event.start.date;
-                  if (start == dateOnly){
+                  var dateOnly = today.substring(0, 10);
+                  // take event's date and start time
+                  var start = event.start.dateTime;
+                  var startDate = start.substring(0, 10);
 
-                    appendPre ( 'good' + start);
-                  } else {
-                  //var date = today.toLocaleTimeString();
-
+                  // SWITCH TIMEZONES FROM UTC TO HST
+                  // create a new variable for today's date (HST)
+                  /*var UTCtime = new Date();
+                  var offset = (UTCtime.getTimezoneOffset())/60; // timezone difference in hours between HST and UTC
+                  var hour = start.getHours();
+                  hour = hour + 10;
+                  appendPre (offset + hour);*/
                 }
-                //}
-                }
+                // if today's date matches the event's date, print event
+                  if (dateOnly == startDate){
+                    appendPre(event.summary + ' (' + start + ')' + ' (' + event.location + ')');
                 /*
                 var startDay = event.start.date;
                 var startString = startDay.toISOString();
@@ -174,13 +175,8 @@
                   return date_time.format(defined_format,'HST');  //Specify Time zone like IST,CST
                 } */
                 // end
-                var start = event.start.dateTime;
-                if (!start) {
-                  // if there is no start time, put date for all day event
-                  start = event.start.date;
-                }
-                appendPre(event.summary + ' (' + start + ')' + ' (' + event.location + ')');
                 // print the event
+              }
               }
             }
 
