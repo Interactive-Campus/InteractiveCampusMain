@@ -156,6 +156,7 @@ THREE.Curve.prototype.getUtoTmapping = function ( u, distance ) {
 	while ( low <= high ) {
 
 		i = Math.floor( low + ( high - low ) / 2 ); // less likely to overflow, though probably not issue here, JS doesn't really have integers, all numbers are floats
+		//i = low + ( high - low ) / 2;
 
 	  	comparison = arcLengths[ i ] - targetArcLength;
 

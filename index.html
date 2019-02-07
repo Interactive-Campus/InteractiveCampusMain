@@ -165,14 +165,94 @@
           var divWidth = window.innerWidth;
           var divHeight = window.innerHeight;
           var objloader = new THREE.OBJLoader();
+          var dots = new Array();
+          var radius = .2;
+          var convtxs = new Float32Array();
+          var dotlength;
 
-          var geometr = new THREE.SphereGeometry( 1, 32, 32 );
-          var materia = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+          function dot (u)
+          {
+            var geometr = new THREE.BufferGeometry();
+            var ohold;
+            objloader.load(
+            // resource URL
+            'models/arrow.obj',
+            // called when resource is loaded
+            function ( object ) {
+
+              ohold = object.children[0].geometry;
+
+              //nucurve = new THREE.Line(object, matt);
+              //console.log(object.children[0].geometry.attributes.position.array[0]);
+              console.log("spaghetti");
+              console.log(ohold);//.children[0].geometry);
+              //geometr = object.children[0].geometry.attributes;
+
+              //var geometr = new THREE.BufferGeometry();
+              // create a simple square shape. We duplicate the top left and bottom right
+              // vertices because each vertex needs to appear once per triangle.
+
+
+              //scene.add(object);
+
+              //var toobg = new THREE.TubeBufferGeometry( curvee, 100, .05, 4, false );
+              //var toobm = new THREE.MeshBasicMaterial( { color: 0xff0000} );
+              //toobm.emissive = new THREE.Color(0xff0000);
+              //var toobmesh = new THREE.Mesh( toobg, toobm );
+              //scene.add( toobmesh );
+
+
+
+              //scene.add(object);
+
+              //line constructioon here
+
+              var materia = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+              var lxl;
+              for (lxl = 0; lxl < u; lxl++)
+              {
+                dots[lxl] = new THREE.Mesh( ohold, materia );
+
+                scene.add(dots[lxl]);
+
+                console.log(lxl, dots[lxl]);
+                //scene.add(dots[lxl]);
+                dotlength = dots.length;
+              }
+              console.log(dots.length);
+
+
+
+            } );
+
+            console.log(dots.length, "asdf");
+          }
+
+
+
+
+
+
+
+          //console.log("HERERER");
+          //onsole.log(dots[1]);
+
+
+          var geometr = new THREE.BoxGeometry( radius, radius, radius);
+          var materia = new THREE.MeshLambertMaterial( {color: 0xff0000} );
           var spher = new THREE.Mesh( geometr, materia );
+          var spher2 = new THREE.Mesh( geometr, materia );
+          var spher3 = new THREE.Mesh( geometr, materia );
+          var spher4 = new THREE.Mesh( geometr, materia );
+          var spher5 = new THREE.Mesh( geometr, materia );
+          var spher6 = new THREE.Mesh( geometr, materia );
+          var spher7 = new THREE.Mesh( geometr, materia );
+          var spher8 = new THREE.Mesh( geometr, materia );
+          var spher9 = new THREE.Mesh( geometr, materia );
+          var spher10 = new THREE.Mesh( geometr, materia );
+
           var nucurve;
           var curveptarray = Array();
-          var curvee = new THREE.CatmullRomCurve3();
-
 
           var curve = new THREE.CatmullRomCurve3( [
             new THREE.Vector3( -10, 0 , -10),
@@ -191,6 +271,43 @@
 
           // Create the final object to add to the scene
           var splineObject = new THREE.Line( gege, material );
+
+
+
+
+
+
+
+          var ie;
+          var curvee = new THREE.CatmullRomCurve3();
+          var splineObjecte = new THREE.Line();
+          var pieces = 4;
+          function comppts (q, arr)
+          {
+            for (ie = 0; ie < (q / 3) - 1; ie++)
+            {
+              if (ie % pieces == 0)
+              {
+                curveptarray[ie/pieces] = new THREE.Vector3(arr[ie * 3], arr[ie * 3 + 1], arr[ie * 3 + 2]);
+              }
+            }
+            console.log("pronted");
+
+            curvee.points = curveptarray;
+            console.log(curvee);
+            //var pointse = curvee.getPoints( 50 );
+
+            //var pointse= curvee.points;
+            var gegee = new THREE.BufferGeometry().setFromPoints( curveptarray );
+
+            var materiale = new THREE.LineBasicMaterial( { color : 0x00ff00 } );
+
+            // Create the final object to add to the scene
+            splineObjecte = new THREE.Line( gegee, materiale );
+          }
+
+
+
 
           init();
           onWindowResize();
@@ -237,6 +354,28 @@
 
             // add ambient light
             scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
+            var light = new THREE.DirectionalLight(0xffffff,.3);
+            light.position.set(0, 500, 200);
+            light.target.position.set(0, 0, 0);
+            light.shadow.mapSize.width = 1024*4;
+            light.shadow.mapSize.height = 1024*4;
+            light.castShadow = true;
+
+            light.shadow.camera.near = 0;
+            light.shadow.camera.far = 4000;
+            light.shadow.camera.fov = 90;
+            scene.add(light);      var light = new THREE.DirectionalLight(0xffffff,.3);
+            light.position.set(0, 500, 200);
+            light.target.position.set(0, 0, 0);
+            light.shadow.mapSize.width = 1024*4;
+            light.shadow.mapSize.height = 1024*4;
+            light.castShadow = true;
+
+            light.shadow.camera.near = 0;
+            light.shadow.camera.far = 4000;
+            light.shadow.camera.fov = 90;
+            scene.add(light);
+
 
             //add the group for all models to join
             scene.add( group );
@@ -278,31 +417,30 @@
               });
             }
 
-            var matt = new THREE.LineBasicMaterial( { color : 0x00ff00 } );
+            var matt = new THREE.LineBasicMaterial( { color : 0x00ff00, linecap: 'square', linejoin: 'square', linewidth: 5 } );
 
             objloader.load(
           	// resource URL
-          	'models/sample_curve.obj',
+          	'models/sample_curves.obj',
           	// called when resource is loaded
           	function ( object ) {
 
               nucurve = new THREE.Line(object, matt);
               console.log(object.children[0].geometry.attributes.position.array[0]);
-              comppts(object.children[0].geometry.attributes.position.array.length);
+              comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array);
+
+              var toobg = new THREE.TubeBufferGeometry( curvee, 100, .05, 4, false );
+              var toobm = new THREE.MeshBasicMaterial( { color: 0xff0000} );
+              //toobm.emissive = new THREE.Color(0xff0000);
+              var toobmesh = new THREE.Mesh( toobg, toobm );
+              scene.add( toobmesh );
 
 
-              scene.add(object);
+
+              //scene.add(object);
 
               //line constructioon here
-              var ie;
-              function comppts (q)
-              {
-                for (ie = 0; ie < (q / 3) - 1; ie++)
-                {
-                  curveptarray[ie] = new THREE.Vector3(object.children[0].geometry.attributes.position.array[3 * ie], object.children[0].geometry.attributes.position.array[3 * ie + 1], object.children[0].geometry.attributes.position.array[3 * ie + 2])
-                }
-                console.log("pronted");
-              }
+
 
 
 
@@ -323,19 +461,9 @@
 
 
 
-          curvee = new THREE.CatmullRomCurve3();
-          curvee.points = curveptarray;
-          console.log(curvee);
 
-          var pointse = curvee.getPoints( 50 );
-          var gegee = new THREE.BufferGeometry().setFromPoints( pointse );
 
-          var materiale = new THREE.LineBasicMaterial( { color : 0x00ff00 } );
-
-          // Create the final object to add to the scene
-          var splineObjecte = new THREE.Line( gegee, materiale );
-
-          scene.add(splineObjecte);
+          //scene.add(splineObjecte);
 
 
             // add Nangaku model
@@ -344,7 +472,7 @@
             // add and position floor
             var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
             var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
-            var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
+            var floorMaterial = new THREE.MeshLambertMaterial({color: 0xccffcc});
             var floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
             var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
             floorMesh.rotation.x -= Math.PI * 0.5;
@@ -365,6 +493,32 @@
             effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
             effectFXAA.renderToScreen = true;
             composer.addPass( effectFXAA );
+
+            console.log("SPHERRRRR");
+            /*
+            scene.add( spher );
+            scene.add( spher2 );
+            scene.add( spher3 );
+            scene.add( spher4 );
+            scene.add( spher5 );
+            scene.add( spher6 );
+            scene.add( spher7 );
+            scene.add( spher8 );
+            scene.add( spher9 );
+            scene.add( spher10 ); */
+
+            dot(20);
+
+            console.log("egg" + dots.length);
+
+            var lx;
+            for (lx = 0; lx < dots.length; lx++)
+            {
+              console.log(dots[lx], lx);
+              scene.add(dots[lx]);
+              console.log("WHAT HAPPEN");
+            }
+
 
           }
 
@@ -599,7 +753,7 @@
             renderer.domElement.style.width = width + 'px';
             renderer.domElement.style.height = height + 'px';
 
-            scene.add( spher );
+
           }
 
           // resize the screen correctly
@@ -681,8 +835,8 @@
           // variables needed before draw loop
           var panx = 1;
           var panz = 1;
-          var i  = 0.0;
-          var spor = 1;
+          var i  = .99;
+          var spor = -1;
 
           // draw loop
           function animate()
@@ -706,25 +860,118 @@
             }
             controls.target.y = 0;
 
+            var speed = .003;
+
+//console.log(i, spor);
             if (i >= 1)
             {
               i = 1;
               spor = -1;
+              var xxc;
+              for(xxc = 0; xxc < 30; xxc++)
+              {
+                console.log("beep");
+                console.log("boop");
+              }
             }
-            i = (i + (spor * .01));
+            i = (i + (spor * speed));
             if (i <= 0)
             {
-              i = 0;
-              spor = 1;
+              i = 1;
+              //spor = 1;
+
+
             }
+            //console.log(i, spor);
 
             // console.log(i);
+            //console.log(dots[30]);
+            var llx;
+            for (llx = 0; llx < dotlength; llx++)
+            {
+              console.log(dots[llx]);
 
+              var scale = 0.12;
+
+              dots[llx].scale.x = scale * 2;
+              dots[llx].scale.y = scale * 1.5;
+              dots[llx].scale.z = scale * 1.5;
+
+
+              dots[llx].position.x = curvee.getPoint((i + (llx / dotlength)) % 1).x;
+              dots[llx].position.y = curvee.getPoint((i + (llx / dotlength)) % 1).y;
+              dots[llx].position.z = curvee.getPoint((i + (llx / dotlength)) % 1).z;
+
+              //dots[llx].rotation.x = Math.PI / 2 * curvee.getTangent((i + (llx / dots.length)) % 1).x;
+              //dots[llx].rotation.z = Math.PI / 2 * curvee.getTangent((i + (llx / dots.length)) % 1).z;
+              dots[llx].rotation.x = -1 * curvee.getTangent((i + (llx / dotlength)) % 1).x - .25
+              dots[llx].rotation.y = 1 * curvee.getTangent((i + (llx / dotlength)) % 1).y
+              dots[llx].rotation.z = -1 * curvee.getTangent((i + (llx / dotlength)) % 1).z
+              //console.log(llx);
+              //dots[llx].rotation.z = curvee.getTangent((i + (llx / dots.length)) % 1).z;
+            }
+
+            //console.log(dots[1]);
+/*
             // spline movement
-            spher.position.x = curve.getPoint(i).x;
-            spher.position.y = curve.getPoint(i).y;
-            spher.position.z = curve.getPoint(i).z;
+            console.log(curvee);
+            spher.position.x = (1)*(10 * curvee.getPoint(i).x) / 10.0;
+            spher.position.y = (1)*(10 * curvee.getPoint(i).y) / 10.0;
+            spher.position.z = (1)*(10 * curvee.getPoint(i).z) / 10.0;
 
+            spher.rotation.x = curvee.getTangent(i).x;
+            spher.rotation.y = curvee.getTangent(i).y;
+            spher.rotation.z = curvee.getTangent(i).z;
+            console.log(curvee.getTangent(i));
+            //spher.position.x = 0;
+            //spher.position.y = 0;
+            //spher.position.z = 0;
+            spher2.position.x = (1)*(10 * curvee.getPoint((i + .1) % 1).x) / 10.0;
+            spher2.position.y = (1)*(10 * curvee.getPoint((i + .1) % 1).y) / 10.0;
+            spher2.position.z = (1)*(10 * curvee.getPoint((i + .1) % 1).z) / 10.0;
+
+            //spher2.rotation.x = curvee.getTangent((i + .1) % 1).x;
+            spher2.rotation.y = 2 * curvee.getTangent((i + .1) % 1).y;
+            //spher2.rotation.z = curvee.getTangent((i + .1) % 1).z;
+
+            spher3.position.x = (1)*(10 * curvee.getPoint((i + .2) % 1).x) / 10.0;
+            spher3.position.y = (1)*(10 * curvee.getPoint((i + .2) % 1).y) / 10.0;
+            spher3.position.z = (1)*(10 * curvee.getPoint((i + .2) % 1).z) / 10.0;
+
+            //spher3.rotation.x = curvee.getTangent((i + .2) % 1).x;
+            spher3.rotation.y = 2 * curvee.getTangent((i + .2) % 1).y;
+            //spher3.rotation.z = curvee.getTangent((i + .2) % 1).z;
+
+            spher4.position.x = (1)*(10 * curvee.getPoint((i + .3) % 1).x) / 10.0;
+            spher4.position.y = (1)*(10 * curvee.getPoint((i + .3) % 1).y) / 10.0;
+            spher4.position.z = (1)*(10 * curvee.getPoint((i + .3) % 1).z) / 10.0;
+
+            spher5.position.x = (1)*(10 * curvee.getPoint((i + .4) % 1).x) / 10.0;
+            spher5.position.y = (1)*(10 * curvee.getPoint((i + .4) % 1).y) / 10.0;
+            spher5.position.z = (1)*(10 * curvee.getPoint((i + .4) % 1).z) / 10.0;
+
+            spher6.position.x = (1)*(10 * curvee.getPoint((i + .5) % 1).x) / 10.0;
+            spher6.position.y = (1)*(10 * curvee.getPoint((i + .5) % 1).y) / 10.0;
+            spher6.position.z = (1)*(10 * curvee.getPoint((i + .5) % 1).z) / 10.0;
+
+            spher7.position.x = (1)*(10 * curvee.getPoint((i + .6) % 1).x) / 10.0;
+            spher7.position.y = (1)*(10 * curvee.getPoint((i + .6) % 1).y) / 10.0;
+            spher7.position.z = (1)*(10 * curvee.getPoint((i + .6) % 1).z) / 10.0;
+
+            spher8.position.x = (1)*(10 * curvee.getPoint((i + .7) % 1).x) / 10.0;
+            spher8.position.y = (1)*(10 * curvee.getPoint((i + .7) % 1).y) / 10.0;
+            spher8.position.z = (1)*(10 * curvee.getPoint((i + .7) % 1).z) / 10.0;
+
+            spher9.position.x = (1)*(10 * curvee.getPoint((i + .8) % 1).x) / 10.0;
+            spher9.position.y = (1)*(10 * curvee.getPoint((i + .8) % 1).y) / 10.0;
+            spher9.position.z = (1)*(10 * curvee.getPoint((i + .8) % 1).z) / 10.0;
+
+            spher10.position.x = (1)*(10 * curvee.getPoint((i + .9) % 1).x) / 10.0;
+            spher10.position.y = (1)*(10 * curvee.getPoint((i + .9) % 1).y) / 10.0;
+            spher10.position.z = (1)*(10 * curvee.getPoint((i + .9) % 1).z) / 10.0;
+            //ten more
+
+            */
 
             controls.update();
             composer.render();
