@@ -2,9 +2,7 @@
 <html>
     <title>Nangaku Building</title>
       <head>
-
       <meta name="viewport" content="width=device-width, initial-scale=1">
-
         <style>
         body {
             font-family: "Gill Sans", sans-serif;
@@ -149,585 +147,441 @@
 
         }
 
-          // declaring big boy variables
-          var t;
-          var container, stats;
-          var camera, scene, renderer, controls;
-          var raycaster = new THREE.Raycaster();
-          var mouse = new THREE.Vector2();
-          var selectedObjects = [];
-          var composer, effectFXAA, outlinePass;
-          var group = new THREE.Group();
-          var obj3d = new THREE.Object3D();
-          var clips;
-          var mixer = new THREE.AnimationMixer();
-          var clock = new THREE.Clock(true);
-          var divWidth = window.innerWidth;
-          var divHeight = window.innerHeight;
-          var objloader = new THREE.OBJLoader();
-          var dots = new Array();
-          var radius = .2;
-          var convtxs = new Float32Array();
-          var dotlength;
+        // declaring big boy variables
+        var t;
+        var container, stats;
+        var camera, scene, renderer, controls;
+        var raycaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2();
+        var selectedObjects = [];
+        var composer, effectFXAA, outlinePass;
+        var group = new THREE.Group();
+        var obj3d = new THREE.Object3D();
+        var clips;
+        var mixer = new THREE.AnimationMixer();
+        var clock = new THREE.Clock(true);
+        var divWidth = window.innerWidth;
+        var divHeight = window.innerHeight;
+        var objloader = new THREE.OBJLoader();
+        var dots = new Array();
+        var radius = .2;
+        var convtxs = new Float32Array();
+        var dotlength;
 
-          function dot (u)
-          {
-            var geometr = new THREE.BufferGeometry();
-            var ohold;
-            objloader.load(
-            // resource URL
-            'models/arrow.obj',
-            // called when resource is loaded
-            function ( object ) {
+        function dot (u)
+        {
+          var geometr = new THREE.BufferGeometry();
+          var ohold;
+          objloader.load(
+          // resource URL
+          'models/arrow.obj',
+          // called when resource is loaded
+          function ( object ) {
 
-              ohold = object.children[0].geometry;
+            ohold = object.children[0].geometry;
 
-              //nucurve = new THREE.Line(object, matt);
-              //console.log(object.children[0].geometry.attributes.position.array[0]);
-              console.log("spaghetti");
-              console.log(ohold);//.children[0].geometry);
-              //geometr = object.children[0].geometry.attributes;
-
-              //var geometr = new THREE.BufferGeometry();
-              // create a simple square shape. We duplicate the top left and bottom right
-              // vertices because each vertex needs to appear once per triangle.
-
-
-              //scene.add(object);
-
-              //var toobg = new THREE.TubeBufferGeometry( curvee, 100, .05, 4, false );
-              //var toobm = new THREE.MeshBasicMaterial( { color: 0xff0000} );
-              //toobm.emissive = new THREE.Color(0xff0000);
-              //var toobmesh = new THREE.Mesh( toobg, toobm );
-              //scene.add( toobmesh );
-
-
-
-              //scene.add(object);
-
-              //line constructioon here
-
-              var materia = new THREE.MeshBasicMaterial( {color: 0xff0000} );
-              var lxl;
-              for (lxl = 0; lxl < u; lxl++)
-              {
-                dots[lxl] = new THREE.Mesh( ohold, materia );
-
-                scene.add(dots[lxl]);
-
-                console.log(lxl, dots[lxl]);
-                //scene.add(dots[lxl]);
-                dotlength = dots.length;
-              }
-              console.log(dots.length);
-
-
-
-            } );
-
-            console.log(dots.length, "asdf");
-          }
-
-
-
-
-
-
-
-          //console.log("HERERER");
-          //onsole.log(dots[1]);
-
-
-          var geometr = new THREE.BoxGeometry( radius, radius, radius);
-          var materia = new THREE.MeshLambertMaterial( {color: 0xff0000} );
-          var spher = new THREE.Mesh( geometr, materia );
-          var spher2 = new THREE.Mesh( geometr, materia );
-          var spher3 = new THREE.Mesh( geometr, materia );
-          var spher4 = new THREE.Mesh( geometr, materia );
-          var spher5 = new THREE.Mesh( geometr, materia );
-          var spher6 = new THREE.Mesh( geometr, materia );
-          var spher7 = new THREE.Mesh( geometr, materia );
-          var spher8 = new THREE.Mesh( geometr, materia );
-          var spher9 = new THREE.Mesh( geometr, materia );
-          var spher10 = new THREE.Mesh( geometr, materia );
-
-          var nucurve;
-          var curveptarray = Array();
-
-          var curve = new THREE.CatmullRomCurve3( [
-            new THREE.Vector3( -10, 0 , -10),
-            new THREE.Vector3( -10, 0 , -5),
-            new THREE.Vector3( -5, 5 , 0),
-            new THREE.Vector3( 0, 0 , 5),
-            new THREE.Vector3( 5, -5 , 10),
-            new THREE.Vector3( 10, 0 , 5)
-          ] );
-
-          var points = curve.getPoints( 50 );
-          console.log(curve);
-          var gege = new THREE.BufferGeometry().setFromPoints( points );
-
-          var material = new THREE.LineBasicMaterial( { color : 0x00ff00 } );
-
-          // Create the final object to add to the scene
-          var splineObject = new THREE.Line( gege, material );
-
-
-
-
-
-
-
-          var ie;
-          var curvee = new THREE.CatmullRomCurve3();
-          var splineObjecte = new THREE.Line();
-          var pieces = 4;
-          function comppts (q, arr)
-          {
-            for (ie = 0; ie < (q / 3) - 1; ie++)
+            var materia = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+            var lxl;
+            for (lxl = 0; lxl < u; lxl++)
             {
-              if (ie % pieces == 0)
-              {
-                curveptarray[ie/pieces] = new THREE.Vector3(arr[ie * 3], arr[ie * 3 + 1], arr[ie * 3 + 2]);
-              }
+              dots[lxl] = new THREE.Mesh( ohold, materia );
+
+              scene.add(dots[lxl]);
+
+              console.log(lxl, dots[lxl]);
+              //scene.add(dots[lxl]);
+              dotlength = dots.length;
             }
-            console.log("pronted");
+            console.log(dots.length);
 
-            curvee.points = curveptarray;
-            console.log(curvee);
-            //var pointse = curvee.getPoints( 50 );
+          } );
 
-            //var pointse= curvee.points;
-            var gegee = new THREE.BufferGeometry().setFromPoints( curveptarray );
+          console.log(dots.length, "asdf");
+        }
 
-            var materiale = new THREE.LineBasicMaterial( { color : 0x00ff00 } );
+        var geometr = new THREE.BoxGeometry( radius, radius, radius);
+        var materia = new THREE.MeshLambertMaterial( {color: 0xff0000} );
+        var spher = new THREE.Mesh( geometr, materia );
 
-            // Create the final object to add to the scene
-            splineObjecte = new THREE.Line( gegee, materiale );
+        var nucurve;
+        var curveptarray = Array();
+
+        var ie;
+        var curvee = new THREE.CatmullRomCurve3();
+        var pieces = 4;
+        function comppts (q, arr)
+        {
+          for (ie = 0; ie < (q / 3) - 1; ie++)
+          {
+            if (ie % pieces == 0)
+            {
+              curveptarray[ie/pieces] = new THREE.Vector3(arr[ie * 3], arr[ie * 3 + 1], arr[ie * 3 + 2]);
+            }
+          }
+          curvee.points = curveptarray;
+        }
+
+        init();
+        onWindowResize();
+        animate();
+
+        function init()
+        {
+          // create container
+          container = document.getElementById( 'canvas' );
+          document.body.appendChild( container );
+
+          // create renderer
+          renderer = new THREE.WebGLRenderer({ alpha: true });
+          container.appendChild( renderer.domElement );
+
+          // set to cutout size in the future
+          var width = divWidth;
+          var height = divHeight;
+
+          // enable shadows
+          renderer.shadowMap.enabled = true;
+          //renderer.shadowMap.type = THREE.BasicShadowMap;
+
+          // initialize scene
+          scene = new THREE.Scene();
+
+          // initialize and position camera
+          camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
+          //var camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, -1000, 1000 );
+          camera.position.set( 0, 0, 8 );
+
+          // initialize and customize controls
+          controls = new THREE.OrbitControls( camera, renderer.domElement );
+          //controls.minDistance = 2;
+          //controls.maxDistance = 5;
+          //controls.maxPolarAngle = 11*Math.PI/24;
+          controls.enablePan = true;
+          controls.enableDamping = true;
+          controls.dampingFactor = 0.25;
+          controls.target.x =  1;
+          controls.enableZoom = true;
+
+          // add ambient light
+          scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
+          var light = new THREE.DirectionalLight(0xffffff,.3);
+          light.position.set(0, 500, 200);
+          light.target.position.set(0, 0, 0);
+          light.shadow.mapSize.width = 1024*4;
+          light.shadow.mapSize.height = 1024*4;
+          light.castShadow = true;
+
+          light.shadow.camera.near = 0;
+          light.shadow.camera.far = 4000;
+          light.shadow.camera.fov = 90;
+          scene.add(light);      var light = new THREE.DirectionalLight(0xffffff,.3);
+          light.position.set(0, 500, 200);
+          light.target.position.set(0, 0, 0);
+          light.shadow.mapSize.width = 1024*4;
+          light.shadow.mapSize.height = 1024*4;
+          light.castShadow = true;
+
+          light.shadow.camera.near = 0;
+          light.shadow.camera.far = 4000;
+          light.shadow.camera.fov = 90;
+          scene.add(light);
+
+          //add the group for all models to join
+          scene.add( group );
+
+          // initialize gltf loader
+          var loader = new THREE.GLTFLoader();
+
+          // define function that loads in models (gltf)
+          function loadGltf(path, position, modelGroup){
+            loader.load( path, function ( gltf )
+            {
+              clips = gltf.animations;
+              gltf.animations.forEach(function(anim){console.log(anim.name)});
+              //for each scene in the array of scene
+              gltf.scenes.forEach(function (curScene){
+                //adds the objects to a new group
+                var sceneGroup = new THREE.Group();
+                var sceneLength = curScene.children.length;
+                for(var i = 0; i < sceneLength; i++){
+                  curScene.children.userData = {alreadyUp:false};
+                  sceneGroup.add(curScene.children[0]);
+                }
+                sceneGroup.position.copy(position);
+                //for each object in the scene
+                sceneGroup.children.forEach( function (child){
+                  if (child instanceof THREE.Mesh){
+                    if (child.geometry.isBufferGeometry){
+                      console.log(child.name);
+                      if(child.name == "Cylinder001"){
+                        child.visible = false;
+                      }
+                      child.receiveShadow = true;
+                      child.castShadow = true;
+                    }
+                  }
+                });
+                modelGroup.add(sceneGroup);
+              });
+            });
           }
 
+          var matt = new THREE.LineBasicMaterial( { color : 0x00ff00, linecap: 'square', linejoin: 'square', linewidth: 5 } );
 
+          // Add in red line
+          objloader.load(
+        	// resource URL
+        	'models/sample_curves.obj',
+        	// called when resource is loaded
+        	function ( object ) {
+            nucurve = new THREE.Line(object, matt);
+            comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array);
+            var toobg = new THREE.TubeBufferGeometry( curvee, 100, .03, 4, false );
+            var toobm = new THREE.MeshBasicMaterial( { color: 0xff0000} );
+            var toobmesh = new THREE.Mesh( toobg, toobm );
+            scene.add( toobmesh );
+        	},
+        	// called when loading is in progresses
+        	function ( xhr ) {
 
+        		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
 
-          init();
-          onWindowResize();
-          animate();
+        	},
+        	// called when loading has errors
+        	function ( error ) {
 
-          function init()
-          {
+        		console.log( 'An error happened' );
 
-
-            // create container
-            container = document.getElementById( 'canvas' );
-            document.body.appendChild( container );
-
-            // create renderer
-            renderer = new THREE.WebGLRenderer({ alpha: true });
-            container.appendChild( renderer.domElement );
-
-            // set to cutout size in the future
-            var width = divWidth;
-            var height = divHeight;
-
-            // enable shadows
-            renderer.shadowMap.enabled = true;
-            //renderer.shadowMap.type = THREE.BasicShadowMap;
-
-            // initialize scene
-            scene = new THREE.Scene();
-
-            // initialize and position camera
-            camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
-            //var camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, -1000, 1000 );
-            camera.position.set( 0, 0, 8 );
-
-            // initialize and customize controls
-            controls = new THREE.OrbitControls( camera, renderer.domElement );
-            //controls.minDistance = 2;
-            //controls.maxDistance = 5;
-            //controls.maxPolarAngle = 11*Math.PI/24;
-            controls.enablePan = true;
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.25;
-            controls.target.x =  1;
-            controls.enableZoom = true;
-
-            // add ambient light
-            scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
-            var light = new THREE.DirectionalLight(0xffffff,.3);
-            light.position.set(0, 500, 200);
-            light.target.position.set(0, 0, 0);
-            light.shadow.mapSize.width = 1024*4;
-            light.shadow.mapSize.height = 1024*4;
-            light.castShadow = true;
-
-            light.shadow.camera.near = 0;
-            light.shadow.camera.far = 4000;
-            light.shadow.camera.fov = 90;
-            scene.add(light);      var light = new THREE.DirectionalLight(0xffffff,.3);
-            light.position.set(0, 500, 200);
-            light.target.position.set(0, 0, 0);
-            light.shadow.mapSize.width = 1024*4;
-            light.shadow.mapSize.height = 1024*4;
-            light.castShadow = true;
-
-            light.shadow.camera.near = 0;
-            light.shadow.camera.far = 4000;
-            light.shadow.camera.fov = 90;
-            scene.add(light);
-
-
-            //add the group for all models to join
-            scene.add( group );
-
-            // initialize gltf loader
-            var loader = new THREE.GLTFLoader();
-
-            // define function that loads in models (gltf)
-            function loadGltf(path, position, modelGroup){
-              loader.load( path, function ( gltf )
-              {
-                clips = gltf.animations;
-                gltf.animations.forEach(function(anim){console.log(anim.name)});
-                //for each scene in the array of scene
-                gltf.scenes.forEach(function (curScene){
-                  //adds the objects to a new group
-                  var sceneGroup = new THREE.Group();
-                  var sceneLength = curScene.children.length;
-                  for(var i = 0; i < sceneLength; i++){
-                    curScene.children.userData = {alreadyUp:false};
-                    sceneGroup.add(curScene.children[0]);
-                  }
-                  sceneGroup.position.copy(position);
-                  //for each object in the scene
-                  sceneGroup.children.forEach( function (child){
-                    if (child instanceof THREE.Mesh){
-                      if (child.geometry.isBufferGeometry){
-                        console.log(child.name);
-                        if(child.name == "Cylinder001"){
-                          child.visible = false;
-                        }
-                        child.receiveShadow = true;
-                        child.castShadow = true;
-                      }
-                    }
-                  });
-                  modelGroup.add(sceneGroup);
-                });
-              });
-            }
-
-            var matt = new THREE.LineBasicMaterial( { color : 0x00ff00, linecap: 'square', linejoin: 'square', linewidth: 5 } );
-
-            objloader.load(
-          	// resource URL
-          	'models/sample_curves.obj',
-          	// called when resource is loaded
-          	function ( object ) {
-
-              nucurve = new THREE.Line(object, matt);
-              console.log(object.children[0].geometry.attributes.position.array[0]);
-              comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array);
-
-              var toobg = new THREE.TubeBufferGeometry( curvee, 100, .05, 4, false );
-              var toobm = new THREE.MeshBasicMaterial( { color: 0xff0000} );
-              //toobm.emissive = new THREE.Color(0xff0000);
-              var toobmesh = new THREE.Mesh( toobg, toobm );
-              scene.add( toobmesh );
-
-
-
-              //scene.add(object);
-
-              //line constructioon here
-
-
-
-
-          	},
-          	// called when loading is in progresses
-          	function ( xhr ) {
-
-          		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-
-          	},
-          	// called when loading has errors
-          	function ( error ) {
-
-          		console.log( 'An error happened' );
-
-          	}
+        	}
           );
 
+          // add Nangaku model
+          loadGltf('models/Nangaku6.gltf', new THREE.Vector3(2,0,-2), group);
 
+          // add and position floor
+          var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
+          var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
+          var floorMaterial = new THREE.MeshLambertMaterial({color: 0xccffcc});
+          var floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
+          var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+          floorMesh.rotation.x -= Math.PI * 0.5;
+          floorMesh.position.y = 0;
+          floorMesh.receiveShadow = true;
+          floorMesh.castShadow = true;
+          scene.add(floorMesh);
 
+          // initialize postprocessing
+          composer = new THREE.EffectComposer( renderer );
+          var renderPass = new THREE.RenderPass( scene, camera );
+          composer.addPass( renderPass );
+          outlinePass = new THREE.OutlinePass( new THREE.Vector2( divWidth, divHeight ), scene, camera );
+          composer.addPass( outlinePass );
 
+          // initialize antialiasing
+          effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
+          effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
+          effectFXAA.renderToScreen = true;
+          composer.addPass( effectFXAA );
 
-          //scene.add(splineObjecte);
+          dot(20);
 
-
-            // add Nangaku model
-            loadGltf('models/Nangaku6.gltf', new THREE.Vector3(2,0,-2), group);
-
-            // add and position floor
-            var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
-            var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
-            var floorMaterial = new THREE.MeshLambertMaterial({color: 0xccffcc});
-            var floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
-            var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
-            floorMesh.rotation.x -= Math.PI * 0.5;
-            floorMesh.position.y = 0;
-            floorMesh.receiveShadow = true;
-            floorMesh.castShadow = true;
-            scene.add(floorMesh);
-
-            // initialize postprocessing
-            composer = new THREE.EffectComposer( renderer );
-            var renderPass = new THREE.RenderPass( scene, camera );
-            composer.addPass( renderPass );
-            outlinePass = new THREE.OutlinePass( new THREE.Vector2( divWidth, divHeight ), scene, camera );
-            composer.addPass( outlinePass );
-
-            // initialize antialiasing
-            effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
-            effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
-            effectFXAA.renderToScreen = true;
-            composer.addPass( effectFXAA );
-
-            console.log("SPHERRRRR");
-            /*
-            scene.add( spher );
-            scene.add( spher2 );
-            scene.add( spher3 );
-            scene.add( spher4 );
-            scene.add( spher5 );
-            scene.add( spher6 );
-            scene.add( spher7 );
-            scene.add( spher8 );
-            scene.add( spher9 );
-            scene.add( spher10 ); */
-
-            dot(20);
-
-            console.log("egg" + dots.length);
-
-            var lx;
-            for (lx = 0; lx < dots.length; lx++)
-            {
-              console.log(dots[lx], lx);
-              scene.add(dots[lx]);
-              console.log("WHAT HAPPEN");
-            }
-
-
+          var lx;
+          for (lx = 0; lx < dots.length; lx++)
+          {
+            console.log(dots[lx], lx);
+            scene.add(dots[lx]);
+            console.log("WHAT HAPPEN");
           }
 
-            /////////////////////////////////
-            //     animation functions     //
-            /////////////////////////////////
+        }
 
-            function playAnimation(rootObject, clipName){
-              var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, 'Arrow'), rootObject );
-              action.play();
+        /////////////////////////////////
+        //     animation functions     //
+        /////////////////////////////////
+
+        function playAnimation(rootObject, clipName){
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, 'Arrow'), rootObject );
+          action.play();
+        }
+
+        function stopAnimation(rootObject, clipName){
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, 'Arrow'), rootObject );
+          action.stop();
+        }
+
+        //plays animation on a object forwards or backwards stopping on last frame
+        function playFloorAnimation( rootObject, isUp, clipName ){
+          var loops = 0;
+          loops++;
+          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
+          action.paused = false;
+          action.clampWhenFinished = true;
+          action.setLoop(THREE.LoopOnce, loops);
+          if(isUp){
+            loops++;
+            action.setLoop(THREE.LoopOnce, loops);
+            action.timeScale = -1;
+            action.paused = false;
+          }
+          else{action.timeScale = 1;}
+          rootObject.alreadyUp = !rootObject.alreadyUp;
+          action.play();
+        }
+
+        //takes a group of a building and applies an animation to each floor
+        //isUp determines direaction of animation, true is forward, false is reverse, putting the child.alreadyUp makes it ping pong
+        function animateFloors(buildingGroup, isUp){
+          buildingGroup.children.forEach(function(child){
+
+            //plays animations by the name of the floors, each floor is named after its animation
+            if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
+              playFloorAnimation(child, isUp, child.name.slice(0, (child.name.length - 3)));
+              console.log("working");
             }
+            else{child.alreadyUp = !child.alreadyUp;}
+          });
+        }
 
-            function stopAnimation(rootObject, clipName){
-              var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, 'Arrow'), rootObject );
-              action.stop();
-            }
+        /////////////////////////////////
+        /////////////////////////////////
+        /////////////////////////////////
 
-            //plays animation on a object forwards or backwards stopping on last frame
-            function playFloorAnimation( rootObject, isUp, clipName ){
-              var loops = 0;
-              loops++;
-              var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
-              action.paused = false;
-              action.clampWhenFinished = true;
-              action.setLoop(THREE.LoopOnce, loops);
-              if(isUp){
-                loops++;
-                action.setLoop(THREE.LoopOnce, loops);
-                action.timeScale = -1;
-                action.paused = false;
-              }
-              else{action.timeScale = 1;}
-              rootObject.alreadyUp = !rootObject.alreadyUp;
-              action.play();
-            }
+        // initialize event listeners
+        window.addEventListener( 'resize', onWindowResize, false );
+        window.addEventListener( 'mouseup', onTouchMove );
+        window.addEventListener( 'touchend', onTouchMove );
+        window.addEventListener( 'touchstart', onmesh);
+        window.addEventListener( 'mousedown', onmesh);
 
-            //takes a group of a building and applies an animation to each floor
-            //isUp determines direaction of animation, true is forward, false is reverse, putting the child.alreadyUp makes it ping pong
-            function animateFloors(buildingGroup, isUp){
-              buildingGroup.children.forEach(function(child){
+        // variables for listner functions
+        var clicked = true;
+        var started = false;
+        var startobj = null;
+        var prevobj = null;
 
-                //plays animations by the name of the floors, each floor is named after its animation
-                if (THREE.AnimationClip.findByName(clips,child.name.slice(0, (child.name.length - 3))) != null){
-                  playFloorAnimation(child, isUp, child.name.slice(0, (child.name.length - 3)));
-                  console.log("working");
-                }
-                else{child.alreadyUp = !child.alreadyUp;}
-              });
-            }
+        /////////////////////////////////
+        //  event triggered functions  //
+        /////////////////////////////////
 
-            /////////////////////////////////
-            /////////////////////////////////
-            /////////////////////////////////
+        // checks if mouse/touch start is on a mesh
+        function onmesh (event)
+        {
+          var x, y;
 
-            // initialize event listeners
-            window.addEventListener( 'resize', onWindowResize, false );
-            window.addEventListener( 'mouseup', onTouchMove );
-            window.addEventListener( 'touchend', onTouchMove );
-            window.addEventListener( 'touchstart', onmesh);
-            window.addEventListener( 'mousedown', onmesh);
+          if ( event.changedTouches )
+          {
+            x = event.changedTouches[ 0 ].pageX;
+            y = event.changedTouches[ 0 ].pageY;
+          }
+          else
+          {
+            x = event.clientX;
+            y = event.clientY;
+          }
 
-            // variables for listner functions
-            var clicked = true;
-            var started = false;
-            var startobj = null;
-            var prevobj = null;
+          mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
+          mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
 
-            /////////////////////////////////
-            //  event triggered functions  //
-            /////////////////////////////////
+          raycaster.setFromCamera( mouse, camera );
+          var intersects = raycaster.intersectObjects( [ group ], true );
+          if ( intersects.length > 0 )
+          {
+            started = true;
+            startobj = intersects[0].object;
+            //clicked = !clicked;
+          }
+          else
+          {
+            started = false;
+            startobj = null;
+          }
+        }
 
-            // checks if mouse/touch start is on a mesh
-            function onmesh (event)
+        // checks intersection when click up
+        function onTouchMove( event )
+        {
+          var x, y;
+          if ( event.changedTouches )
+          {
+            x = event.changedTouches[ 0 ].pageX;
+            y = event.changedTouches[ 0 ].pageY;
+          }
+          else
+          {
+            x = event.clientX;
+            y = event.clientY;
+          }
+          mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
+          mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
+          checkIntersection();
+        }
+
+        // adds object to outline list
+        function addSelectedObject( object )
+        {
+          selectedObjects = [];
+          selectedObjects.push( object );
+        }
+
+        // checks intersection and outlines/play animation accordingly
+        function checkIntersection()
+        {
+          raycaster.setFromCamera( mouse, camera );
+          var intersects = raycaster.intersectObjects( [ group ], true );
+          if ( intersects.length > 0 )
+          {
+            //outlinePass.selectedObjects = [];
+
+            var selectedObject = intersects[ 0 ].object;
+            console.log(selectedObject.parent);
+
+            addSelectedObject(selectedObject);
+            if (started)
             {
-              var x, y;
-
-              if ( event.changedTouches )
+              if (startobj == selectedObject)
               {
-                x = event.changedTouches[ 0 ].pageX;
-                y = event.changedTouches[ 0 ].pageY;
-              }
-              else
-              {
-                x = event.clientX;
-                y = event.clientY;
-              }
-
-              mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
-              mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
-
-              raycaster.setFromCamera( mouse, camera );
-              var intersects = raycaster.intersectObjects( [ group ], true );
-              if ( intersects.length > 0 )
-              {
-                started = true;
-                startobj = intersects[0].object;
-                //clicked = !clicked;
-              }
-              else
-              {
-                started = false;
-                startobj = null;
-              }
-            }
-
-            // checks intersection when click up
-            function onTouchMove( event )
-            {
-              var x, y;
-              if ( event.changedTouches )
-              {
-                x = event.changedTouches[ 0 ].pageX;
-                y = event.changedTouches[ 0 ].pageY;
-              }
-              else
-              {
-                x = event.clientX;
-                y = event.clientY;
-              }
-              mouse.x = ( ( x - renderer.domElement.offsetLeft ) / renderer.domElement.clientWidth ) * 2 - 1;
-              mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
-              checkIntersection();
-            }
-
-            // adds object to outline list
-            function addSelectedObject( object )
-            {
-              selectedObjects = [];
-              selectedObjects.push( object );
-            }
-
-            // checks intersection and outlines/play animation accordingly
-            function checkIntersection()
-            {
-              raycaster.setFromCamera( mouse, camera );
-              var intersects = raycaster.intersectObjects( [ group ], true );
-              if ( intersects.length > 0 )
-              {
-                //outlinePass.selectedObjects = [];
-
-                var selectedObject = intersects[ 0 ].object;
-                console.log(selectedObject.parent);
-
-                addSelectedObject(selectedObject);
-                if (started)
+                if (clicked)
                 {
-                  if (startobj == selectedObject)
+                  if (prevobj = selectedObject)
                   {
-                    if (clicked)
+                    outlinePass.selectedObjects = selectedObjects;
+                    openNav();
+                    animateFloors(selectedObject.parent, false);
+                    if(selectedObject.alreadyUp)
                     {
-                      if (prevobj = selectedObject)
-                      {
-                        outlinePass.selectedObjects = selectedObjects;
-                        openNav();
-                        animateFloors(selectedObject.parent, false);
-                        if(selectedObject.alreadyUp)
-                        {
-                          selectedObject.parent.parent.children[1].children[0].visible = true;
-                          playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
-                        }
-                        else
-                        {
-                          selectedObject.parent.parent.children[1].children[0].visible = false;
-                          stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
-                        }
-                        clicked = true;
-                      }
-                      else
-                      {
-                        outlinePass.selectedObjects = [];
-                        closeNav();
-                        animateFloors(selectedObject.parent, true);
-                        if(selectedObject.alreadyUp)
-                        {
-                          selectedObject.parent.parent.children[1].children[0].visible = true;
-                          playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
-                        }
-                        else
-                        {
-                          selectedObject.parent.parent.children[1].children[0].visible = false;
-                          stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
-                        }
-                        clicked = false;
-                      }
+                      selectedObject.parent.parent.children[1].children[0].visible = true;
+                      playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
                     }
                     else
                     {
-                      outlinePass.selectedObjects = selectedObjects;
-                      openNav();
-                      animateFloors(selectedObject.parent, false);
-                      if(selectedObject.alreadyUp)
-                      {
-                        selectedObject.parent.parent.children[1].children[0].visible = true;
-                        playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
-                      }
-                      else
-                      {
-                        selectedObject.parent.parent.children[1].children[0].visible = false;
-                        stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
-                      }
-                      clicked = true;
+                      selectedObject.parent.parent.children[1].children[0].visible = false;
+                      stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
                     }
+                    clicked = true;
+                  }
+                  else
+                  {
+                    outlinePass.selectedObjects = [];
+                    closeNav();
+                    animateFloors(selectedObject.parent, true);
+                    if(selectedObject.alreadyUp)
+                    {
+                      selectedObject.parent.parent.children[1].children[0].visible = true;
+                      playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+                    }
+                    else
+                    {
+                      selectedObject.parent.parent.children[1].children[0].visible = false;
+                      stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+                    }
+                    clicked = false;
                   }
                 }
                 else
                 {
-                  outlinePass.selectedObjects = [];
-                  closeNav();
-                  animateFloors(selectedObject.parent, true);
+                  outlinePass.selectedObjects = selectedObjects;
+                  openNav();
+                  animateFloors(selectedObject.parent, false);
                   if(selectedObject.alreadyUp)
                   {
                     selectedObject.parent.parent.children[1].children[0].visible = true;
@@ -738,253 +592,174 @@
                     selectedObject.parent.parent.children[1].children[0].visible = false;
                     stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
                   }
-                  clicked = false;
+                  clicked = true;
                 }
-              prevobj = selectedObject;
-
-            }
-
-            var width = divWidth;
-            var height = divHeight;
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-            renderer.setSize( width, height );
-            composer.setSize( width, height );
-            renderer.domElement.style.width = width + 'px';
-            renderer.domElement.style.height = height + 'px';
-
-
-          }
-
-          // resize the screen correctly
-          var i = 0;
-          function onWindowResize()
-          {
-            divWidth = window.innerWidth;// / 2;
-            divHeight = window.innerHeight; // 2;
-            var width = divWidth;
-            var height = divHeight;
-            var w2 = 0;//200/7;//= xx;
-            var h2 = 0;//= yy;
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-            renderer.setSize( width, height );
-            composer.setSize( width, height );
-            renderer.domElement.style.width = width + 'px';
-            renderer.domElement.style.height = height + 'px';
-            //renderer.domElement.style.offsetLeft = w2 + 'px';
-            //renderer.domElement.style.offsetTop = h2 + 'px';
-            effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
-
-
-            var css = '#canvas {background-color: #f0f; margin-left: ' + w2.toString() + 'vw; width: 0px; height: 0px; padding: 0px; margin-top: ' + h2.toString() + 'vw; position: static;}',
-            head = document.head || document.getElementsByTagName('head')[0],
-            style = document.createElement('style');
-
-            var y;
-
-
-            style.type = 'text/css';
-            if (style.styleSheet)
-            {
-              // This is required for IE8 and below.
-              style.styleSheet.cssText = css;
+              }
             }
             else
             {
-              t = document.createTextNode(css);
-              style.appendChild(t);
-
-              if (style.childNodes.length <1)
+              outlinePass.selectedObjects = [];
+              closeNav();
+              animateFloors(selectedObject.parent, true);
+              if(selectedObject.alreadyUp)
               {
-                //y = style.childNode[0];
-                style.removeChild(style.childNode[style.childNodes.length - 1]);
-                head.style.childNodes[0].kill();
-                head.style.childNodes[i].kill();
-                style.removeChild(style.childNode[0]);
-                head.style.childNodes[i-1].kill();
-                style.removeChild(style.childNode[i]);
-                style.removeChild(style.childNode[i-1]);
-                head.style.childNodes[style.childNodes.length - 1].kill();
-                //console.log(style.childNodes.length);
-
-                i++;
+                selectedObject.parent.parent.children[1].children[0].visible = true;
+                playAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
               }
-
-              console.log(style.childNodes.length);
-
-              //head.style.textContent = css;
+              else
+              {
+                selectedObject.parent.parent.children[1].children[0].visible = false;
+                stopAnimation(selectedObject.parent.parent.children[1].children[0], 'Arrow');
+              }
+              clicked = false;
             }
+          prevobj = selectedObject;
 
-            head.appendChild(style);
+        }
+          var width = divWidth;
+          var height = divHeight;
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize( width, height );
+          composer.setSize( width, height );
+          renderer.domElement.style.width = width + 'px';
+          renderer.domElement.style.height = height + 'px';
+        }
 
-            if (head.childNodes.length > 1)
-            {
-              //y = style.childNodes[0];
-              //head.removeChild(y);
-            }
+        // resize the screen correctly
+        var i = 0;
+        function onWindowResize()
+        {
+          divWidth = window.innerWidth;// / 2;
+          divHeight = window.innerHeight; // 2;
+          var width = divWidth;
+          var height = divHeight;
+          var w2 = 0;//200/7;//= xx;
+          var h2 = 0;//= yy;
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize( width, height );
+          composer.setSize( width, height );
+          renderer.domElement.style.width = width + 'px';
+          renderer.domElement.style.height = height + 'px';
+          //renderer.domElement.style.offsetLeft = w2 + 'px';
+          //renderer.domElement.style.offsetTop = h2 + 'px';
+          effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
 
 
+          var css = '#canvas {background-color: #f0f; margin-left: ' + w2.toString() + 'vw; width: 0px; height: 0px; padding: 0px; margin-top: ' + h2.toString() + 'vw; position: static;}',
+          head = document.head || document.getElementsByTagName('head')[0],
+          style = document.createElement('style');
+
+          var y;
 
 
-            scene.add(splineObject);
-            //scene.add( nucurve );
-          }
-
-
-          // variables needed before draw loop
-          var panx = 1;
-          var panz = 1;
-          var i  = .99;
-          var spor = -1;
-
-          // draw loop
-          function animate()
+          style.type = 'text/css';
+          if (style.styleSheet)
           {
-            requestAnimationFrame( animate );
-            //stats.begin();
-            var timer = performance.now();
+            // This is required for IE8 and below.
+            style.styleSheet.cssText = css;
+          }
+          else
+          {
+            t = document.createTextNode(css);
+            style.appendChild(t);
 
-						// weak attempt at pan limiting
-            if (controls.target.x > panx) {
-                controls.target.x = panx;
-            }
-            if (controls.target.x < -1 * panx) {
-                controls.target.x = -1 * panx;
-            }
-            if (controls.target.z > panz) {
-                controls.target.z = panz;
-            }
-            if (controls.target.z < -1 * panz) {
-                controls.target.z = -1 * panz;
-            }
-            controls.target.y = 0;
-
-            var speed = .003;
-
-//console.log(i, spor);
-            if (i >= 1)
+            if (style.childNodes.length <1)
             {
-              i = 1;
-              spor = -1;
-              var xxc;
-              for(xxc = 0; xxc < 30; xxc++)
-              {
-                console.log("beep");
-                console.log("boop");
-              }
-            }
-            i = (i + (spor * speed));
-            if (i <= 0)
-            {
-              i = 1;
-              //spor = 1;
+              //y = style.childNode[0];
+              style.removeChild(style.childNode[style.childNodes.length - 1]);
+              head.style.childNodes[0].kill();
+              head.style.childNodes[i].kill();
+              style.removeChild(style.childNode[0]);
+              head.style.childNodes[i-1].kill();
+              style.removeChild(style.childNode[i]);
+              style.removeChild(style.childNode[i-1]);
+              head.style.childNodes[style.childNodes.length - 1].kill();
+              //console.log(style.childNodes.length);
 
-
-            }
-            //console.log(i, spor);
-
-            // console.log(i);
-            //console.log(dots[30]);
-            var llx;
-            for (llx = 0; llx < dotlength; llx++)
-            {
-              console.log(dots[llx]);
-
-              var scale = 0.12;
-
-              dots[llx].scale.x = scale * 2;
-              dots[llx].scale.y = scale * 1.5;
-              dots[llx].scale.z = scale * 1.5;
-
-
-              dots[llx].position.x = curvee.getPoint((i + (llx / dotlength)) % 1).x;
-              dots[llx].position.y = curvee.getPoint((i + (llx / dotlength)) % 1).y;
-              dots[llx].position.z = curvee.getPoint((i + (llx / dotlength)) % 1).z;
-
-              //dots[llx].rotation.x = Math.PI / 2 * curvee.getTangent((i + (llx / dots.length)) % 1).x;
-              //dots[llx].rotation.z = Math.PI / 2 * curvee.getTangent((i + (llx / dots.length)) % 1).z;
-              dots[llx].rotation.x = -1 * curvee.getTangent((i + (llx / dotlength)) % 1).x - .25
-              dots[llx].rotation.y = 1 * curvee.getTangent((i + (llx / dotlength)) % 1).y
-              dots[llx].rotation.z = -1 * curvee.getTangent((i + (llx / dotlength)) % 1).z
-              //console.log(llx);
-              //dots[llx].rotation.z = curvee.getTangent((i + (llx / dots.length)) % 1).z;
+              i++;
             }
 
-            //console.log(dots[1]);
-/*
-            // spline movement
-            console.log(curvee);
-            spher.position.x = (1)*(10 * curvee.getPoint(i).x) / 10.0;
-            spher.position.y = (1)*(10 * curvee.getPoint(i).y) / 10.0;
-            spher.position.z = (1)*(10 * curvee.getPoint(i).z) / 10.0;
 
-            spher.rotation.x = curvee.getTangent(i).x;
-            spher.rotation.y = curvee.getTangent(i).y;
-            spher.rotation.z = curvee.getTangent(i).z;
-            console.log(curvee.getTangent(i));
-            //spher.position.x = 0;
-            //spher.position.y = 0;
-            //spher.position.z = 0;
-            spher2.position.x = (1)*(10 * curvee.getPoint((i + .1) % 1).x) / 10.0;
-            spher2.position.y = (1)*(10 * curvee.getPoint((i + .1) % 1).y) / 10.0;
-            spher2.position.z = (1)*(10 * curvee.getPoint((i + .1) % 1).z) / 10.0;
-
-            //spher2.rotation.x = curvee.getTangent((i + .1) % 1).x;
-            spher2.rotation.y = 2 * curvee.getTangent((i + .1) % 1).y;
-            //spher2.rotation.z = curvee.getTangent((i + .1) % 1).z;
-
-            spher3.position.x = (1)*(10 * curvee.getPoint((i + .2) % 1).x) / 10.0;
-            spher3.position.y = (1)*(10 * curvee.getPoint((i + .2) % 1).y) / 10.0;
-            spher3.position.z = (1)*(10 * curvee.getPoint((i + .2) % 1).z) / 10.0;
-
-            //spher3.rotation.x = curvee.getTangent((i + .2) % 1).x;
-            spher3.rotation.y = 2 * curvee.getTangent((i + .2) % 1).y;
-            //spher3.rotation.z = curvee.getTangent((i + .2) % 1).z;
-
-            spher4.position.x = (1)*(10 * curvee.getPoint((i + .3) % 1).x) / 10.0;
-            spher4.position.y = (1)*(10 * curvee.getPoint((i + .3) % 1).y) / 10.0;
-            spher4.position.z = (1)*(10 * curvee.getPoint((i + .3) % 1).z) / 10.0;
-
-            spher5.position.x = (1)*(10 * curvee.getPoint((i + .4) % 1).x) / 10.0;
-            spher5.position.y = (1)*(10 * curvee.getPoint((i + .4) % 1).y) / 10.0;
-            spher5.position.z = (1)*(10 * curvee.getPoint((i + .4) % 1).z) / 10.0;
-
-            spher6.position.x = (1)*(10 * curvee.getPoint((i + .5) % 1).x) / 10.0;
-            spher6.position.y = (1)*(10 * curvee.getPoint((i + .5) % 1).y) / 10.0;
-            spher6.position.z = (1)*(10 * curvee.getPoint((i + .5) % 1).z) / 10.0;
-
-            spher7.position.x = (1)*(10 * curvee.getPoint((i + .6) % 1).x) / 10.0;
-            spher7.position.y = (1)*(10 * curvee.getPoint((i + .6) % 1).y) / 10.0;
-            spher7.position.z = (1)*(10 * curvee.getPoint((i + .6) % 1).z) / 10.0;
-
-            spher8.position.x = (1)*(10 * curvee.getPoint((i + .7) % 1).x) / 10.0;
-            spher8.position.y = (1)*(10 * curvee.getPoint((i + .7) % 1).y) / 10.0;
-            spher8.position.z = (1)*(10 * curvee.getPoint((i + .7) % 1).z) / 10.0;
-
-            spher9.position.x = (1)*(10 * curvee.getPoint((i + .8) % 1).x) / 10.0;
-            spher9.position.y = (1)*(10 * curvee.getPoint((i + .8) % 1).y) / 10.0;
-            spher9.position.z = (1)*(10 * curvee.getPoint((i + .8) % 1).z) / 10.0;
-
-            spher10.position.x = (1)*(10 * curvee.getPoint((i + .9) % 1).x) / 10.0;
-            spher10.position.y = (1)*(10 * curvee.getPoint((i + .9) % 1).y) / 10.0;
-            spher10.position.z = (1)*(10 * curvee.getPoint((i + .9) % 1).z) / 10.0;
-            //ten more
-
-            */
-
-            controls.update();
-            composer.render();
-            //stats.end();
-            mixer.update(clock.getDelta());
-
-            scene.background = new THREE.Color(0xc0d9ff);
-
-
+            //head.style.textContent = css;
           }
 
+          head.appendChild(style);
+
+          if (head.childNodes.length > 1)
+          {
+            //y = style.childNodes[0];
+            //head.removeChild(y);
+          }
+        }
+
+        // variables needed before draw loop
+        var panx = 1;
+        var panz = 1;
+        var i  = .99;
+        var spor = -1;
+
+        // draw loop
+        function animate()
+        {
+          requestAnimationFrame( animate );
+          //stats.begin();
+          var timer = performance.now();
+
+					// weak attempt at pan limiting
+          if (controls.target.x > panx) {
+              controls.target.x = panx;
+          }
+          if (controls.target.x < -1 * panx) {
+              controls.target.x = -1 * panx;
+          }
+          if (controls.target.z > panz) {
+              controls.target.z = panz;
+          }
+          if (controls.target.z < -1 * panz) {
+              controls.target.z = -1 * panz;
+          }
+          controls.target.y = 0;
+
+          var speed = .003;
+
+          if (i >= 1)
+          {
+            i = 1;
+            spor = -1;
+          }
+          i = (i + (spor * speed));
+          if (i <= 0)
+          {
+            i = 1;
+          }
+
+          var llx;
+          for (llx = 0; llx < dotlength; llx++)
+          {
+
+            var scale = 0.08;
+
+            dots[llx].scale.x = scale * 2;
+            dots[llx].scale.y = scale * 1.5;
+            dots[llx].scale.z = scale * 1.5;
+
+            dots[llx].position.x = curvee.getPoint((i + (llx / dotlength)) % 1).x;
+            dots[llx].position.y = curvee.getPoint((i + (llx / dotlength)) % 1).y;
+            dots[llx].position.z = curvee.getPoint((i + (llx / dotlength)) % 1).z;
+
+            dots[llx].rotation.x = -1 * curvee.getTangent((i + (llx / dotlength)) % 1).x - .25
+            dots[llx].rotation.y = 1 * curvee.getTangent((i + (llx / dotlength)) % 1).y
+            dots[llx].rotation.z = -1 * curvee.getTangent((i + (llx / dotlength)) % 1).z
+          }
+
+          controls.update();
+          composer.render();
+          mixer.update(clock.getDelta());
+
+          scene.background = new THREE.Color(0xc0d9ff);
+          }
         </script>
-
     </body>
-
 </html>
