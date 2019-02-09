@@ -1,12 +1,12 @@
 function findNames(name){
-  nameList.forEach(function(child){
-    if(child.name == name){
-      var allNames = child.names;
-      allNames.push(name);
-      return allNames;
+  var allNames = [];
+  nameList.forEach(function(list){
+    if(list.name === name){
+      allNames = list.names;
     }
-    else return [name];
   });
+  allNames.push(name);
+  return allNames;
 }
 
 var nameList  = [
@@ -38,5 +38,27 @@ var nameList  = [
   {name:"G1LG", names:["Lower Gym","LG"]},
   {name:"G2UG", names:["UG","Upper Gym", "Gymnasium"]},
   {name:"I109", names:["Writing Center"]},
-  {name:"", names:["",""]},
+  {name:"N1AO", names:["IAO","Iolani Advancement Office"]},
+  {name:"I111", names:["ITS","Information Technology Service", "IT"]},
+  {name:"W1CCO", names:["College Counseling Office","CCO", "College Counseling"]},
+  {name:"I1DeanofUpperSchool", names:["Dean of Upper School","Dean of Upper School Office"]},
+  {name:"I1DeanofStudies", names:["Dean of Studies","Dean of Studies Office", "Associate Head of School", "Associate Head of School Offices"]},
+  {name:"I1Counseling", names:["Counseling Office","Counseling"]},
+  {name:"I1DeanofStudents", names:["Dean of Students Office","Registrar's Office"]},
+  {name:"I1MainOffice", names:["Main Office","Attendance"]},
+  {name:"I1HeadOfSchool", names:["Head of School's Office","Head of School", "HOS", "The Boss"]},
+  {name:"N206", names:["Residential Life Office","Residential Life", "Communications Office", "Communications"]},
+  {name:"N1Admissions", names:["Admission Office","Admissions"]},
+  {name:"G1WR", names:["Weight Room"]},
+  {name:"G1PEOffice", names:["P.E. Office","PE Office"]},
+  {name:"G1AthleticOffice", names:["Athletic Office","AO"]},
+  {name:"G1Training", names:["Athletic Training","Training Room"]},
+  {name:"N1Bookstore", names:["BookStore","Book Store"]},
+  {name:"W103", names:["Physics Office"]},
+  {name:"W211", names:["Math Office"]},
+  {name:"W3CRA", names:["Weinberg Conference Room A","WCR3A"]},
+  {name:"W3CRB", names:["Weinberg Conference Room B","WCR3B"]},
+  {name:"W3CRC", names:["Weinberg Conference Room C","WCR3C"]},
+  {name:"W2CRB", names:["Weinberg Conference Room B","WCR2B"]},
+  {name:"W2CRA", names:["Weinberg Conference Room B","WCR3A"]},
 ]

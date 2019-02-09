@@ -337,9 +337,18 @@
         var lfclick = true;
         var prevobj = null;
 
-        //function returns a room when given a name (e.g. n203, w315)
-        function findRoom(roomID){
-
+        //function returns a room when given a name (e.g. n203, w315, Library)
+        function findRoom(roomName){
+          group.forEach(function(building){
+            building.forEach(function(room){
+              room.names.forEach(function(name){
+                if(name == roomName){
+                  return room;
+                }
+              })
+            });
+          });
+          return null;
         }
 
         /*
@@ -533,7 +542,6 @@
             outlinePass.selectedObjects = [];
 
             var selectedObject = intersects[ 0 ].object;
-            console.log(selectedObject.parent.name);
             animateFloors(selectedObject, 'PingPong');
 
             addSelectedObject( selectedObject );
