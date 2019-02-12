@@ -163,10 +163,29 @@
         var divWidth = window.innerWidth;
         var divHeight = window.innerHeight;
         var objloader = new THREE.OBJLoader();
+
         var dots = new Array();
         var radius = .2;
         var convtxs = new Float32Array();
         var dotlength;
+        var linee;
+
+        var geometr = new THREE.BoxGeometry( radius, radius, radius);
+        var materia = new THREE.MeshLambertMaterial( {color: 0xff0000} );
+        var spher = new THREE.Mesh( geometr, materia );
+
+        var nucurve;
+        var curveptarray = Array();
+
+        var ie;
+        var curvee = new THREE.CatmullRomCurve3();
+        var pieces = 4;
+
+        var curveArray = Array();
+
+        var matt = new THREE.LineBasicMaterial( { color : 0x00ff00, linecap: 'square', linejoin: 'square', linewidth: 5 } );
+
+
 
         function dot (u)
         {
@@ -199,16 +218,7 @@
           console.log(dots.length, "asdf");
         }
 
-        var geometr = new THREE.BoxGeometry( radius, radius, radius);
-        var materia = new THREE.MeshLambertMaterial( {color: 0xff0000} );
-        var spher = new THREE.Mesh( geometr, materia );
 
-        var nucurve;
-        var curveptarray = Array();
-
-        var ie;
-        var curvee = new THREE.CatmullRomCurve3();
-        var pieces = 4;
         function comppts (q, arr)
         {
           for (ie = 0; ie < (q / 3) - 1; ie++)
@@ -219,6 +229,30 @@
             }
           }
           curvee.points = curveptarray;
+        }
+
+        function spSetup(file, id, stScale, yScale, buildingLink)
+        {
+          objloader.load(
+          // resource URL
+          file,
+          // called when resource is loaded
+          function ( object ) {
+            nucurve = new THREE.Line(object, matt);
+            comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array);
+            var toobg = new THREE.TubeBufferGeometry( curvee, 100, .03, 4, false );
+            var toobm = new THREE.MeshBasicMaterial( { color: 0xff0000} );
+            curveArray[id] = new THREE.Mesh( toobg, toobm );
+            curveArray[id].scale.x = stScale;
+            curveArray[id].scale.y = stScale;
+            curveArray[id].scale.y = stScale;
+            scene.add( curveArray[id] );
+        	});
+        }
+
+        function init2 ()
+        {
+          spSetup('models/sample_curve4.obj', 0, 2, 1, 'sullivan');
         }
 
         init();
@@ -326,9 +360,8 @@
             });
           }
 
-          var matt = new THREE.LineBasicMaterial( { color : 0x00ff00, linecap: 'square', linejoin: 'square', linewidth: 5 } );
-
           // Add in red line
+          //ar linee;
           objloader.load(
         	// resource URL
         	'models/sample_curves.obj',
@@ -338,8 +371,8 @@
             comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array);
             var toobg = new THREE.TubeBufferGeometry( curvee, 100, .03, 4, false );
             var toobm = new THREE.MeshBasicMaterial( { color: 0xff0000} );
-            var toobmesh = new THREE.Mesh( toobg, toobm );
-            scene.add( toobmesh );
+            linee = new THREE.Mesh( toobg, toobm );
+            scene.add( linee );
         	},
         	// called when loading is in progresses
         	function ( xhr ) {
@@ -365,7 +398,7 @@
           var floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
           var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
           floorMesh.rotation.x -= Math.PI * 0.5;
-          floorMesh.position.y = 0;
+          floorMesh.position.y = -4;
           floorMesh.receiveShadow = true;
           floorMesh.castShadow = true;
           scene.add(floorMesh);
@@ -392,6 +425,8 @@
             scene.add(dots[lx]);
             console.log("WHAT HAPPEN");
           }
+
+          init2();
 
         }
 
@@ -613,9 +648,8 @@
               }
               clicked = false;
             }
-          prevobj = selectedObject;
-
-        }
+            prevobj = selectedObject;
+          }
           var width = divWidth;
           var height = divHeight;
           camera.aspect = width / height;
@@ -745,9 +779,13 @@
             dots[llx].scale.y = scale * 1.5;
             dots[llx].scale.z = scale * 1.5;
 
-            dots[llx].position.x = curvee.getPoint((i + (llx / dotlength)) % 1).x;
-            dots[llx].position.y = curvee.getPoint((i + (llx / dotlength)) % 1).y;
-            dots[llx].position.z = curvee.getPoint((i + (llx / dotlength)) % 1).z;
+            linee.scale.x = Math.cos(Math.PI * 4 * i);
+            linee.scale.y = Math.sin(Math.PI * 2 * i);
+            linee.scale.z = Math.sin(Math.PI * 6 * i);
+
+            dots[llx].position.x = curvee.getPoint((i + (llx / dotlength)) % 1).x * linee.scale.x;
+            dots[llx].position.y = curvee.getPoint((i + (llx / dotlength)) % 1).y * linee.scale.y;
+            dots[llx].position.z = curvee.getPoint((i + (llx / dotlength)) % 1).z * linee.scale.z;
 
             dots[llx].rotation.x = -1 * curvee.getTangent((i + (llx / dotlength)) % 1).x - .25
             dots[llx].rotation.y = 1 * curvee.getTangent((i + (llx / dotlength)) % 1).y
