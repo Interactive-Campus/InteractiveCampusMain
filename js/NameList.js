@@ -61,4 +61,9 @@ var nameList  = [
   {name:"W3CRC", names:["Weinberg Conference Room C","WCR3C"]},
   {name:"W2CRB", names:["Weinberg Conference Room B","WCR2B"]},
   {name:"W2CRA", names:["Weinberg Conference Room B","WCR3A"]},
+  {name:"SC1Cafeteria", names:["Cafeteria","Student Center"]},
+  {name:"SC1Infirmary", names:["Infirmary","Nurse Room", "Health Center", "Wellness Theme"]},
+  {name:"C1Counseling", names:["Castle Conference Room","Castle Counseling"]},
+  {name:"C1SPO", names:["Special Programs Office","SPO", "Summer School Office", "SSO"]},
+  
 ]
