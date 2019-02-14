@@ -182,7 +182,7 @@
         var pieces = 4;
 
         var curveMeshArray = Array();
-        var curveEqArray = Array(new THREE.CatmullRomCurve3());
+        var curveEqArray = Array();
 
         var curveCount = 2;
 
@@ -222,6 +222,7 @@
 
         function comppts (q, arr, index)
         {
+          var holda = new THREE.CatmullRomCurve3();
           for (ie = 0; ie < (q / 3) - 1; ie++)
           {
             if (ie % pieces == 0)
@@ -229,7 +230,8 @@
               curveptarray[ie/pieces] = new THREE.Vector3(arr[ie * 3], arr[ie * 3 + 1], arr[ie * 3 + 2]);
             }
           }
-          curveEqArray[index] = curveptarray;
+          holda.points = curveptarray;
+          curveEqArray[index] = holda;
         }
 
         function spSetup(file, id, stScale, yScale, buildingLink, index)
@@ -243,12 +245,15 @@
             comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array, index);
             var toobg = new THREE.TubeBufferGeometry( curvee, 100, .03, 4, false );
             var toobm = new THREE.MeshBasicMaterial( { color: 0xff0000} );
-            curveMeshArray[id] = new THREE.Mesh( toobg, toobm );
+            curveMeshArray[index] = new THREE.Mesh( toobg, toobm );
+            console.log("agu");
+            console.log(curveMeshArray[curveMeshArray.length])
             curveMeshArray[id].scale.x = stScale;
             curveMeshArray[id].scale.y = stScale;
             curveMeshArray[id].scale.y = stScale;
             scene.add( curveMeshArray[id] );
         	});
+          console.log("agu");
         }
 
         function init2 ()
@@ -770,8 +775,8 @@
             i = 1;
           }
 
-          var slx
-          for (slx = 0; slx < curveCount; curveCount++)
+          var tls;
+          for (tls = 0; tls < curveCount; tls++)
           {
             var llx;
             for (llx = 0; llx < dotlength; llx++)
@@ -783,19 +788,20 @@
               dots[llx].scale.y = scale * 1.5;
               dots[llx].scale.z = scale * 1.5;
 
-              curveMeshArray[slx].scale.x = Math.cos(Math.PI * 4 * i);
-              curveMeshArray[slx].scale.y = Math.sin(Math.PI * 2 * i);
-              curveMeshArray[slx].scale.z = Math.sin(Math.PI * 6 * i);
+              curveMeshArray[tls].scale.x = Math.cos(Math.PI * 4 * i);
+              curveMeshArray[tls].scale.y = Math.sin(Math.PI * 2 * i);
+              curveMeshArray[tls].scale.z = Math.sin(Math.PI * 6 * i);
 
-              dots[llx].position.x = curveEqArray[slx].getPoint((i + (llx / dotlength)) % 1).x * linee.scale.x;
-              dots[llx].position.y = curveEqArray[slx].getPoint((i + (llx / dotlength)) % 1).y * linee.scale.y;
-              dots[llx].position.z = curveEqArray[slx].getPoint((i + (llx / dotlength)) % 1).z * linee.scale.z;
+              dots[llx].position.x = curvee.getPoint((i + (llx / dotlength)) % 1).x * linee.scale.x;
+              dots[llx].position.y = curvee.getPoint((i + (llx / dotlength)) % 1).y * linee.scale.y;
+              dots[llx].position.z = curvee.getPoint((i + (llx / dotlength)) % 1).z * linee.scale.z;
 
-              dots[llx].rotation.x = -1 * curveEqArray[slx].getTangent((i + (llx / dotlength)) % 1).x - .25
-              dots[llx].rotation.y = 1 * curveEqArray[slx].getTangent((i + (llx / dotlength)) % 1).y
-              dots[llx].rotation.z = -1 * curveEqArray[slx].getTangent((i + (llx / dotlength)) % 1).z
+              dots[llx].rotation.x = -1 * curvee.getTangent((i + (llx / dotlength)) % 1).x - .25;
+              dots[llx].rotation.y = 1 * curvee.getTangent((i + (llx / dotlength)) % 1).y;
+              dots[llx].rotation.z = -1 * curvee.getTangent((i + (llx / dotlength)) % 1).z;
             }
           }
+
 
           controls.update();
           composer.render();
