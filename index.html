@@ -144,7 +144,7 @@
       <script src="js/postprocessing/OutlinePass.js"></script>
       <script src="js/libs/stats.min.js"></script>
       <script src='js/libs/dat.gui.min.js'></script>
-
+      <script src='js/NameList.js'></script>
       <div id = 'canvas'>
         <script>
         // https://stackoverflow.com/questions/13542175/three-js-ray-intersect-fails-by-adding-div/13544277#13544277
@@ -277,12 +277,13 @@
                   child.castShadow = true;
                   //tests if the mesh is a room or just an aesthetic part
                   if(child.name.slice(3, -3) == 'part'){
-                    child.userData = {alreadyUp:false, room:false};
                     //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
+                    child.userData = {alreadyUp:false, room:false};
                   }
 
                   else{
-                      child.userData = {alreadyUp:false, room:true, names:findNames(child.name)};
+                    //Accesses a list of names and adds each one to the model
+                    child.userData = {alreadyUp:false, room:true, names:findNames(child.name)};
                   }
                 }
               });
@@ -336,9 +337,18 @@
         var lfclick = true;
         var prevobj = null;
 
-        //function returns a room when given a name (e.g. n203, w315)
-        function findRoom(roomID){
-
+        //function returns a room when given a name (e.g. n203, w315, Library)
+        function findRoom(roomName){
+          group.forEach(function(building){
+            building.forEach(function(room){
+              room.names.forEach(function(name){
+                if(name == roomName){
+                  return room;
+                }
+              })
+            });
+          });
+          return null;
         }
 
         /*
@@ -532,7 +542,6 @@
             outlinePass.selectedObjects = [];
 
             var selectedObject = intersects[ 0 ].object;
-            console.log(selectedObject.parent.name);
             animateFloors(selectedObject, 'PingPong');
 
             addSelectedObject( selectedObject );
