@@ -237,7 +237,7 @@
         /*
         *Model Loaders
         */
-
+        //TODO Add Import for splines from Braxton
         /*
         *Main function to load in the school model.
         *path takes a string of the file path of the model (GLTF format)
@@ -245,6 +245,17 @@
         *modelGroup takes a Group and makes it the top of the tree
         *Each mesh in the model is added to a group based on the scene that it is in
         *each scene is then added to modelGroup
+        *
+        *The tree is divided by Building, floor, and room.
+        *Each Section has splines assigned to it used for pathfinding
+        *
+        *                     Outline of tree system
+        *
+        * Main Group -> Buildings - > Floors - > Rooms
+        *                   |            |         |
+        *"Highway" Splines to entrance   |         |
+        *         Splines From Entrance to floor   |
+        *                       Splines from stairway / floor Entrance to room
         */
         var loader = new THREE.GLTFLoader();
 
@@ -260,20 +271,26 @@
               var buildingGroup = new THREE.Group();
               buildingGroup.name = curScene.name;
               var sceneLength = curScene.children.length;
-
-              //Creates 4 floors for each vuilding, not all are used
-              //each room is stored in its floor
+              /*
+              *Creates 4 floors for each Building, not all are used
+              *each room is stored in its floor,
+              *Each floor is assigned a name e.g  N2 and a pathfinding line
+              */
               var floor1 = new THREE.Group();
               buildingGroup.add(floor1);
+              floor1.name = buildingGroup.name + "1";
 
               var floor2 = new THREE.Group();
               buildingGroup.add(floor2);
+              floor1.name = buildingGroup.name + "2";
 
               var floor3 = new THREE.Group();
               buildingGroup.add(floor3);
+              floor1.name = buildingGroup.name + "4";
 
               var floor4 = new THREE.Group();
               buildingGroup.add(floor4);
+              floor1.name = buildingGroup.name + "4";
 
               /*
               *Each mesh has a prefix indicating the building it is a part of and the floor
