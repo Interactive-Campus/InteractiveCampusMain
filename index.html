@@ -252,7 +252,7 @@
 
         function init2 ()
         {
-          spSetup('models/sample_curve4.obj', 0, 2, 1, 'sullivan');
+          spSetup('models/sample_curveup.obj', 0, 2, 1, 'sullivan');
         }
 
         init();
@@ -756,7 +756,7 @@
           }
           controls.target.y = 0;
 
-          var speed = .003;
+          var speed = .0003;
 
           if (i >= 1)
           {
@@ -773,7 +773,7 @@
           for (llx = 0; llx < dotlength; llx++)
           {
 
-            var scale = 0.08;
+            var scale = 0.18;
 
             dots[llx].scale.x = scale * 2;
             dots[llx].scale.y = scale * 1.5;
@@ -781,17 +781,25 @@
 
             console.log(curveArray[0]);
 
-            curveArray[0].scale.x = Math.cos(Math.PI * 4 * i);
-            curveArray[0].scale.y = Math.sin(Math.PI * 2 * i);
-            curveArray[0].scale.z = Math.sin(Math.PI * 6 * i);
+            //curveArray[0].scale.x = Math.cos(Math.PI * 4 * i);
+            //curveArray[0].scale.y = Math.sin(Math.PI * 2 * i);
+            //curveArray[0].scale.z = Math.sin(Math.PI * 6 * i);
 
             dots[llx].position.x = curvee.getPoint((i + (llx / dotlength)) % 1).x * curveArray[0].scale.x;
             dots[llx].position.y = curvee.getPoint((i + (llx / dotlength)) % 1).y * curveArray[0].scale.y;
             dots[llx].position.z = curvee.getPoint((i + (llx / dotlength)) % 1).z * curveArray[0].scale.z;
 
-            dots[llx].rotation.x = -1 * curvee.getTangent((i + (llx / dotlength)) % 1).x - .25
-            dots[llx].rotation.y = 1 * curvee.getTangent((i + (llx / dotlength)) % 1).y
-            dots[llx].rotation.z = -1 * curvee.getTangent((i + (llx / dotlength)) % 1).z
+            //dots[llx].rotation.x = (Math.PI / 2) * curvee.getTangent((i + (llx / dotlength)) % 1).x;
+            //dots[llx].rotation.y = (Math.PI / 2) * curvee.getTangent((i + (llx / dotlength)) % 1).y;
+            //dots[llx].rotation.z = -(Math.PI / 2) * curvee.getTangent((i + (llx / dotlength)) % 1).z;
+
+            console.log(curvee.getTangent((i + (llx / dotlength)) % 1).x);
+            console.log(curvee.getTangent((i + (llx / dotlength)) % 1).y);
+            console.log(curvee.getTangent((i + (llx / dotlength)) % 1).z);
+
+            //dots[llx].rotation.x = -.5 * Math.PI * curvee.getTangent((i + (llx / dotlength)) % 1).z + Math.PI * 3;
+            //dots[llx].rotation.y = -.5 * Math.PI * curvee.getTangent((i + (llx / dotlength)) % 1).z + (2 * Math.PI) ;
+            dots[llx].rotation.z = (-.66 * Math.PI * curvee.getTangent((i + (llx / dotlength)) % 1).z);// + (Math.PI * 1.5);
           }
 
           controls.update();
