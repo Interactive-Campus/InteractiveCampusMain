@@ -182,9 +182,9 @@
         var pieces = 4;
 
         var curveArray = Array();
+        var curveEqArray = Array();
 
         var matt = new THREE.LineBasicMaterial( { color : 0x00ff00, linecap: 'square', linejoin: 'square', linewidth: 5 } );
-
 
 
         function dot (u)
@@ -219,7 +219,7 @@
         }
 
 
-        function comppts (q, arr)
+        function comppts (q, arr, index)
         {
           for (ie = 0; ie < (q / 3) - 1; ie++)
           {
@@ -228,7 +228,13 @@
               curveptarray[ie/pieces] = new THREE.Vector3(arr[ie * 3], arr[ie * 3 + 1], arr[ie * 3 + 2]);
             }
           }
-          curvee.points = curveptarray;
+          var crc = new THREE.CatmullRomCurve3();
+          crc.points = curveptarray;
+          curveEqArray[0] = crc;
+          scene.add( curveEqArray[0] );
+
+          console.log("help", index);
+          console.log("help", curveEqArray[0]);
         }
 
         function spSetup(file, id, stScale, yScale, buildingLink)
@@ -239,7 +245,7 @@
           // called when resource is loaded
           function ( object ) {
             nucurve = new THREE.Line(object, matt);
-            comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array);
+            comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array, 0);
             var toobg = new THREE.TubeBufferGeometry( curvee, 100, .03, 4, false );
             var toobm = new THREE.MeshBasicMaterial( { color: 0xff0000} );
             curveArray[id] = new THREE.Mesh( toobg, toobm );
@@ -252,7 +258,7 @@
 
         function init2 ()
         {
-          spSetup('models/sample_curveup.obj', 0, 2, 1, 'sullivan');
+          spSetup('models/sample_curves.obj', 0, 2, 1, 'sullivan');
         }
 
         init();
@@ -368,7 +374,7 @@
         	// called when resource is loaded
         	function ( object ) {
             nucurve = new THREE.Line(object, matt);
-            comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array);
+            comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array, 0);
             var toobg = new THREE.TubeBufferGeometry( curvee, 100, .03, 4, false );
             var toobm = new THREE.MeshBasicMaterial( { color: 0xff0000} );
             linee = new THREE.Mesh( toobg, toobm );
@@ -387,6 +393,8 @@
 
         	}
           );
+
+          init2();
 
           // add Nangaku model
           loadGltf('models/Nangaku6.gltf', new THREE.Vector3(2,0,-2), group);
@@ -426,7 +434,7 @@
             console.log("WHAT HAPPEN");
           }
 
-          init2();
+
 
         }
 
@@ -785,21 +793,21 @@
             //curveArray[0].scale.y = Math.sin(Math.PI * 2 * i);
             //curveArray[0].scale.z = Math.sin(Math.PI * 6 * i);
 
-            dots[llx].position.x = curvee.getPoint((i + (llx / dotlength)) % 1).x * curveArray[0].scale.x;
-            dots[llx].position.y = curvee.getPoint((i + (llx / dotlength)) % 1).y * curveArray[0].scale.y;
-            dots[llx].position.z = curvee.getPoint((i + (llx / dotlength)) % 1).z * curveArray[0].scale.z;
+            dots[llx].position.x = curveEqArray[0].getPoint((i + (llx / dotlength)) % 1).x * curveArray[0].scale.x;
+            dots[llx].position.y = curveEqArray[0].getPoint((i + (llx / dotlength)) % 1).y * curveArray[0].scale.y;
+            dots[llx].position.z = curveEqArray[0].getPoint((i + (llx / dotlength)) % 1).z * curveArray[0].scale.z;
 
             //dots[llx].rotation.x = (Math.PI / 2) * curvee.getTangent((i + (llx / dotlength)) % 1).x;
             //dots[llx].rotation.y = (Math.PI / 2) * curvee.getTangent((i + (llx / dotlength)) % 1).y;
             //dots[llx].rotation.z = -(Math.PI / 2) * curvee.getTangent((i + (llx / dotlength)) % 1).z;
 
-            console.log(curvee.getTangent((i + (llx / dotlength)) % 1).x);
-            console.log(curvee.getTangent((i + (llx / dotlength)) % 1).y);
-            console.log(curvee.getTangent((i + (llx / dotlength)) % 1).z);
+            console.log(curveEqArray[0].getTangent((i + (llx / dotlength)) % 1).x);
+            console.log(curveEqArray[0].getTangent((i + (llx / dotlength)) % 1).y);
+            console.log(curveEqArray[0].getTangent((i + (llx / dotlength)) % 1).z);
 
-            //dots[llx].rotation.x = -.5 * Math.PI * curvee.getTangent((i + (llx / dotlength)) % 1).z + Math.PI * 3;
-            //dots[llx].rotation.y = -.5 * Math.PI * curvee.getTangent((i + (llx / dotlength)) % 1).z + (2 * Math.PI) ;
-            dots[llx].rotation.z = (-.66 * Math.PI * curvee.getTangent((i + (llx / dotlength)) % 1).z);// + (Math.PI * 1.5);
+            dots[llx].rotation.x = 1 * curveEqArray[0].getTangent((i + (llx / dotlength)) % 1).x;
+            dots[llx].rotation.y = 1 * curveEqArray[0].getTangent((i + (llx / dotlength)) % 1).y;// - (1 * Math.PI / 2);// + (2 * Math.PI) ;
+            dots[llx].rotation.z = -1 * curveEqArray[0].getTangent((i + (llx / dotlength)) % 1).z;// - (Math.PI / 2);// + (Math.PI * 1.5);
           }
 
           controls.update();
