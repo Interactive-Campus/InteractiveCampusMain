@@ -179,11 +179,12 @@
 
         var ie;
         var curvee = new THREE.CatmullRomCurve3();
-        var pieces = 4;
+        var pieces = 2;
 
         var curveArray = new Array();
         var curveEqArray = Array();
         var curvesToAdd = Array();
+        var cuvesToAni = Array();
 
         var matt = new THREE.LineBasicMaterial( { color : 0x00ff00, linecap: 'square', linejoin: 'square', linewidth: 5 } );
 
@@ -194,7 +195,7 @@
           var ohold;
           objloader.load(
           // resource URL
-          'models/arrow.obj',
+          'models/arruw.obj',
           // called when resource is loaded
           function ( object ) {
 
@@ -239,7 +240,7 @@
           console.log("help", curveEqArray[index]);
         }
 
-        function spSetup(file, id, stScale, yScale, buildingLink)
+        function spSetup(file, id, buildingLink, stScale, yScale, xp, yp, )
         {
           objloader.load(
           // resource URL
@@ -253,7 +254,10 @@
             curveArray[id] = new THREE.Mesh( toobg, toobm );
             curveArray[id].scale.x = stScale;
             curveArray[id].scale.y = stScale;
-            curveArray[id].scale.y = stScale;
+            curveArray[id].scale.z = stScale;
+            curveArray[id].position.x = xp;
+            curveArray[id].position.y = yp;
+            curveArray[id].position.z = xp;
             scene.add( curveArray[id] );
             console.log(id, curveArray[id]);
             console.log("IM MAKING MAC AND CHEESE");
@@ -262,8 +266,8 @@
 
         function init2 ()
         {
-          spSetup('models/sample_curve4.obj', 0, 2, 1, 'sullivan');
-          spSetup('models/sample_curves.obj', 1, 2, 1, 'sullivan');
+          spSetup('models/sample_curve4.obj', 0, 'sullivan', 2, 1, 2, 0, 0);
+          spSetup('models/sample_curves.obj', 1, 'sullivan', 2, 1, 0, 3, 0);
         }
 
         init();
@@ -797,31 +801,34 @@
           for (tpr = 0; tpr < curvesToAdd.length; tpr++)
           {
             var llx;
-            for (llx = 0; llx < dotlength; llx++)
+            for (llx = 0; llx < usedDots; llx++)
             {
-              if (llx < usedDots)
+              if (llx + (tpr * usedDots) < curvesToAdd.length * usedDots) // fix showing dot
               {
-                dots[llx].scale.x = scale * 2;
-                dots[llx].scale.y = scale * 1.5;
-                dots[llx].scale.z = scale * 1.5;
+                //console.log(llx + (tpr * usedDots));
+                dots[llx + (tpr * usedDots)].scale.x = scale * 2;
+                dots[llx + (tpr * usedDots)].scale.y = scale * 1.5;
+                dots[llx + (tpr * usedDots)].scale.z = scale * 1.5;
 
-                dots[llx].position.x = curveEqArray[currentCurve].getPoint((i + (llx / usedDots)) % 1).x * curveArray[0].scale.x;
-                dots[llx].position.y = curveEqArray[currentCurve].getPoint((i + (llx / usedDots)) % 1).y * curveArray[0].scale.y;
-                dots[llx].position.z = curveEqArray[currentCurve].getPoint((i + (llx / usedDots)) % 1).z * curveArray[0].scale.z;
+                dots[llx + (tpr * usedDots)].position.x = curveEqArray[curvesToAdd[tpr]].getPoint((i + (llx / usedDots)) % 1).x * curveArray[curvesToAdd[tpr]].scale.x + curveArray[curvesToAdd[tpr]].position.x;
+                dots[llx + (tpr * usedDots)].position.y = curveEqArray[curvesToAdd[tpr]].getPoint((i + (llx / usedDots)) % 1).y * curveArray[curvesToAdd[tpr]].scale.y + curveArray[curvesToAdd[tpr]].position.y;
+                dots[llx + (tpr * usedDots)].position.z = curveEqArray[curvesToAdd[tpr]].getPoint((i + (llx / usedDots)) % 1).z * curveArray[curvesToAdd[tpr]].scale.z + curveArray[curvesToAdd[tpr]].position.z;
 
                 ///console.log(curveEqArray[currentCurve].getTangent((1 - i + (llx / usedDots)) % 1).x);
                 ///console.log(curveEqArray[currentCurve].getTangent((1 - i + (llx / usedDots)) % 1).y);
                 ///console.log(curveEqArray[currentCurve].getTangent((1 - i + (llx / usedDots)) % 1).z);
+              console.log(llx);
 
-                //dots[llx].rotation.x = 1 * curveEqArray[currentCurve].getTangent((i + (llx / usedDots)) % 1).x;
-                dots[llx].rotation.y = -1 * curveEqArray[currentCurve].getTangent((i + (llx / usedDots)) % 1).y;// - (1 * Math.PI / 2);// + (2 * Math.PI) ;
-                dots[llx].rotation.z = 1 * curveEqArray[currentCurve].getTangent((i + (llx / usedDots)) % 1).z;// - (Math.PI / 2);// + (Math.PI * 1.5);
+                //dots[llx + (tpr * usedDots)].rotation.x = Math.PI * curveEqArray[curvesToAdd[tpr]].getTangent((i + (llx / usedDots)) % 1).x;
+                //dots[llx + (tpr * usedDots)].rotation.y = Math.PI * curveEqArray[curvesToAdd[tpr]].getTangent((i + (llx / usedDots)) % 1).y;// - (1 * Math.PI / 2);// + (2 * Math.PI) ;
+                //dots[llx + (tpr * usedDots)].rotation.z = (2 * Math.PI) - Math.PI * .25 * curveEqArray[curvesToAdd[tpr]].getTangent((i + (llx / usedDots)) % 1).z;// - (Math.PI / 2);// + (Math.PI * 1.5);
               }
               else
               {
                 dots[llx].scale.x = 0;
                 dots[llx].scale.y = 0;
                 dots[llx].scale.z = 0;
+                console.log(llx);
               }
             }
           }
