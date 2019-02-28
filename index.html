@@ -188,6 +188,8 @@
 
         var matt = new THREE.LineBasicMaterial( { color : 0x00ff00, linecap: 'square', linejoin: 'square', linewidth: 5 } );
 
+        var totaldots = 1000;
+
 
         function dot (u)
         {
@@ -206,7 +208,8 @@
             for (lxl = 0; lxl < u; lxl++)
             {
               dots[lxl] = new THREE.Mesh( ohold, materia );
-
+              //dots[lxl].material.visible = true;
+              dots[lxl].position.y = 42069360;
               scene.add(dots[lxl]);
 
               console.log(lxl, dots[lxl]);
@@ -433,7 +436,7 @@
           effectFXAA.renderToScreen = true;
           composer.addPass( effectFXAA );
 
-          dot(100);
+          dot(totaldots);
 
           var lx;
           for (lx = 0; lx < dots.length; lx++)
@@ -777,9 +780,11 @@
           var currentCurve = 0;
           var totalCurves = curveArray.length;
           var usedDots = 20;
+          var useddots = Array();
           var scale = .18;
           curvesToAdd[0] = 0;
           curvesToAdd[1] = 1;
+          var totaluseddots;
 
           if (usedDots > dotlength)
           {
@@ -797,9 +802,28 @@
             i = 1;
           }
 
+          var xls = 0;
+          for (xls = curvesToAdd.length * usedDots; xls < totaldots; xls++)
+          {
+            //dots[xls].material.visible = false;
+            console.log(dots[xls].material.visible);
+          }
+
+          console.log("egg, 60", dots[60].material.visible);
+
+
+
           var tpr;
           for (tpr = 0; tpr < curvesToAdd.length; tpr++)
           {
+            //usedDots = curveEqArray[curvesToAdd[tpr]].points.length / 4;
+            //useddots[tpr] = curveEqArray[curvesToAdd[tpr]].points.length / 4;
+            var pol;
+            for (pol = 0; pol < useddots.length; pol++)
+            {
+              totaluseddots += useddots[pol];
+            }
+
             var llx;
             for (llx = 0; llx < usedDots; llx++)
             {
@@ -814,10 +838,7 @@
                 dots[llx + (tpr * usedDots)].position.y = curveEqArray[curvesToAdd[tpr]].getPoint((i + (llx / usedDots)) % 1).y * curveArray[curvesToAdd[tpr]].scale.y + curveArray[curvesToAdd[tpr]].position.y;
                 dots[llx + (tpr * usedDots)].position.z = curveEqArray[curvesToAdd[tpr]].getPoint((i + (llx / usedDots)) % 1).z * curveArray[curvesToAdd[tpr]].scale.z + curveArray[curvesToAdd[tpr]].position.z;
 
-                ///console.log(curveEqArray[currentCurve].getTangent((1 - i + (llx / usedDots)) % 1).x);
-                ///console.log(curveEqArray[currentCurve].getTangent((1 - i + (llx / usedDots)) % 1).y);
-                ///console.log(curveEqArray[currentCurve].getTangent((1 - i + (llx / usedDots)) % 1).z);
-              console.log(llx);
+                console.log(tpr, curveEqArray[curvesToAdd[tpr]]);
 
                 //dots[llx + (tpr * usedDots)].rotation.x = Math.PI * curveEqArray[curvesToAdd[tpr]].getTangent((i + (llx / usedDots)) % 1).x;
                 //dots[llx + (tpr * usedDots)].rotation.y = Math.PI * curveEqArray[curvesToAdd[tpr]].getTangent((i + (llx / usedDots)) % 1).y;// - (1 * Math.PI / 2);// + (2 * Math.PI) ;
@@ -825,10 +846,7 @@
               }
               else
               {
-                dots[llx].scale.x = 0;
-                dots[llx].scale.y = 0;
-                dots[llx].scale.z = 0;
-                console.log(llx);
+                dots[llx + (tpr * usedDots)].position.y = 42069360;
               }
             }
           }
