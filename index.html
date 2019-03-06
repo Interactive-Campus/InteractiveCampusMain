@@ -851,14 +851,15 @@
               //totaluseddots += useddots[pol];
             }
 
+            udtally += useddots[indexDown(curvesToAdd[tpr])];
+
             var llx;
             for (llx = 0; llx < useddots[indexDown(curvesToAdd[tpr])]; llx++)
             {
-              udtally
-              if (llx + (totaluseddots - useddots[indexDown(curvesToAdd[tpr])]) < curvesToAdd.length * usedDots) // fix showing dot
+              if (llx + (udtally - useddots[indexDown(curvesToAdd[tpr])]) < curvesToAdd.length * usedDots) // fix showing dot
               {
                 //console.log(llx + (tpr * usedDots));
-                dots[llx + (totaluseddots - useddots[indexDown(curvesToAdd[tpr])])].scale.x = scale * 2;
+                dots[llx + (udtally - useddots[indexDown(curvesToAdd[tpr])])].scale.x = scale * 2;
                 dots[llx + (tpr * usedDots)].scale.y = scale * 1.5;
                 dots[llx + (tpr * usedDots)].scale.z = scale * 1.5;
                 if (dots[llx + (totaluseddots - useddots[indexDown(curvesToAdd[tpr])])].scale.x == scale * 2)
