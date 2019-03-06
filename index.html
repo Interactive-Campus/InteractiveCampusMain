@@ -793,7 +793,8 @@
           var scale = .18;
           curvesToAdd[0] = 0;
           curvesToAdd[1] = 1;
-          var totaluseddots = 0;;
+          var totaluseddots = 0;
+          var udtally;
 
           if (usedDots > dotlength)
           {
@@ -822,16 +823,18 @@
           var eye;
           for (eye = 0; eye < curvesToAdd.length; eye++)
           {
-            totaluseddots += curveEqArray[curvesToAdd[eye]].points.length;
+            totaluseddots += curveEqArray[curvesToAdd[eye]].points.length / 4;
+            useddots[eye] = curveEqArray[curvesToAdd[eye]].points.length / 4;
+            console.log(useddots);
           }
 
           var cta;
           for (cta = 0; cta < curvesToAdd.length; cta++)
           {
             var why;
-            for (why = 0; why < curveEqArray[curvesToAdd[cta]].points.length)
+            for (why = 0; why < curveEqArray[curvesToAdd[cta]].points.length; why++)
             {
-
+              //console.log("whywhywhy");
             }
           }
 
@@ -841,22 +844,27 @@
           for (tpr = 0; tpr < curvesToAdd.length; tpr++)
           {
             //usedDots = curveEqArray[curvesToAdd[tpr]].points.length / 4;
-            useddots[tpr] = curveEqArray[curvesToAdd[tpr]].points.length / 4;
+
             var pol;
             for (pol = 0; pol < useddots.length; pol++)
             {
-              totaluseddots += useddots[pol];
+              //totaluseddots += useddots[pol];
             }
 
             var llx;
-            for (llx = 0; llx < usedDots; llx++)
+            for (llx = 0; llx < useddots[indexDown(curvesToAdd[tpr])]; llx++)
             {
-              if (llx + (tpr * usedDots) < curvesToAdd.length * usedDots) // fix showing dot
+              udtally
+              if (llx + (totaluseddots - useddots[indexDown(curvesToAdd[tpr])]) < curvesToAdd.length * usedDots) // fix showing dot
               {
                 //console.log(llx + (tpr * usedDots));
-                dots[llx + (totaldots - useddots[indexDown(curvesToAdd[tpr])])].scale.x = scale * 2;
+                dots[llx + (totaluseddots - useddots[indexDown(curvesToAdd[tpr])])].scale.x = scale * 2;
                 dots[llx + (tpr * usedDots)].scale.y = scale * 1.5;
                 dots[llx + (tpr * usedDots)].scale.z = scale * 1.5;
+                if (dots[llx + (totaluseddots - useddots[indexDown(curvesToAdd[tpr])])].scale.x == scale * 2)
+                {
+                  console.log(llx + (totaluseddots - useddots[indexDown(curvesToAdd[tpr])]));
+                }
                 if (llx == 3)
                 {
                   //console.log(llx + (totaldots - useddots[indexDown(curvesToAdd[tpr])]));
