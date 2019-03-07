@@ -758,10 +758,11 @@
         }
 
         // variables needed before draw loop
-        var panx = 1;
-        var panz = 1;
+
         var i  = .99;
         var spor = -1;
+        var ppanx;
+        var ppanz;
 
         // draw loop
         function animate()
@@ -771,6 +772,18 @@
           var timer = performance.now();
 
 					// weak attempt at pan limiting
+          var panx = 1;
+          var panz = 1;
+
+          if (ppanx != controls.target.x || ppanz != controls.target.z)
+          {
+            controls.enableRotate = false;
+          }
+          else
+          {
+            controls.enableRotate = true;
+          }
+
           if (controls.target.x > panx) {
               controls.target.x = panx;
           }
@@ -785,21 +798,19 @@
           }
           controls.target.y = 0;
 
-          var speed = .0008;
-          var currentCurve = 0;
-          var totalCurves = curveArray.length;
-          var usedDots = 20;
+          ppanx = controls.target.x;
+          ppanz = controls.target.z;
+
+          console.log(controls.target.x, controls.target.z, panx, panz);
+
           var useddots = Array();
+
+          var speed = .0008;
           var scale = .18;
+          var pointsFactor = .25;
+
           curvesToAdd[0] = 0;
           curvesToAdd[1] = 1;
-          var totaluseddots = 0;
-          var udtally;
-
-          if (usedDots > dotlength)
-          {
-            usedDots = dotlength;
-          }
 
           if (i >= 1)
           {
@@ -812,83 +823,31 @@
             i = 1;
           }
 
-          var xls = 0;
-          for (xls = curvesToAdd.length * usedDots; xls < totaldots; xls++)
-          {
-            //dots[xls].material.visible = false;
-            //console.log(dots[xls].material.visible);
-          }
-
-          //console.log("egg, 60", dots[60].material.visible);
+          var totaluseddots = 0;
           var eye;
           for (eye = 0; eye < curvesToAdd.length; eye++)
           {
-            totaluseddots += curveEqArray[curvesToAdd[eye]].points.length / 4;
-            useddots[eye] = curveEqArray[curvesToAdd[eye]].points.length / 4;
-            console.log(useddots);
+            totaluseddots += curveEqArray[curvesToAdd[eye]].points.length * pointsFactor;
+            useddots[eye] = curveEqArray[curvesToAdd[eye]].points.length * pointsFactor;
           }
 
-          var cta;
-          for (cta = 0; cta < curvesToAdd.length; cta++)
+          var dotally = 0;
+          var p;
+          for (p = 0; p < curvesToAdd.length; p++)
           {
-            var why;
-            for (why = 0; why < curveEqArray[curvesToAdd[cta]].points.length; why++)
+            for (q = 0; q < useddots[p]; q++)
             {
-              //console.log("whywhywhy");
+              dots[dotally].scale.x = scale * 2;
+              dots[dotally].scale.y = scale * 1.5;
+              dots[dotally].scale.z = scale * 1.5;
+
+              dots[dotally].position.x = curveEqArray[curvesToAdd[p]].getPoint((i + (q / useddots[p])) % 1).x * curveArray[curvesToAdd[p]].scale.x + curveArray[curvesToAdd[p]].position.x;
+              dots[dotally].position.y = curveEqArray[curvesToAdd[p]].getPoint((i + (q / useddots[p])) % 1).y * curveArray[curvesToAdd[p]].scale.y + curveArray[curvesToAdd[p]].position.y;
+              dots[dotally].position.z = curveEqArray[curvesToAdd[p]].getPoint((i + (q / useddots[p])) % 1).z * curveArray[curvesToAdd[p]].scale.z + curveArray[curvesToAdd[p]].position.z;
+
+              dotally++;
             }
           }
-
-
-
-          var tpr;
-          for (tpr = 0; tpr < curvesToAdd.length; tpr++)
-          {
-            //usedDots = curveEqArray[curvesToAdd[tpr]].points.length / 4;
-
-            var pol;
-            for (pol = 0; pol < useddots.length; pol++)
-            {
-              //totaluseddots += useddots[pol];
-            }
-
-            udtally += useddots[indexDown(curvesToAdd[tpr])];
-
-            var llx;
-            for (llx = 0; llx < useddots[indexDown(curvesToAdd[tpr])]; llx++)
-            {
-              if (llx + (udtally - useddots[indexDown(curvesToAdd[tpr])]) < curvesToAdd.length * usedDots) // fix showing dot
-              {
-                //console.log(llx + (tpr * usedDots));
-                dots[llx + (udtally - useddots[indexDown(curvesToAdd[tpr])])].scale.x = scale * 2;
-                dots[llx + (tpr * usedDots)].scale.y = scale * 1.5;
-                dots[llx + (tpr * usedDots)].scale.z = scale * 1.5;
-                if (dots[llx + (totaluseddots - useddots[indexDown(curvesToAdd[tpr])])].scale.x == scale * 2)
-                {
-                  console.log(llx + (totaluseddots - useddots[indexDown(curvesToAdd[tpr])]));
-                }
-                if (llx == 3)
-                {
-                  //console.log(llx + (totaldots - useddots[indexDown(curvesToAdd[tpr])]));
-                  //console.log((llx + (tpr * usedDots)));
-                }
-
-                dots[llx + (tpr * usedDots)].position.x = curveEqArray[curvesToAdd[tpr]].getPoint((i + (llx / usedDots)) % 1).x * curveArray[curvesToAdd[tpr]].scale.x + curveArray[curvesToAdd[tpr]].position.x;
-                dots[llx + (tpr * usedDots)].position.y = curveEqArray[curvesToAdd[tpr]].getPoint((i + (llx / usedDots)) % 1).y * curveArray[curvesToAdd[tpr]].scale.y + curveArray[curvesToAdd[tpr]].position.y;
-                dots[llx + (tpr * usedDots)].position.z = curveEqArray[curvesToAdd[tpr]].getPoint((i + (llx / usedDots)) % 1).z * curveArray[curvesToAdd[tpr]].scale.z + curveArray[curvesToAdd[tpr]].position.z;
-
-                // console.log(tpr, curveEqArray[curvesToAdd[tpr]]);
-
-                //dots[llx + (tpr * usedDots)].rotation.x = Math.PI * curveEqArray[curvesToAdd[tpr]].getTangent((i + (llx / usedDots)) % 1).x;
-                //dots[llx + (tpr * usedDots)].rotation.y = Math.PI * curveEqArray[curvesToAdd[tpr]].getTangent((i + (llx / usedDots)) % 1).y;// - (1 * Math.PI / 2);// + (2 * Math.PI) ;
-                //dots[llx + (tpr * usedDots)].rotation.z = (2 * Math.PI) - Math.PI * .25 * curveEqArray[curvesToAdd[tpr]].getTangent((i + (llx / usedDots)) % 1).z;// - (Math.PI / 2);// + (Math.PI * 1.5);
-              }
-              else
-              {
-                dots[llx + (totaldots - useddots[indexDown(curvesToAdd[tpr])])].position.y = 42069360;
-              }
-            }
-          }
-
 
           controls.update();
           composer.render();
