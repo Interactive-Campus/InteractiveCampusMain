@@ -763,6 +763,7 @@
         var spor = -1;
         var ppanx;
         var ppanz;
+        var pcamrot;// = camera.rotation;
 
         // draw loop
         function animate()
@@ -772,16 +773,31 @@
           var timer = performance.now();
 
 					// weak attempt at pan limiting
+
+
+
+
           var panx = 1;
           var panz = 1;
 
+          if (pcamrot != camera.rotation)
+          {
+            console.log("holler");
+          }
+
+
           if (ppanx != controls.target.x || ppanz != controls.target.z)
           {
-            controls.enableRotate = false;
+            //controls.enableRotate = false;
+            //console.log(camera.rotation, pcamrot);
+            camera.rotation = pcamrot;
+            console.log(pcamrot);
           }
           else
           {
-            controls.enableRotate = true;
+            //controls.enableRotate = true;
+            pcamrot = camera.rotation;
+            console.log("BENNY");
           }
 
           if (controls.target.x > panx) {
@@ -797,11 +813,14 @@
               controls.target.z = -1 * panz;
           }
           controls.target.y = 0;
+          controls.enableDamping = false;
 
           ppanx = controls.target.x;
           ppanz = controls.target.z;
 
-          console.log(controls.target.x, controls.target.z, panx, panz);
+          //console.log(camera.rotation, pcamrot);
+
+          //console.log(camera);
 
           var useddots = Array();
 
@@ -854,6 +873,9 @@
           mixer.update(clock.getDelta());
 
           scene.background = new THREE.Color(0xc0d9ff);
+
+
+
           }
         </script>
     </body>
