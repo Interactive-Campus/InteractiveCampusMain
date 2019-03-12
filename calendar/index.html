@@ -110,7 +110,7 @@
         gapi.client.calendar.events.list({
           'calendarId': 'acg4tehdnkv29rfpasrt7eo1kb81qv0l@import.calendar.google.com',
           'timeMin': (new Date()).toISOString(),
-          //'timeMax': (new Date ()).toISOString(),
+      //    'timeMax': (new Date())
           'showDeleted': false,
           'singleEvents': true,
           'maxResults': 100,
@@ -118,13 +118,13 @@
         }).then(function(response) {
           var events = response.result.items;
           appendPre('Upcoming events:');
+
           if (events.length > 0) {
             // if there are events on calendar execute
             for (i = 0; i < events.length; i++) {
               // run through every event in list
               var event = events[i];
               // "event" variable is the current event in the array
-
               if (!event.location) {
                 // if the event has no location, delete array portion
                 event.summary = '';
@@ -139,51 +139,17 @@
                   var start = event.start.dateTime;
                   var startDate = start.substring(0, 10);
 
-                  // SWITCH TIMEZONES FROM UTC TO HST
-                  // create a new variable for today's date (HST)
-                  /*var UTCtime = new Date();
-                  var offset = (UTCtime.getTimezoneOffset())/60; // timezone difference in hours between HST and UTC
-                  var hour = start.getHours();
-                  hour = hour + 10;
-                  appendPre (offset + hour);*/
                 }
                 // if today's date matches the event's date, print event
                   if (dateOnly == startDate){
                     appendPre(event.summary + ' (' + start + ')' + ' (' + event.location + ')');
-                /*
-                var startDay = event.start.date;
-                var startString = startDay.toISOString();
-                var today = new Date();
-                var todayString = today.toISOString();
-                appendPre (startString + todayString);
-                if (startString != todayString) {
-                  event.summary = '';
-                  event.start.dateTime = '';
-                  event.location =
-                  appendPre (startString + todayString);
-                } else {
 
-                // if the event has a location, keep
-
-                // from https://salesforce.stackexchange.com/questions/35158/convert-event-startdatetime-and-enddatetime-from-gmt-to-the-local-timezone
-                // start
-                /* public DateTime start {get;set;}
-                public String defined_format{get;set;}
-                if (defined_format == null) {
-                  return date_time.format(); //return the full date/time in user's locale and time zone
-                } else {
-                  return date_time.format(defined_format,'HST');  //Specify Time zone like IST,CST
-                } */
-                // end
-                // print the event
               }
               }
             }
-
           } else {
             appendPre('No upcoming events found.');
           }
-
         });
       }
 
