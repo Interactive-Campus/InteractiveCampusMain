@@ -326,11 +326,15 @@
                   //tests if the mesh is a room or just an aesthetic part
                   if(room.name.slice(3, -3) == 'part'){
                     //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
-                    room.userData = {alreadyUp:false, room:false};
+                    room.userData = {alreadyUp:false, isRoom:false, isStairs:false};
+                  }
+                  //tests if mesh is stairs, stairs must use special animation
+                  else if (room.name.slice(3, -3) == 'stairs'){
+                    room.userData = {alreadyUp:false, isRoom:false, isStairs:true};
                   }
                   else{
                     //Accesses a list of names and adds each one to the model
-                    child.userData = {alreadyUp:false, room:true, names:findNames(child.name)};
+                    child.userData = {alreadyUp:false, isRoom:true, isStairs:false,names:findNames(child.name)};
                   }
                 }});
               });
@@ -384,17 +388,41 @@
 
         //function returns a room when given a name (e.g. n203, w315, Library)
         function findRoom(roomName){
-          group.forEach(function(building){
-            building.forEach(function(room){
-              room.names.forEach(function(name){
-                if(name == roomName){
-                  return room;
-                }
+          group.children.forEach(function(building){
+            building.children.forEach(function(floor){
+              floor.children.forEach(function(room){
+                room.userData.names.forEach(function(name){
+                  if(name == roomName){
+                    return name.parent;
+                  }
+                });
               })
             });
           });
           return null;
         }
+
+        function forEachRoom(eval){
+          group.children.forEach(function(building){
+            building.children.forEach(function(floor){
+              floor.children.forEach(function(room){
+                eval(room)
+              })
+            });
+          });
+        }
+
+        var bathroomSprite;
+
+        forEachRoom(function createBathroom(room){
+          if(room.name.slice(2) == "bathroom"){
+            var spriteMap = new THREE.TextureLoader().load(bathroomSprite);
+            var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
+            var sprite = new THREE.Sprite( spriteMaterial );
+            scene.add( sprite );
+            sprite.position.copy(room.position);
+          }
+        });
 
         /*
         * Animation Functions
@@ -456,6 +484,7 @@
                 if (THREE.AnimationClip.findByName(clips,room.name.slice(0, -3)) != null){
                   playFloorAnimation(room, true, room.name.slice(0, -3));
                 }
+
                 else{room.alreadyUp = false;}
               });
             });
