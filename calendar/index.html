@@ -131,20 +131,7 @@
                 event.start.dateTime = '';
                 event.location = '';
               } else {
-                if (event.location != '' && event.summary != '') {
-                  var today = (new Date()).toISOString();
-                  // grab the date of the instant it reloads and compare it to the date of the event!
-                  var dateOnly = today.substring(0, 10);
-                  // take event's date and start time
-                  var start = event.start.dateTime;
-                  var startDate = start.substring(0, 10);
-
-                }
-                // if today's date matches the event's date, print event
-                  if (dateOnly == startDate){
-                    appendPre(event.summary + ' (' + start + ')' + ' (' + event.location + ')');
-
-              }
+3              }
               }
             }
           } else {
