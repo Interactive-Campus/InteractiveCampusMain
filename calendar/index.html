@@ -197,19 +197,20 @@
                 // HSt is behind a day, so add 24 hours to get correct displayed hours
                 startHours = startHours + 10;
                 //appendPre(athletic.summary + ' (' + startDate + 'T' + startHours + ':' + startMin + ':' + startSec + 'Z' + ')' + ' (' + event.location + ')');
+                if (athletic.location != '') {
+                  finalAthleticTitle[aPlace] = athletic.summary;
+                  finalAthleticLocation[aPlace] = athletic.location;
+                  finalAthleticTimeD[aPlace] = startDate;
+                  finalAthleticTimeH[aPlace] = startHours;
+                  finalAthleticTimeM[aPlace] = startMin;
+                  finalAthleticTimeYear[aPlace] = startYear;
+                  finalAthleticTimeMonth[aPlace] = startMonth;
+                  finalAthleticTimeDay[aPlace] = startDay;
+                  aPlace = aPlace + 1;
+                  //appendPre(finalAthleticTitle[i] + ' (' + finalAthleticTime[i] + ')' + ' (' + finalAthleticLocation[i] + ')');
+                }
               }
-              if (athletic.location != '') {
-                finalAthleticTitle[aPlace] = athletic.summary;
-                finalAthleticLocation[aPlace] = athletic.location;
-                finalAthleticTimeD[aPlace] = startDate;
-                finalAthleticTimeH[aPlace] = startHours;
-                finalAthleticTimeM[aPlace] = startMin;
-                finalAthleticTimeYear[aPlace] = startYear;
-                finalAthleticTimeMonth[aPlace] = startMonth;
-                finalAthleticTimeDay[aPlace] = startDay;
-                aPlace = aPlace + 1;
-                //appendPre(finalAthleticTitle[i] + ' (' + finalAthleticTime[i] + ')' + ' (' + finalAthleticLocation[i] + ')');
-              }
+
             }
           }
           listUpcomingEvents();
@@ -300,7 +301,7 @@
                   // if there is no start time, put date for all day event
                   when = school.start.date;
                 }
-                //appendPre(finalSchoolTitle[i] + ' ' + /*school.summary.length +*/ ' (' + finalSchoolTime[i] + ')' + ' (' + finalSchoolLocation[i] + ') ');
+                //appendPre(finalSchoolTitle[i] + ' ' +  ' (' + finalSchoolTime[i] + ')' + ' (' + finalSchoolLocation[i] + ') ');
                 // print the event
                 var startYear = when.substring(0, 4);
                 var startMonth = when.substring (5, 7);
@@ -314,7 +315,7 @@
                 var startHours;
                 startHours = when.substring (11, 13);
 
-                if (startHours > 0) {
+                if (startHours > 0 && startHours < 34 && startDay == dateOnly) {
                   startDay = startDay - 1;
                 }
                 // switch hours from UTC to HST
@@ -322,7 +323,7 @@
                 startDate = startYear + '-' + startMonth + '-' + startDay;
 
                 // if today's date matches the event's date, print event
-                if (dateOnly == startDay && startHours < 0){
+                if (dateOnly == (startDay + 1) && startHours < 0){
                   // HSt is behind a day, so add 24 hours to get correct displayed hours
 
                   //appendPre("Correctly compiled time for event");
