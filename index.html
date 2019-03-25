@@ -163,10 +163,33 @@
         var divWidth = window.innerWidth;
         var divHeight = window.innerHeight;
         var objloader = new THREE.OBJLoader();
+
         var dots = new Array();
         var radius = .2;
         var convtxs = new Float32Array();
         var dotlength;
+        var linee;
+
+        var geometr = new THREE.BoxGeometry( radius, radius, radius);
+        var materia = new THREE.MeshLambertMaterial( {color: 0xff0000} );
+        var spher = new THREE.Mesh( geometr, materia );
+
+        var nucurve;
+
+
+        var ie;
+        var curvee = new THREE.CatmullRomCurve3();
+        var pieces = 2;
+
+        var curveArray = new Array();
+        var curveEqArray = Array();
+        var curvesToAdd = Array();
+        var cuvesToAni = Array();
+
+        var matt = new THREE.LineBasicMaterial( { color : 0x00ff00, linecap: 'square', linejoin: 'square', linewidth: 5 } );
+
+        var totaldots = 1000;
+
 
         function dot (u)
         {
@@ -174,7 +197,7 @@
           var ohold;
           objloader.load(
           // resource URL
-          'models/arrow.obj',
+          'models/arruw.obj',
           // called when resource is loaded
           function ( object ) {
 
@@ -185,7 +208,8 @@
             for (lxl = 0; lxl < u; lxl++)
             {
               dots[lxl] = new THREE.Mesh( ohold, materia );
-
+              //dots[lxl].material.visible = true;
+              dots[lxl].position.y = 42069360;
               scene.add(dots[lxl]);
 
               console.log(lxl, dots[lxl]);
@@ -199,18 +223,19 @@
           console.log(dots.length, "asdf");
         }
 
-        var geometr = new THREE.BoxGeometry( radius, radius, radius);
-        var materia = new THREE.MeshLambertMaterial( {color: 0xff0000} );
-        var spher = new THREE.Mesh( geometr, materia );
-
-        var nucurve;
-        var curveptarray = Array();
-
-        var ie;
-        var curvee = new THREE.CatmullRomCurve3();
-        var pieces = 4;
-        function comppts (q, arr)
+        function indexDown (index)
         {
+          if (index != 0)
+          {
+            return index - 1;
+          }
+          return 0;
+        }
+
+
+        function comppts (q, arr, index)
+        {
+          var curveptarray = new Array();
           for (ie = 0; ie < (q / 3) - 1; ie++)
           {
             if (ie % pieces == 0)
@@ -218,7 +243,47 @@
               curveptarray[ie/pieces] = new THREE.Vector3(arr[ie * 3], arr[ie * 3 + 1], arr[ie * 3 + 2]);
             }
           }
-          curvee.points = curveptarray;
+          curveEqArray[index] = new THREE.CatmullRomCurve3();
+          curveEqArray[index].points = curveptarray;
+          //scene.add( curveEqArray[index] );
+          //curveptarray = new Array();
+
+          console.log("help", index);
+          console.log("help", curveEqArray[index]);
+        }
+
+        function spSetup(file, id, roomLink, stScale, yScale, xp, yp, zp)
+        {
+          objloader.load(
+          // resource URL
+          file,
+          // called when resource is loaded
+          function ( object ) {
+            nucurve = new THREE.Line(object, matt);
+            comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array, id);
+            var toobg = new THREE.TubeBufferGeometry( curveEqArray[id], 100, .03, 4, false );
+            var toobm = new THREE.MeshBasicMaterial( { color: 0xff0000} );
+            curveArray[id] = new THREE.Mesh( toobg, toobm );
+            curveArray[id].scale.x = stScale;
+            curveArray[id].scale.y = stScale;
+            curveArray[id].scale.z = stScale;
+            curveArray[id].position.x = xp;
+            curveArray[id].position.y = yp;
+            curveArray[id].position.z = zp;
+            curveArray[id].name = roomLink;
+            console.log("COOKIE", curveArray[id]);
+            scene.add( curveArray[id] );
+        	});
+        }
+
+        function init2 ()
+        {
+          spSetup('models/sample_curve4.obj', 0, 'C-101', 2, 1, 2, 0, 0);
+          spSetup('models/sample_curves.obj', 1, 'W-203', 2, 1, 0, 3, 0);
+          spSetup('models/sample_curve2.obj', 2, 'I-212', 2, 1, 3, 2, 0);
+          spSetup('models/sample_curve8.obj', 3, 'C-1xx', 2, 1, 0, 3, 1);
+          spSetup('models/sample_curve3.obj', 4, 'G-101', 2, 1, 1, 1, 1);
+          spSetup('models/sample_curve3.obj', 5, 'C-xxx', 2, 1, 1, 1, 1);
         }
 
         init();
@@ -326,20 +391,19 @@
             });
           }
 
-          var matt = new THREE.LineBasicMaterial( { color : 0x00ff00, linecap: 'square', linejoin: 'square', linewidth: 5 } );
-
           // Add in red line
-          objloader.load(
+          //ar linee;
+          /*objloader.load(
         	// resource URL
-        	'models/sample_curves.obj',
+        	'models/sample_curve4.obj',
         	// called when resource is loaded
         	function ( object ) {
             nucurve = new THREE.Line(object, matt);
-            comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array);
-            var toobg = new THREE.TubeBufferGeometry( curvee, 100, .03, 4, false );
+            comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array, );
+            var toobg = new THREE.TubeBufferGeometry( curveEqArray[0], 100, .03, 4, false );
             var toobm = new THREE.MeshBasicMaterial( { color: 0xff0000} );
-            var toobmesh = new THREE.Mesh( toobg, toobm );
-            scene.add( toobmesh );
+            linee = new THREE.Mesh( toobg, toobm );
+            //scene.add( curveArray[0] );
         	},
         	// called when loading is in progresses
         	function ( xhr ) {
@@ -353,7 +417,9 @@
         		console.log( 'An error happened' );
 
         	}
-          );
+        );*/
+
+          init2();
 
           // add Nangaku model
           loadGltf('models/Nangaku6.gltf', new THREE.Vector3(2,0,-2), group);
@@ -365,7 +431,7 @@
           var floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
           var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
           floorMesh.rotation.x -= Math.PI * 0.5;
-          floorMesh.position.y = 0;
+          floorMesh.position.y = -4;
           floorMesh.receiveShadow = true;
           floorMesh.castShadow = true;
           scene.add(floorMesh);
@@ -383,7 +449,7 @@
           effectFXAA.renderToScreen = true;
           composer.addPass( effectFXAA );
 
-          dot(20);
+          dot(totaldots);
 
           var lx;
           for (lx = 0; lx < dots.length; lx++)
@@ -392,6 +458,8 @@
             scene.add(dots[lx]);
             console.log("WHAT HAPPEN");
           }
+
+
 
         }
 
@@ -613,7 +681,7 @@
               }
               clicked = false;
             }
-          prevobj = selectedObject;
+            prevobj = selectedObject;
           }
 
           var width = divWidth;
@@ -695,10 +763,12 @@
         }
 
         // variables needed before draw loop
-        var panx = 1;
-        var panz = 1;
+
         var i  = .99;
         var spor = -1;
+        var ppanx;
+        var ppanz;
+        var pcamrot;// = camera.rotation;
 
         // draw loop
         function animate()
@@ -708,6 +778,24 @@
           var timer = performance.now();
 
 					// weak attempt at pan limiting
+          var panx = 1;
+          var panz = 1;
+          if (pcamrot != camera.rotation)
+          {
+            console.log("holler");
+          }
+          if (ppanx != controls.target.x || ppanz != controls.target.z)
+          {
+            //controls.enableRotate = false;
+            //console.log(camera.rotation, pcamrot);
+            camera.rotation = pcamrot;
+            console.log(pcamrot);
+          }
+          else
+          {
+            //controls.enableRotate = true;
+            pcamrot = camera.rotation;
+          }
           if (controls.target.x > panx) {
               controls.target.x = panx;
           }
@@ -721,9 +809,44 @@
               controls.target.z = -1 * panz;
           }
           controls.target.y = 0;
+          controls.enableDamping = false;
+          ppanx = controls.target.x;
+          ppanz = controls.target.z;
+          //console.log(camera.rotation, pcamrot);
+          //console.log(camera);
 
-          var speed = .003;
+          var useddots = Array();
 
+          var speed = .0008;
+          var scale = .18;
+          var pointsFactor = .25;
+          var room = "C-101"; // changes with clicks
+
+          curvesToAdd = [];
+
+          // curve adder function(s)
+          var curveIndex;
+          for (curveIndex = 0; curveIndex < curveArray.length; curveIndex++)
+          {
+            var curveChar;
+            for (curveChar = 0; curveChar < curveArray[curveIndex].name.length; curveChar++)
+            {
+              if (room[curveChar] != curveArray[curveIndex].name[curveChar] && curveChar != 1 && curveArray[curveIndex].name[curveChar] != 'x')
+              {
+                break;
+              }
+              if (curveArray[curveIndex].name[curveChar] == 'x' || curveChar == (curveArray[curveIndex].name.length - 1))
+              {
+                // append CurvesToAdd
+                curvesToAdd.push(curveIndex);
+                break;
+              }
+            }
+          }
+
+          console.log(curvesToAdd);
+
+          // zero to one variable
           if (i >= 1)
           {
             i = 1;
@@ -735,25 +858,43 @@
             i = 1;
           }
 
-          var llx;
-          for (llx = 0; llx < dotlength; llx++)
+          // make curves invisible
+          var blanker;
+          for (blanker = 0; blanker < curveArray.length; blanker++)
           {
-
-            var scale = 0.08;
-
-            dots[llx].scale.x = scale * 2;
-            dots[llx].scale.y = scale * 1.5;
-            dots[llx].scale.z = scale * 1.5;
-
-            dots[llx].position.x = curvee.getPoint((i + (llx / dotlength)) % 1).x;
-            dots[llx].position.y = curvee.getPoint((i + (llx / dotlength)) % 1).y;
-            dots[llx].position.z = curvee.getPoint((i + (llx / dotlength)) % 1).z;
-
-            dots[llx].rotation.x = -1 * curvee.getTangent((i + (llx / dotlength)) % 1).x - .25
-            dots[llx].rotation.y = 1 * curvee.getTangent((i + (llx / dotlength)) % 1).y
-            dots[llx].rotation.z = -1 * curvee.getTangent((i + (llx / dotlength)) % 1).z
+            curveArray[blanker].visible = false;
           }
 
+          // calculate total needed dots
+          var totaluseddots = 0;
+          var eye;
+          for (eye = 0; eye < curvesToAdd.length; eye++)
+          {
+            totaluseddots += curveEqArray[curvesToAdd[eye]].points.length * pointsFactor;
+            useddots[eye] = curveEqArray[curvesToAdd[eye]].points.length * pointsFactor;
+          }
+
+          // make selected curves visible, position and move them along curve
+          var dotally = 0;
+          var p;
+          for (p = 0; p < curvesToAdd.length; p++)
+          {
+            curveArray[curvesToAdd[p]].visible = true;
+            for (q = 0; q < useddots[p]; q++)
+            {
+              dots[dotally].scale.x = scale * 1.5;
+              dots[dotally].scale.y = scale * 1.5;
+              dots[dotally].scale.z = scale * 1.5;
+
+              dots[dotally].position.x = curveEqArray[curvesToAdd[p]].getPoint((i + (q / useddots[p])) % 1).x * curveArray[curvesToAdd[p]].scale.x + curveArray[curvesToAdd[p]].position.x;
+              dots[dotally].position.y = curveEqArray[curvesToAdd[p]].getPoint((i + (q / useddots[p])) % 1).y * curveArray[curvesToAdd[p]].scale.y + curveArray[curvesToAdd[p]].position.y;
+              dots[dotally].position.z = curveEqArray[curvesToAdd[p]].getPoint((i + (q / useddots[p])) % 1).z * curveArray[curvesToAdd[p]].scale.z + curveArray[curvesToAdd[p]].position.z;
+
+              dotally++;
+            }
+          }
+
+          // THREE functions updatae
           controls.update();
           composer.render();
           mixer.update(clock.getDelta());
