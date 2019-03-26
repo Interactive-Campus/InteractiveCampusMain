@@ -688,6 +688,7 @@
             }
             prevobj = selectedObject;
           }
+
           var width = divWidth;
           var height = divHeight;
           camera.aspect = width / height;
@@ -799,7 +800,6 @@
           {
             //controls.enableRotate = true;
             pcamrot = camera.rotation;
-            console.log("BENNY");
           }
           if (controls.target.x > panx) {
               controls.target.x = panx;
@@ -827,7 +827,29 @@
           var pointsFactor = .25;
           var room = "C-101"; // changes with clicks
 
-          curvesToAdd = [0, 1, 2, 3, 4];
+          curvesToAdd = [];
+
+          // curve adder function(s)
+          var curveIndex;
+          for (curveIndex = 0; curveIndex < curveArray.length; curveIndex++)
+          {
+            var curveChar;
+            for (curveChar = 0; curveChar < curveArray[curveIndex].name.length; curveChar++)
+            {
+              if (room[curveChar] != curveArray[curveIndex].name[curveChar] && curveChar != 1 && curveArray[curveIndex].name[curveChar] != 'x')
+              {
+                break;
+              }
+              if (curveArray[curveIndex].name[curveChar] == 'x' || curveChar == (curveArray[curveIndex].name.length - 1))
+              {
+                // append CurvesToAdd
+                curvesToAdd.push(curveIndex);
+                break;
+              }
+            }
+          }
+
+          console.log(curvesToAdd);
 
           // zero to one variable
           if (i >= 1)
