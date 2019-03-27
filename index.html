@@ -147,6 +147,434 @@
     <b href="#">Directions</b>
   </div>
 
+  <script>
+    var dropdown = document.getElementsByClassName("dropdown-btn");
+    var i;
+    for (i = 0; i < dropdown.length; i++) {
+      dropdown[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var dropdownContent = this.nextElementSibling;
+        if (dropdownContent.style.display === "none") {
+          dropdownContent.style.display = "block";
+        } else {
+          dropdownContent.style.display = "none";
+        }
+      });
+    }
+  </script>
+
+  <script type="text/javascript">
+
+    // Client ID and API key from the Developer Console
+    var CLIENT_ID = '79803498417-dn61t5itdcnptmpvto6u1u0ve9sd4eag.apps.googleusercontent.com';
+    var API_KEY = 'AIzaSyBazu_bqPDM5BCxVfOxeLxcanGO9K4R8Q0';
+
+    // Array of API discovery doc URLs for APIs used by the quickstart
+    var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+
+    // Authorization scopes required by the API; multiple scopes can be
+    // included, separated by spaces.
+    var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
+
+    var authorizeButton = document.getElementById('authorize_button');
+    var signoutButton = document.getElementById('signout_button');
+    //var xhr = new XMLHttpRequest();
+    //xhr.open('GET', "https://www.googleapis.com/calendar/v3/calendars/acg4tehdnkv29rfpasrt7eo1kb81qv0l%40import.calendar.google.com/events?timeMax=2019-01-17T23%3A59%3A59Z&key={AIzaSyAbfHCvJAxKTcbFHJBtLjTdbiwKoq93vmc)", true);
+    //xhr.send();
+    /**
+     *  On load, called to load the auth2 library and API client library.
+     */
+     var finalAthleticTitle = new Array();
+     var finalAthleticLocation = new Array();
+     var finalAthleticTimeD = new Array();
+     var finalAthleticTimeH = new Array();
+     var finalAthleticTimeM = new Array();
+     var finalAthleticTimeYear = new Array();
+     var finalAthleticTimeMonth = new Array();
+     var finalAthleticTimeDay = new Array();
+
+     var finalSchoolTitle = new Array();
+     var finalSchoolLocation = new Array();
+     var finalSchoolTimeD = new Array();
+     var finalSchoolTimeH = new Array();
+     var finalSchoolTimeM = new Array();
+     var finalSchoolTimeYear = new Array();
+     var finalSchoolTimeMonth = new Array();
+     var finalSchoolTimeDay = new Array();
+
+     var finalTitle = new Array();
+     var finalLocation = new Array();
+     var finalTimeD = new Array();
+     var finalTimeH = new Array();
+     var finalTimeM = new Array();
+
+    function handleClientLoad() {
+      gapi.load('client:auth2', initClient);
+    }
+
+    /**
+     *  Initializes the API client library and sets up sign-in state
+     *  listeners.
+     */
+    function initClient() {
+      gapi.client.init({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        discoveryDocs: DISCOVERY_DOCS,
+        scope: SCOPES
+      }).then(function () {
+        // Listen for sign-in state changes.
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+
+        // Handle the initial sign-in state.
+        updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+        authorizeButton.onclick = handleAuthClick;
+        signoutButton.onclick = handleSignoutClick;
+      }, function(error) {
+        appendPre(JSON.stringify(error, null, 2));
+      });
+    }
+
+    /**
+     *  Called when the signed in status changes, to update the UI
+     *  appropriately. After a sign-in, the API is called.
+     */
+    function updateSigninStatus(isSignedIn) {
+      if (isSignedIn) {
+        authorizeButton.style.display = 'none';
+        signoutButton.style.display = 'block';
+        listAthleticEvents();
+        //listUpcomingEvents();
+        //compileList();
+      } else {
+        authorizeButton.style.display = 'block';
+        signoutButton.style.display = 'none';
+      }
+    }
+
+    /**
+     *  Sign in the user upon button click.
+     */
+    function handleAuthClick(event) {
+      gapi.auth2.getAuthInstance().signIn();
+    }
+
+    /**
+     *  Sign out the user upon button click.
+     */
+    function handleSignoutClick(event) {
+      gapi.auth2.getAuthInstance().signOut();
+    }
+
+    /**
+     * Append a pre element to the body containing the given message
+     * as its text node. Used to display the results of the API call.
+     *
+     * @param {string} message Text to be placed in pre element.
+     */
+    function appendPre(message) {
+      var pre = document.getElementById('content');
+      var textContent = document.createTextNode(message + '\n');
+      pre.appendChild(textContent);
+    }
+
+    /**
+     * Print the summary and start datetime/date of the next ten events in
+     * the authorized user's calendar. If no events are found an
+     * appropriate message is printed.
+     */
+     //ATHLETIC EVENTS CALENDAR
+     function listAthleticEvents() {
+      gapi.client.calendar.events.list({
+        'calendarId': 'ianftid1id99ndghk76k7fpab92vih89@import.calendar.google.com',
+        'timeMin': (new Date()).toISOString(),
+        'showDeleted': false,
+        'singleEvents': true,
+        'maxResults': 200,
+        'orderBy': 'startTime'
+      }).then(function(response) {
+
+        //final refined list to send to sidebar
+        var aevents = response.result.items;
+        appendPre('Upcoming events:');
+
+        if (aevents.length > 0) {
+          // if there are events on calendar execute to add space
+          for (j = 0; j < aevents.length; j++) {
+            var athletic = aevents[j];
+            athletic.summary = athletic.summary + ' ';
+            //appendPre(athletic.summary);
+          }
+          var aPlace = 0;
+          for (i = 0; i < aevents.length; i++) {
+            var athletic = aevents[i];
+            var awhen = athletic.start.dateTime;
+            var today = (new Date()).toISOString();
+            // grab the date of the instant it reloads and compare it to the date of the event
+            var dateOnly = today.substring(8, 10);
+            // take event's date and start time
+            if (!awhen) {
+              awhen = athletic.start.date;
+            }
+            // separate date, minutes, and seconds individually
+            var startYear = awhen.substring(0, 4);
+            var startMonth = awhen.substring (5, 7);
+            var startDay = awhen.substring (8, 10);
+            var startDate;
+            var startMin = awhen.substring (14, 16);
+            var startSec = awhen.substring (17, 19);
+            // SWITCH TIMEZONES FROM UTC TO HST
+            // get hours
+            // add 10 hours to the time
+            var startHours;
+            startHours = awhen.substring (11, 13);
+
+            if (startHours > 0) {
+              startDay = startDay - 1;
+            }
+            if (startHours > 10){
+              startDay = startDay + 1;
+            }
+            // switch hours from UTC to HST
+            startHours = startHours - 10;
+            if (athletic.location != 'Iolani')
+            {
+              athletic.location = '';
+            }
+            startDate = startYear + '-' + startMonth + '-' + startDay;
+            // if today's date matches the event's date, print event
+            if (dateOnly == startDay && startHours < 10){
+              // HSt is behind a day, so add 24 hours to get correct displayed hours
+              startHours = startHours + 10;
+              //appendPre(athletic.summary + ' (' + startDate + 'T' + startHours + ':' + startMin + ':' + startSec + 'Z' + ')' + ' (' + event.location + ')');
+              if (athletic.location != '') {
+                finalAthleticTitle[aPlace] = athletic.summary;
+                finalAthleticLocation[aPlace] = athletic.location;
+                finalAthleticTimeD[aPlace] = startDate;
+                finalAthleticTimeH[aPlace] = startHours;
+                finalAthleticTimeM[aPlace] = startMin;
+                finalAthleticTimeYear[aPlace] = startYear;
+                finalAthleticTimeMonth[aPlace] = startMonth;
+                finalAthleticTimeDay[aPlace] = startDay;
+                aPlace = aPlace + 1;
+                //appendPre(finalAthleticTitle[i] + ' (' + finalAthleticTime[i] + ')' + ' (' + finalAthleticLocation[i] + ')');
+              }
+            }
+
+          }
+        }
+        listUpcomingEvents();
+      });
+    }
+    function listUpcomingEvents() {
+      gapi.client.calendar.events.list({
+        'calendarId': 'acg4tehdnkv29rfpasrt7eo1kb81qv0l@import.calendar.google.com',
+        'timeMin': (new Date()).toISOString(),
+    //    'timeMax': (new Date())
+        'showDeleted': false,
+        'singleEvents': true,
+        'maxResults': 200,
+        'orderBy': 'startTime'
+      }).then(function(response) {
+        var events = response.result.items;
+        //imported array
+        var checker = '';
+        //placeholder to check individual words
+        var omitTitle = new Array();
+        var omitLocation = new Array("A-101", "A-102", "A-201", "A-202", "A-203", "Art Gallery",
+                                     "C-100", "C-101", "C-102", "C-103", "C-104", "C-105", "C-106", "C-107", "C-108", "C-109", "C-110",
+                                     "C-200", "C-201", "C-202", "C-203", "C-204", "C-205", "C-206", "C-207", "C-208", "C-209", "C-210",
+                                     "G-101", "G-102", "Lower Gym", "Lower", "LG", "US Dance Room", "G-201", "G-202", "G-203", "Wrestling Room", "Upper Gym", "Upper", "UG",
+                                     "I-101", "I-101L", "I-102", "I-102L", "I-103", "I-104", "I-105", "I-106", "I-107", "I-108", "I-109", "Writing Center", "I-110", "I-111", "ITS", "IT", "I-112",
+                                     "I-201A", "I-201B", "I-202A", "I-202B", "I-203", "I-204", "I-205", "I-206", "I-207", "I-208", "I-209", "I-210", "I-211", "I-212", "I-213", "I-214", "I-215", "I-216", "I-217",
+                                     "N-201", "N-202", "N-203", "N-204", "N-205", "N-206", "N-207", "N-208", "N-209", "N-210", "N-211",
+                                     "R-101", "R-102",
+                                     "SCIL-1", "SAO", "Student Activities Office", "Student Actvity Office", "Fab Lab", "Fabrication Lab", "I-Lab", "I Lab", "Ka'i Office", "Kai Office", "Senior Benches", "Sr. Benches",
+                                     "SCIL-2", "Library", "Archives",
+                                     "SCIL-3", "3", "SCIL-3 CC", "CC", "SCIL-3 Seminar Room", "SCIL-3 SR", "SR",
+                                     "SCIL-4", "4", "SCIL-4 CSC", "CSC", "SCIL-4 DDS", "DDS", "SCIL-4 Wetlab", "Wetlab", "Wet lab",
+                                     "W-101", "W-102", "W-103", "W-104", "W-105", "W-106", "College Counseling Office", "CCO", "College Counseling",
+                                     "W-201", "W-202", "W-203", "W-204", "W-205", "W-206", "W-207", "W-208", "W-209", "W-210", "W-211", "W-212", "W-213", "W-214", "W-215", "W-216",
+                                     "W-301", "W-302", "W-303", "W-304", "W-305", "W-306", "W-307", "W-308", "W-309", "W-310", "W-311", "W-312", "W-313", "W-314", "W-315", "W-316",
+                                     "Seto Hall", "Seto", "Seto Hall Lanai", "Seto Lanai",
+                                     "Student Center", "SC", "Cafeteria", "Fac. Lounge", "Faculty Lounge", "Kitchen",
+                                     "Pool", "Dillingham Pool",
+                                     "Football Field", "Track", "Soccer Field", "Kozuki Stadium", "Press Box",
+                                     "Chapel", "St. Alban's Chapel",
+                                     "Center Courtyard");
+
+        //varibles to check event with
+        //appendPre('Upcoming events:');
+
+        if (events.length > 0) {
+          // if there are events on calendar execute
+          for (j = 0; j < events.length; j++) {
+            var school = events[j];
+            school.summary = school.summary + ' ';
+          }
+          // create a space between each event
+          var sPlace = 0;
+          for (i = 0; i < events.length; i++) {
+            // run through every event in list
+            var school = events[i];
+            // "event" variable is the current event in the array
+            for (u = 0; u < school.summary.length; u++) {
+              // variable u to run through characters of each event
+              checker = checker + school.summary[u];
+              //appendPre(checker);
+              // placeholder variable that contains all current characters for loop when through
+              if (school.summary[u] == ' ' || u >= school.summary.length) {
+                // if it encounters a space
+                if (checker == 'Trip ' || checker == 'Faculty ' || checker == 'Assembly ' || checker == 'US ' || checker == 'TIAA ' || checker == 'IAA ' || checker == 'Admission ') {
+                  //if the word reads any of the above words, erase summary
+                  school.summary = '';
+                  school.location = '';
+                }
+                checker = '';
+                // set placeholder back to blank for next word if there is one
+              }
+            }
+            if (!school.location) {
+              // if the event has no location, delete array portion
+              school.summary = '';
+              school.start.dateTime = '';
+              school.location = '';
+            }
+            if (school.location != '' && school.summary != '') {
+              // if the event has a location and summary keep
+              var when = school.start.dateTime;
+              var today = (new Date()).toISOString();
+              // grab the date of the instant it reloads and compare it to the date of the event
+              var dateOnly = today.substring(8, 10);
+              // take event's date and start time
+              if (!when) {
+                // if there is no start time, put date for all day event
+                when = school.start.date;
+              }
+              //appendPre(finalSchoolTitle[i] + ' ' +  ' (' + finalSchoolTime[i] + ')' + ' (' + finalSchoolLocation[i] + ') ');
+              // print the event
+              var startYear = when.substring(0, 4);
+              var startMonth = when.substring (5, 7);
+              var startDay = when.substring (8, 10);
+              var startDate;
+              var startMin = when.substring (14, 16);
+              var startSec = when.substring (17, 19);
+              // SWITCH TIMEZONES FROM UTC TO HST
+              // get hours
+              // add 10 hours to the time
+              var startHours;
+              startHours = when.substring (11, 13);
+
+              if (startHours > 0 && startHours < 34 && startDay == dateOnly) {
+                startDay = startDay - 1;
+              }
+              // switch hours from UTC to HST
+              startHours = startHours - 10;
+              startDate = startYear + '-' + startMonth + '-' + startDay;
+
+              // if today's date matches the event's date, print event
+              if (dateOnly == (startDay + 1) && startHours < 0){
+                // HSt is behind a day, so add 24 hours to get correct displayed hours
+
+                //appendPre("Correctly compiled time for event");
+                startHours = startHours + 24;
+                finalSchoolTimeD[sPlace] = startDate;
+                finalSchoolTimeH[sPlace] = startHours;
+                finalSchoolTimeM[sPlace] = startMin;
+                finalSchoolTimeYear[sPlace] = startYear;
+                finalSchoolTimeMonth[sPlace] = startMonth;
+                finalSchoolTimeDay[sPlace] = startDay;
+                finalSchoolTitle[sPlace] = school.summary;
+                finalSchoolLocation[sPlace] = school.location;
+                //finalSchoolTime[sPlace] = when;
+                sPlace = sPlace + 1;
+
+                //appendPre(event.summary + ' (' + startDate + 'T' + startHours + ':' + startMin + ':' + startSec + 'Z' + ')' + ' (' + event.location + ')');
+              }
+            }
+          }
+        } else {
+          appendPre('No upcoming events found.');
+        }
+        var today = new Date();
+        //appendPre(today.getMonth());
+        compileList();
+      });
+    }
+
+    function compileList() {
+      //appendPre(today);
+      var a = 0;
+      var s = 0;
+      for (i = 0; i < 200; i++) {
+        if ((finalSchoolTimeYear[s] <= finalAthleticTimeYear[a]) &&
+            (finalSchoolTimeMonth[s] <= finalAthleticTimeMonth[a]) &&
+            (finalSchoolTimeDay[s] <= finalAthleticTimeDay[a]) &&
+            (finalSchoolTimeH[s] <= finalAthleticTimeH[a]) &&
+            (finalSchoolTimeM[s] <= finalAthleticTimeM[a])) {
+          //appendPre("Printing athletic event");
+          finalTimeD[i] = finalSchoolTimeD[s];
+          finalTimeH[i] = finalSchoolTimeH[s];
+          finalTimeM[i] = finalSchoolTimeM[s];
+          finalTitle[i] = finalSchoolTitle[s];
+          finalLocation[i] = finalSchoolLocation[s];
+          s = s + 1;
+          //appendPre("s: " + s);
+        }
+        else {
+          finalTimeD[i] = finalAthleticTimeD[a];
+          finalTimeH[i] = finalAthleticTimeH[a];
+          finalTimeM[i] = finalAthleticTimeM[a];
+          finalTitle[i] = finalAthleticTitle[a];
+          finalLocation[i] = finalAthleticLocation[a];
+          a = a + 1;
+          //appendPre("a: " + a);
+        }
+
+        if (finalTitle[i] != null) {
+          console.log(finalTitle[0], "sfrgsebsd");
+          //appendPre(finalTitle[i] + ' ' +  ' (' + finalTimeD[i] + ' ' + finalTimeH[i] + ':' + finalTimeM[i] + ') (' + finalLocation[i] + ') ');
+        }
+
+      }
+    }
+  </script>
+
+  <script>
+    //array for list of events
+    var listEvent = finalTitle[0];
+    var events = listEvent.length;
+    //listing all the events
+    for (var i = 0; i < events; i++){
+      var firstEvent = "event" + i;
+      var secondEvent = "event" + (i + 1);
+      var newEvent = firstEvent.replace(firstEvent.toString(),secondEvent.toString());
+      document.getElementById(newEvent).innerHTML = listEvent[i];
+    }
+
+    //array for list of times that corrospond with events
+    var listTime = finalTimeH[0];
+    var times = listTime.length;
+    //listing all the times
+    for (var i = 0; i < times; i++){
+      var firstTime = "time" + i;
+      var secondTime = "time" + (i + 1);
+      var newTime = firstTime.replace(firstTime.toString(),secondTime.toString());
+      document.getElementById(newTime).innerHTML = listTime[i];
+    }
+
+    //array for list of locations that corrospond with events and time
+    var listLocation = finalLocation[0];
+    var locations = listLocation.length;
+    //listing all the locations
+    for (var i = 0; i < locations; i++){
+      var firstLocation = "location" + i;
+      var secondLocation = "location" + (i + 1);
+      var newLocation = firstLocation.replace(firstLocation.toString(),secondLocation.toString());
+      document.getElementById(newLocation).innerHTML = listLocation[i];
+    }
+  </script>
+
 <script>
   //width of sidebar
   function openNav() {
@@ -159,157 +587,100 @@
   }
 
   //startClosed();
-</script>
+  </script>
 
-<script>
-  var dropdown = document.getElementsByClassName("dropdown-btn");
-  var i;
-  for (i = 0; i < dropdown.length; i++) {
-    dropdown[i].addEventListener("click", function() {
-      this.classList.toggle("active");
-      var dropdownContent = this.nextElementSibling;
-      if (dropdownContent.style.display === "none") {
-        dropdownContent.style.display = "block";
-      } else {
-        dropdownContent.style.display = "none";
+    <script src="js/three.js"></script>
+    <script src="js/controls/OrbitControls.js"></script>
+    <script src="js/loaders/GLTFLoader.js"></script>
+    <script src="js/shaders/CopyShader.js"></script>
+    <script src="js/shaders/FXAAShader.js"></script>
+    <script src="js/postprocessing/EffectComposer.js"></script>
+    <script src="js/postprocessing/RenderPass.js"></script>
+    <script src="js/postprocessing/ShaderPass.js"></script>
+    <script src="js/postprocessing/OutlinePass.js"></script>
+    <script src="js/libs/stats.min.js"></script>
+    <script src='js/libs/dat.gui.min.js'></script>
+
+    <div id = 'canvas'>
+
+
+      <script>
+      function openNav() {
+          document.getElementById("mySidenav").style.width = "250px";
+          document.getElementById("main").style.marginRight = "250px";
       }
-    });
-  }
-</script>
+      function closeNav() {
+          document.getElementById("mySidenav").style.width = "0";
+          document.getElementById("main").style.marginLRight= "0";
+      }
+      </script>
 
-<script>
+      <script>
 
-</script>
+      // create dropdown within sidebar and add listener for toggle
+      var dropdown = document.getElementsByClassName("dropdown-btn");
+      var i;
+      for (i = 0; i < dropdown.length; i++) {
+        dropdown[i].addEventListener("click", function() {
+          this.classList.toggle("active");
+          var dropdownContent = this.nextElementSibling;
+          if (dropdownContent.style.display === "block") {
+            dropdownContent.style.display = "none";
+          } else {
+            dropdownContent.style.display = "block";
+          }
+        });
+      }
 
-<script>
-  //array for list of events
-  var listEvent = ["Landis Aquarium", "Science Fair", "Iolani vs HPA Boys Varsity Soccer"];
-  var events = listEvent.length;
-  //listing all the events
-  for (var i = 0; i < events; i++){
-    var firstEvent = "event" + i;
-    var secondEvent = "event" + (i + 1);
-    var newEvent = firstEvent.replace(firstEvent.toString(),secondEvent.toString());
-    document.getElementById(newEvent).innerHTML = listEvent[i];
-  }
+      </script>
 
-  //array for list of times that corrospond with events
-  var listTime = ["10:10-11:15am", "12:15-1:00pm", "12:15-1:00pm"];
-  var times = listTime.length;
-  //listing all the times
-  for (var j = 0; j < times; j++){
-    var firstTime = "time" + j;
-    var secondTime = "time" + (j + 1);
-    var newTime = firstTime.replace(firstTime.toString(),secondTime.toString());
-    document.getElementById(newTime).innerHTML = listTime[j];
-  }
+        <script src="js/three.js"></script>
+        <script src="js/controls/OrbitControls.js"></script>
+        <script src="js/loaders/GLTFLoader.js"></script>
+        <script src="js/shaders/CopyShader.js"></script>
+        <script src="js/shaders/FXAAShader.js"></script>
+        <script src="js/postprocessing/EffectComposer.js"></script>
+        <script src="js/postprocessing/RenderPass.js"></script>
+        <script src="js/postprocessing/ShaderPass.js"></script>
+        <script src="js/postprocessing/OutlinePass.js"></script>
+        <script src="js/libs/stats.min.js"></script>
+        <script src='js/libs/dat.gui.min.js'></script>
+        <script src='js/NameList.js'></script>
+        <div id = 'canvas'>
+          <script>
+          // https://stackoverflow.com/questions/13542175/three-js-ray-intersect-fails-by-adding-div/13544277#13544277
 
-  //array for list of locations that corrospond with events and time
-  var listLocation = ["Location: N-110", "Location: N-203", "Location: N-105"];
-  var locations = listLocation.length;
-  //listing all the locations
-  for (var j = 0; j < locations; j++){
-    var firstLocation = "location" + j;
-    var secondLocation = "location" + (j + 1);
-    var newLocation = firstLocation.replace(firstLocation.toString(),secondLocation.toString());
-    document.getElementById(newLocation).innerHTML = listLocation[j];
-  }
-</script>
+          // heap clears frequently, nodes do not
 
-  <script src="js/three.js"></script>
-  <script src="js/controls/OrbitControls.js"></script>
-  <script src="js/loaders/GLTFLoader.js"></script>
-  <script src="js/shaders/CopyShader.js"></script>
-  <script src="js/shaders/FXAAShader.js"></script>
-  <script src="js/postprocessing/EffectComposer.js"></script>
-  <script src="js/postprocessing/RenderPass.js"></script>
-  <script src="js/postprocessing/ShaderPass.js"></script>
-  <script src="js/postprocessing/OutlinePass.js"></script>
-  <script src="js/libs/stats.min.js"></script>
-  <script src='js/libs/dat.gui.min.js'></script>
+          // use this function to interact with JavaScript from sidebar interaction
+          const changeText = () => {}
 
-  <div id = 'canvas'>
-    <script>
-    // https://stackoverflow.com/questions/13542175/three-js-ray-intersect-fails-by-adding-div/13544277#13544277
+        // declaring big boy variables
+        var t;
+        var container, stats;
+        var camera, scene, renderer, controls;
+        var raycaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2();
+        var selectedObjects = [];
+        var composer, effectFXAA, outlinePass;
+        var group = new THREE.Group();
+        var obj3d = new THREE.Object3D();
+        var clips;
+        var mixer = new THREE.AnimationMixer();
+        var clock = new THREE.Clock(true);
+        var divWidth = window.innerWidth * 3 / 4;// / 2;//500;
+        var divHeight = window.innerHeight * 5 / 7// / 2;//500;
+        var xd = 1;
+        var yd = 1;
+        var xx = 0;
+        var yy = 0;
+        init();
+        onWindowResize();
+        animate();
 
-
-    <script>
-    function openNav() {
-        document.getElementById("mySidenav").style.width = "250px";
-        document.getElementById("main").style.marginRight = "250px";
-    }
-    function closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        document.getElementById("main").style.marginLRight= "0";
-    }
-    </script>
-
-    <script>
-
-    // create dropdown within sidebar and add listener for toggle
-    var dropdown = document.getElementsByClassName("dropdown-btn");
-    var i;
-    for (i = 0; i < dropdown.length; i++) {
-      dropdown[i].addEventListener("click", function() {
-        this.classList.toggle("active");
-        var dropdownContent = this.nextElementSibling;
-        if (dropdownContent.style.display === "block") {
-          dropdownContent.style.display = "none";
-        } else {
-          dropdownContent.style.display = "block";
-        }
-      });
-    }
-
-    </script>
-
-      <script src="js/three.js"></script>
-      <script src="js/controls/OrbitControls.js"></script>
-      <script src="js/loaders/GLTFLoader.js"></script>
-      <script src="js/shaders/CopyShader.js"></script>
-      <script src="js/shaders/FXAAShader.js"></script>
-      <script src="js/postprocessing/EffectComposer.js"></script>
-      <script src="js/postprocessing/RenderPass.js"></script>
-      <script src="js/postprocessing/ShaderPass.js"></script>
-      <script src="js/postprocessing/OutlinePass.js"></script>
-      <script src="js/libs/stats.min.js"></script>
-      <script src='js/libs/dat.gui.min.js'></script>
-      <script src='js/NameList.js'></script>
-      <div id = 'canvas'>
-        <script>
-        // https://stackoverflow.com/questions/13542175/three-js-ray-intersect-fails-by-adding-div/13544277#13544277
-
-        // heap clears frequently, nodes do not
-
-        // use this function to interact with JavaScript from sidebar interaction
-        const changeText = () => {}
-
-      // declaring big boy variables
-      var t;
-      var container, stats;
-      var camera, scene, renderer, controls;
-      var raycaster = new THREE.Raycaster();
-      var mouse = new THREE.Vector2();
-      var selectedObjects = [];
-      var composer, effectFXAA, outlinePass;
-      var group = new THREE.Group();
-      var obj3d = new THREE.Object3D();
-      var clips;
-      var mixer = new THREE.AnimationMixer();
-      var clock = new THREE.Clock(true);
-      var divWidth = window.innerWidth * 3 / 4;// / 2;//500;
-      var divHeight = window.innerHeight * 5 / 7// / 2;//500;
-      var xd = 1;
-      var yd = 1;
-      var xx = 0;
-      var yy = 0;
-      init();
-      onWindowResize();
-      animate();
-
-      function init()
-      {
-        //startClosed();
+        function init()
+        {
+          //startClosed();
 
         container = document.getElementById( 'canvas' );
         document.body.appendChild( container );
