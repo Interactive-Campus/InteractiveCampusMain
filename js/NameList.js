@@ -65,5 +65,5 @@ var nameList  = [
   {name:"SC1Infirmary", names:["Infirmary","Nurse Room", "Health Center", "Wellness Theme"]},
   {name:"C1Counseling", names:["Castle Conference Room","Castle Counseling"]},
   {name:"C1SPO", names:["Special Programs Office","SPO", "Summer School Office", "SSO"]},
-  
+
 ]

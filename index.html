@@ -237,7 +237,7 @@
         /*
         *Model Loaders
         */
-
+        //TODO Add Import for splines from Braxton
         /*
         *Main function to load in the school model.
         *path takes a string of the file path of the model (GLTF format)
@@ -245,6 +245,17 @@
         *modelGroup takes a Group and makes it the top of the tree
         *Each mesh in the model is added to a group based on the scene that it is in
         *each scene is then added to modelGroup
+        *
+        *The tree is divided by Building, floor, and room.
+        *Each Section has splines assigned to it used for pathfinding
+        *
+        *                     Outline of tree system
+        *
+        * Main Group -> Buildings - > Floors - > Rooms
+        *                   |            |         |
+        *"Highway" Splines to entrance   |         |
+        *         Splines From Entrance to floor   |
+        *                       Splines from stairway / floor Entrance to room
         */
         var loader = new THREE.GLTFLoader();
 
@@ -257,9 +268,29 @@
             *E.G. Weinberg is W, Nangaku is N
             */
             gltf.scenes.forEach(function (curScene){
-              var sceneGroup = new THREE.Group();
-              sceneGroup.name = curScene.name;
+              var buildingGroup = new THREE.Group();
+              buildingGroup.name = curScene.name;
               var sceneLength = curScene.children.length;
+              /*
+              *Creates 4 floors for each Building, not all are used
+              *each room is stored in its floor,
+              *Each floor is assigned a name e.g  N2 and a pathfinding line
+              */
+              var floor1 = new THREE.Group();
+              buildingGroup.add(floor1);
+              floor1.name = buildingGroup.name + "1";
+
+              var floor2 = new THREE.Group();
+              buildingGroup.add(floor2);
+              floor2.name = buildingGroup.name + "2";
+
+              var floor3 = new THREE.Group();
+              buildingGroup.add(floor3);
+              floor3.name = buildingGroup.name + "4";
+
+              var floor4 = new THREE.Group();
+              buildingGroup.add(floor4);
+              floor4.name = buildingGroup.name + "4";
 
               /*
               *Each mesh has a prefix indicating the building it is a part of and the floor
@@ -268,26 +299,46 @@
               *Each non room mesh is named with its prefix and followed by part
               */
               for(var i = 0; i < sceneLength; i++){
+                switch (curScene.children[0].name.slice(2,3)) {
+                  case 1:
+                    floor1.add(curScene.children[0]);
+                    break;
 
-                sceneGroup.add(curScene.children[0]);
+                  case 2:
+                    floor2.add(curScene.children[0]);
+                    break;
+
+                  case 3:
+                    floor3.add(curScene.children[0]);
+                    break;
+
+                  case 4:
+                    floor4.add(curScene.children[0]);
+                    break;
+                  default:
+                    floor1.add(curScene.children[0]);
+                }
               }
-              sceneGroup.children.forEach( function (child){
-                if (child instanceof THREE.Mesh){
-                  child.receiveShadow = true;
-                  child.castShadow = true;
+              buildingGroup.children.forEach( function (child){
+                child.children.forEach(function(room){if (child instanceof THREE.Mesh){
+                  room.receiveShadow = true;
+                  room.castShadow = true;
                   //tests if the mesh is a room or just an aesthetic part
-                  if(child.name.slice(3, -3) == 'part'){
+                  if(room.name.slice(3, -3) == 'part'){
                     //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
-                    child.userData = {alreadyUp:false, room:false};
+                    room.userData = {alreadyUp:false, isRoom:false, isStairs:false};
                   }
-
+                  //tests if mesh is stairs, stairs must use special animation
+                  else if (room.name.slice(3, -3) == 'stairs'){
+                    room.userData = {alreadyUp:false, isRoom:false, isStairs:true};
+                  }
                   else{
                     //Accesses a list of names and adds each one to the model
-                    child.userData = {alreadyUp:false, room:true, names:findNames(child.name)};
+                    child.userData = {alreadyUp:false, isRoom:true, isStairs:false,names:findNames(child.name)};
                   }
-                }
+                }});
               });
-              modelGroup.add(sceneGroup);
+              modelGroup.add(buildingGroup);
             });
           });
           modelGroup.position.copy(position);
@@ -307,8 +358,6 @@
         floorMesh.receiveShadow = true;
         floorMesh.castShadow = true;
         scene.add(floorMesh);
-
-
 
         // initialize postprocessing
         composer = new THREE.EffectComposer( renderer );
@@ -339,17 +388,41 @@
 
         //function returns a room when given a name (e.g. n203, w315, Library)
         function findRoom(roomName){
-          group.forEach(function(building){
-            building.forEach(function(room){
-              room.names.forEach(function(name){
-                if(name == roomName){
-                  return room;
-                }
+          group.children.forEach(function(building){
+            building.children.forEach(function(floor){
+              floor.children.forEach(function(room){
+                room.userData.names.forEach(function(name){
+                  if(name == roomName){
+                    return name.parent;
+                  }
+                });
               })
             });
           });
           return null;
         }
+
+        function forEachRoom(eval){
+          group.children.forEach(function(building){
+            building.children.forEach(function(floor){
+              floor.children.forEach(function(room){
+                eval(room)
+              })
+            });
+          });
+        }
+
+        var bathroomSprite;
+
+        forEachRoom(function createBathroom(room){
+          if(room.name.slice(2) == "bathroom"){
+            var spriteMap = new THREE.TextureLoader().load(bathroomSprite);
+            var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
+            var sprite = new THREE.Sprite( spriteMaterial );
+            scene.add( sprite );
+            sprite.position.copy(room.position);
+          }
+        });
 
         /*
         * Animation Functions
@@ -384,26 +457,6 @@
           action.paused = false;
         }
 
-        function lowerFloor(rootObject, clipName){
-          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
-          action.timeScale = -1;
-          action.clampWhenFinished = true;
-          action.paused = false;
-          action.play();
-          rootObject.alreadyUp =  false;
-          action.setLoop(THREE.LoopOnce);
-        }
-
-        function raiseFloor(rootObject, clipName){
-          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
-          action.timeScale = 1;
-          rootObject.alreadyUp =  true;
-          action.setLoop(THREE.LoopOnce);
-          action.clampWhenFinished = true;
-          action.play();
-          action.paused = false;
-        }
-
         /*
         *Animates all floors in the building Group
         *putting 'pingPong' for animation mode toggles the animation Up and down
@@ -413,32 +466,39 @@
 
         function animateFloors(selectedRoom, animationMode){
           if(animationMode  == 'PingPong'){
-            selectedRoom.parent.children.forEach(function(child){
-              //plays animations by the name of the floors, each floor's suffix has a matching animation
-              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -3)) != null){
-                playFloorAnimation(child, child.alreadyUp, child.name.slice(0, -3));
-              }
-              else{child.alreadyUp = !child.alreadyUp;}
+            selectedRoom.parent.parent.children.forEach(function(child){
+              child.children.forEach(function(room){
+                //plays animations by the name of the floors, each floor's suffix has a matching animation
+                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, -3)) != null){
+                  playFloorAnimation(room, room.alreadyUp, room.name.slice(0, -3));
+                }
+                else{room.alreadyUp = !room.alreadyUp;}
+              });
             });
           }
 
           else if(animationMode == 'Lower'){
-            selectedRoom.parent.children.forEach(function(child){
-              //plays animations by the name of the floors, each floor's suffix has a matching animation
-              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -3)) != null){
-                lowerFloor(child, child.name.slice(0, -3));
-              }
-              else {child.alreadyUp =  false}
+            selectedRoom.parent.parent.children.forEach(function(child){
+              child.children.forEach(function(room){
+                //plays animations by the name of the floors, each floor's suffix has a matching animation
+                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, -3)) != null){
+                  playFloorAnimation(room, true, room.name.slice(0, -3));
+                }
+
+                else{room.alreadyUp = false;}
+              });
             });
           }
 
           else if (animationMode == 'Raise') {
-            selectedRoom.parent.children.forEach(function(child){
-              //plays animations by the name of the floors, each floor's suffix has a matching animation e.g. Nangaku second floor is N2
-              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -3)) != null){
-                raiseFloor(child, child.name.slice(0, -3));
-              }
-              else {child.alreadyUp =  true}
+            selectedRoom.parent.parent.children.forEach(function(child){
+              child.children.forEach(function(room){
+                //plays animations by the name of the floors, each floor's suffix has a matching animation
+                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, -3)) != null){
+                  playFloorAnimation(room, false, room.name.slice(0, -3));
+                }
+                else{room.alreadyUp = true;}
+              });
             });
           }
           else {console.log("Invalid Input, use pingPong, raise, or lower")}
