@@ -283,12 +283,14 @@
 
         function init2 ()
         {
-          spSetup('models/sample_curve4.obj', 0, 'C-101', 2, 1, 2, 0, 0);
+
+          spSetup('models/sample_curvet.obj', 0, 'C-101', 2, 1, 2, 0, 0);
           spSetup('models/sample_curves.obj', 1, 'W-203', 2, 1, 0, 3, 0);
           spSetup('models/sample_curve2.obj', 2, 'I-212', 2, 1, 3, 2, 0);
-          spSetup('models/sample_curve8.obj', 3, 'C-1xx', 2, 1, 0, 3, 1);
+          spSetup('models/sample_curvet.obj', 3, 'C-1xx', 2, 1, 0, 3, 1);
           spSetup('models/sample_curve3.obj', 4, 'G-101', 2, 1, 1, 1, 1);
-          spSetup('models/sample_curve3.obj', 5, 'C-xxx', 2, 1, 1, 1, 1);
+          spSetup('models/sample_curvet.obj', 5, 'C-xxx', 2, 1, 1, 1, 1);
+
         }
 
         init();
@@ -310,7 +312,7 @@
           var height = divHeight;
 
           // enable shadows
-          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.enabled = false;
           //renderer.shadowMap.type = THREE.BasicShadowMap;
 
           // initialize scene
@@ -849,7 +851,7 @@
             }
           }
 
-          console.log(curvesToAdd);
+          //console.log(curvesToAdd);
 
           // zero to one variable
           if (i >= 1)
