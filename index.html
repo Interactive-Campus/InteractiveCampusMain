@@ -215,7 +215,7 @@
               dots[lxl].position.y = 42069360;
               scene.add(dots[lxl]);
 
-              console.log(lxl, dots[lxl]);
+              //console.log(lxl, dots[lxl]);
               //scene.add(dots[lxl]);
               dotlength = dots.length;
             }
@@ -322,7 +322,7 @@
         // initialize and customize controls
         controls = new THREE.OrbitControls( camera, renderer.domElement );
         controls.minDistance = 2;
-        controls.maxDistance = 5;
+        controls.maxDistance = 100;
         controls.maxPolarAngle = 11*Math.PI/24;
         controls.enablePan = true;
         controls.enableDamping = true;
@@ -407,6 +407,10 @@
               buildingGroup.add(floor4);
               floor4.name = buildingGroup.name + "4";
 
+              var floor5 = new THREE.Group();
+              buildingGroup.add(floor5);
+              floor5.name = buildingGroup.name + "5";
+
               /*
               *Each mesh has a prefix indicating the building it is a part of and the floor
               *e.g. N2 means Nangaku second floor
@@ -414,44 +418,51 @@
               *Each non room mesh is named with its prefix and followed by part
               */
               for(var i = 0; i < sceneLength; i++){
-                switch (curScene.children[0].name.slice(2,3)) {
-                  case 1:
+                switch (curScene.children[0].name.slice(1,2)) {
+                  case "1":
                     floor1.add(curScene.children[0]);
                     break;
 
-                  case 2:
+                  case "2":
                     floor2.add(curScene.children[0]);
                     break;
 
-                  case 3:
+                  case "3":
                     floor3.add(curScene.children[0]);
                     break;
 
-                  case 4:
+                  case "4":
                     floor4.add(curScene.children[0]);
                     break;
+
+                  case "5":
+                    floor5.add(curScene.children[0]);
+                    break;
+
                   default:
                     floor1.add(curScene.children[0]);
                 }
               }
               buildingGroup.children.forEach( function (child){
-                child.children.forEach(function(room){if (child instanceof THREE.Mesh){
-                  room.receiveShadow = true;
-                  room.castShadow = true;
-                  //tests if the mesh is a room or just an aesthetic part
-                  if(room.name.slice(3, -3) == 'part'){
-                    //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
-                    room.userData = {alreadyUp:false, isRoom:false, isStairs:false};
+                child.children.forEach(function(room){
+                  if (room instanceof THREE.Mesh){
+                    room.receiveShadow = true;
+                    room.castShadow = true;
+                    //tests if the mesh is a room or just an aesthetic part
+                    if(room.name.slice(3, -3) == 'part'){
+                      //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
+                      room.userData = {alreadyUp:false, isRoom:false, isStairs:false};
+                    }
+                    //tests if mesh is stairs, stairs must use special animation
+                    else if (room.name.slice(3, -3) == 'stairs'){
+                      room.userData = {alreadyUp:false, isRoom:false, isStairs:true};
+                    }
+                    else{
+                      //Accesses a list of names and adds each one to the model
+                      room.userData = {alreadyUp:false, isRoom:true, isStairs:false, names:findNames(child.name)};
+                    }
                   }
-                  //tests if mesh is stairs, stairs must use special animation
-                  else if (room.name.slice(3, -3) == 'stairs'){
-                    room.userData = {alreadyUp:false, isRoom:false, isStairs:true};
-                  }
-                  else{
-                    //Accesses a list of names and adds each one to the model
-                    child.userData = {alreadyUp:false, isRoom:true, isStairs:false,names:findNames(child.name)};
-                  }
-                }});
+                });
               });
               modelGroup.add(buildingGroup);
             });
@@ -460,9 +471,9 @@
         }
 
         // add Nangaku model
-        loadCampus('models/Nangaku6.gltf', new THREE.Vector3(1,0,-1), group);
+        loadCampus('models/CampusMapFinal.gltf', new THREE.Vector3(1,0,-1), group);
 
-        init2();
+        //init2();
         dot(totaldots);
 
         // add and position floor
@@ -475,7 +486,7 @@
         floorMesh.position.y = 0;
         floorMesh.receiveShadow = true;
         floorMesh.castShadow = true;
-        scene.add(floorMesh);
+        //scene.add(floorMesh);
 
         // initialize postprocessing
         composer = new THREE.EffectComposer( renderer );
@@ -616,7 +627,7 @@
         window.addEventListener( 'touchend', onTouchMove );
         window.addEventListener( 'touchstart', onmesh);
         window.addEventListener( 'mousedown', onmesh);
-        window.addEventListener( 'mousemove', stopstart);
+        //window.addEventListener( 'mousemove', stopstart);
 
         // variables for listener functions
         var clicked = true;
@@ -693,6 +704,8 @@
            {
              outlinePass.selectedObjects = [];
              var selectedObject = intersects[ 0 ].object;
+
+             console.log(selectedObject.userData);
              animateFloors(selectedObject, 'PingPong');
              addSelectedObject( selectedObject );
              if (clicked && started || prevobj != selectedObject)
@@ -879,8 +892,6 @@
               }
             }
           }
-
-          console.log(curvesToAdd);
 
           // zero to one variable
           if (i >= 1)
