@@ -42,6 +42,12 @@
         background-color: #ffffff;
       }
 
+      button {
+        position: absolute;
+        height: 0px;
+        width: 0px;
+      }
+
       /* list of events */
       .sidenav a {
           /* space between (top, right side, bottom, left side )*/
@@ -120,6 +126,13 @@
 
   <div class="rectangle"></div>
 
+  <div class="button">
+    <button id="authorize_button" style="display: none;">Authorize</button>
+    <button id="signout_button" style="display: none;">Sign Out</button>
+  </div>
+
+  <pre id="content" style="white-space: pre-wrap;"></pre>
+
   <a class="dropdown-btn"> <div id ="event1"></div>
     <i class="fa fa-caret-down"></i>
   </a>
@@ -147,6 +160,87 @@
     <b href="#">Directions</b>
   </div>
 
+  <a class="dropdown-btn"> <div id ="event4"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time4"></p>
+    <p id ="location4"></p>
+    <b href="#">Directions</b>
+  </div>
+
+  <a class="dropdown-btn"> <div id="event5"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time5"></p>
+    <p id ="location5"></p>
+    <b href="#">Directions</b>
+  </div>
+
+  <a class="dropdown-btn"> <div id="event6"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time6"></p>
+    <p id ="location6"></p>
+    <b href="#">Directions</b>
+  </div>
+
+  <a class="dropdown-btn"> <div id ="event7"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time7"></p>
+    <p id ="location7"></p>
+    <b href="#">Directions</b>
+  </div>
+
+  <a class="dropdown-btn"> <div id="event8"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time8"></p>
+    <p id ="location8"></p>
+    <b href="#">Directions</b>
+  </div>
+
+  <a class="dropdown-btn"> <div id="event9"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time9"></p>
+    <p id ="location9"></p>
+    <b href="#">Directions</b>
+  </div>
+
+  <a class="dropdown-btn"> <div id ="event10"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time10"></p>
+    <p id ="location10"></p>
+    <b href="#">Directions</b>
+  </div>
+
+  <a class="dropdown-btn"> <div id="event11"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time11"></p>
+    <p id ="location11"></p>
+    <b href="#">Directions</b>
+  </div>
+
+  <a class="dropdown-btn"> <div id="event12"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time12"></p>
+    <p id ="location12"></p>
+    <b href="#">Directions</b>
+  </div>
+
   <script>
     var dropdown = document.getElementsByClassName("dropdown-btn");
     var i;
@@ -163,11 +257,12 @@
     }
   </script>
 
+
   <script type="text/javascript">
 
     // Client ID and API key from the Developer Console
-    var CLIENT_ID = '79803498417-dn61t5itdcnptmpvto6u1u0ve9sd4eag.apps.googleusercontent.com';
-    var API_KEY = 'AIzaSyBazu_bqPDM5BCxVfOxeLxcanGO9K4R8Q0';
+    var CLIENT_ID = '838924599001-deoloebt602et97hrlajsd29lmllnmpq.apps.googleusercontent.com';
+    var API_KEY = 'AIzaSyDiUHhA9rZuyJyhTN5hjVPkwOQaCnC4zX4';
 
     // Array of API discovery doc URLs for APIs used by the quickstart
     var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
@@ -208,6 +303,9 @@
      var finalTimeH = new Array();
      var finalTimeM = new Array();
 
+     var sPlace = 0;
+     var aPlace = 0;
+
     function handleClientLoad() {
       gapi.load('client:auth2', initClient);
     }
@@ -242,13 +340,13 @@
     function updateSigninStatus(isSignedIn) {
       if (isSignedIn) {
         authorizeButton.style.display = 'none';
-        signoutButton.style.display = 'block';
+        //signoutButton.style.display = 'block';
         listAthleticEvents();
         //listUpcomingEvents();
         //compileList();
       } else {
         authorizeButton.style.display = 'block';
-        signoutButton.style.display = 'none';
+        //signoutButton.style.display = 'none';
       }
     }
 
@@ -259,12 +357,14 @@
       gapi.auth2.getAuthInstance().signIn();
     }
 
-    /**
-     *  Sign out the user upon button click.
+    /*
+     Sign out the user upon button click.
      */
+    /*
     function handleSignoutClick(event) {
       gapi.auth2.getAuthInstance().signOut();
     }
+    */
 
     /**
      * Append a pre element to the body containing the given message
@@ -296,8 +396,7 @@
 
         //final refined list to send to sidebar
         var aevents = response.result.items;
-        appendPre('Upcoming events:');
-
+        //appendPre('Athletic events:');
         if (aevents.length > 0) {
           // if there are events on calendar execute to add space
           for (j = 0; j < aevents.length; j++) {
@@ -305,7 +404,6 @@
             athletic.summary = athletic.summary + ' ';
             //appendPre(athletic.summary);
           }
-          var aPlace = 0;
           for (i = 0; i < aevents.length; i++) {
             var athletic = aevents[i];
             var awhen = athletic.start.dateTime;
@@ -329,25 +427,19 @@
             var startHours;
             startHours = awhen.substring (11, 13);
 
-            if (startHours > 0) {
-              startDay = startDay - 1;
-            }
-            if (startHours > 10){
-              startDay = startDay + 1;
-            }
             // switch hours from UTC to HST
             startHours = startHours - 10;
-            if (athletic.location != 'Iolani')
-            {
-              athletic.location = '';
+            if (startHours < 0) {
+              startHours = startHours + 24;
+              startDay = startDay - 1;
             }
             startDate = startYear + '-' + startMonth + '-' + startDay;
             // if today's date matches the event's date, print event
-            if (dateOnly == startDay && startHours < 10){
+            if (dateOnly == startDay){
               // HSt is behind a day, so add 24 hours to get correct displayed hours
               startHours = startHours + 10;
-              //appendPre(athletic.summary + ' (' + startDate + 'T' + startHours + ':' + startMin + ':' + startSec + 'Z' + ')' + ' (' + event.location + ')');
-              if (athletic.location != '') {
+              //appendPre(athletic.summary + ' (' + startDate + 'T' + startHours + ':' + startMin + ':' + startSec + 'Z' + ')' + ' (' + athletic.location + ')');
+              if (athletic.location == 'Iolani' || athletic.location == "Ala Wai") {
                 finalAthleticTitle[aPlace] = athletic.summary;
                 finalAthleticLocation[aPlace] = athletic.location;
                 finalAthleticTimeD[aPlace] = startDate;
@@ -356,11 +448,10 @@
                 finalAthleticTimeYear[aPlace] = startYear;
                 finalAthleticTimeMonth[aPlace] = startMonth;
                 finalAthleticTimeDay[aPlace] = startDay;
+                //appendPre(finalAthleticTitle[aPlace] + ' (' + finalAthleticTimeMonth[aPlace] + '-' + finalAthleticTimeDay[aPlace] + '-' + finalAthleticTimeYear[aPlace] + ')' + ' (' + finalAthleticTimeH[aPlace] + ':' + finalAthleticTimeM[aPlace] + ')' + '(' + finalAthleticLocation[aPlace] + ')' );
                 aPlace = aPlace + 1;
-                //appendPre(finalAthleticTitle[i] + ' (' + finalAthleticTime[i] + ')' + ' (' + finalAthleticLocation[i] + ')');
               }
             }
-
           }
         }
         listUpcomingEvents();
@@ -380,7 +471,7 @@
         //imported array
         var checker = '';
         //placeholder to check individual words
-        var omitTitle = new Array();
+        /*var omitTitle = new Array();
         var omitLocation = new Array("A-101", "A-102", "A-201", "A-202", "A-203", "Art Gallery",
                                      "C-100", "C-101", "C-102", "C-103", "C-104", "C-105", "C-106", "C-107", "C-108", "C-109", "C-110",
                                      "C-200", "C-201", "C-202", "C-203", "C-204", "C-205", "C-206", "C-207", "C-208", "C-209", "C-210",
@@ -401,19 +492,20 @@
                                      "Pool", "Dillingham Pool",
                                      "Football Field", "Track", "Soccer Field", "Kozuki Stadium", "Press Box",
                                      "Chapel", "St. Alban's Chapel",
-                                     "Center Courtyard");
+                                     "Center Courtyard");*/
 
         //varibles to check event with
-        //appendPre('Upcoming events:');
+        //appendPre('');
+        //appendPre('School Events:');
 
         if (events.length > 0) {
           // if there are events on calendar execute
           for (j = 0; j < events.length; j++) {
             var school = events[j];
             school.summary = school.summary + ' ';
+            //appendPre(school.summary);
           }
           // create a space between each event
-          var sPlace = 0;
           for (i = 0; i < events.length; i++) {
             // run through every event in list
             var school = events[i];
@@ -440,7 +532,9 @@
               school.start.dateTime = '';
               school.location = '';
             }
+
             if (school.location != '' && school.summary != '') {
+              //appendPre(school.summary);
               // if the event has a location and summary keep
               var when = school.start.dateTime;
               var today = (new Date()).toISOString();
@@ -451,6 +545,7 @@
                 // if there is no start time, put date for all day event
                 when = school.start.date;
               }
+
               //appendPre(finalSchoolTitle[i] + ' ' +  ' (' + finalSchoolTime[i] + ')' + ' (' + finalSchoolLocation[i] + ') ');
               // print the event
               var startYear = when.substring(0, 4);
@@ -465,34 +560,36 @@
               var startHours;
               startHours = when.substring (11, 13);
 
-              if (startHours > 0 && startHours < 34 && startDay == dateOnly) {
-                startDay = startDay - 1;
-              }
+              //if (startHours > 0 && startHours < 34 && startDay == dateOnly) {
+              //  startDay = startDay - 1;
+              //}
               // switch hours from UTC to HST
               startHours = startHours - 10;
-              startDate = startYear + '-' + startMonth + '-' + startDay;
-
-              // if today's date matches the event's date, print event
-              if (dateOnly == (startDay + 1) && startHours < 0){
-                // HSt is behind a day, so add 24 hours to get correct displayed hours
-
-                //appendPre("Correctly compiled time for event");
+              if (startHours < 0) {
                 startHours = startHours + 24;
-                finalSchoolTimeD[sPlace] = startDate;
-                finalSchoolTimeH[sPlace] = startHours;
-                finalSchoolTimeM[sPlace] = startMin;
-                finalSchoolTimeYear[sPlace] = startYear;
-                finalSchoolTimeMonth[sPlace] = startMonth;
-                finalSchoolTimeDay[sPlace] = startDay;
-                finalSchoolTitle[sPlace] = school.summary;
-                finalSchoolLocation[sPlace] = school.location;
-                //finalSchoolTime[sPlace] = when;
-                sPlace = sPlace + 1;
-
-                //appendPre(event.summary + ' (' + startDate + 'T' + startHours + ':' + startMin + ':' + startSec + 'Z' + ')' + ' (' + event.location + ')');
+                startDay = startDay - 1;
               }
+              startDate = startYear + '-' + startMonth + '-' + startDay;
+              // if today's date matches the event's date, print event
+              //appendPre(school.summary + ' (' + startDate + 'T' + startHours + ':' + startMin + ':' + startSec + 'Z' + ')' + ' (' + school.location + ')');
+              if (dateOnly == startDay){
+                // HSt is behind a day, so add 24 hours to get correct displayed hours
+                //appendPre(school.summary + ' (' + startDate + 'T' + startHours + ':' + startMin + ':' + startSec + 'Z' + ')' + ' (' + school.location + ')');
+                if (school.location != '') {
+                  finalSchoolTitle[sPlace] = school.summary;
+                  finalSchoolLocation[sPlace] = school.location;
+                  finalSchoolTimeD[sPlace] = startDate;
+                  finalSchoolTimeH[sPlace] = startHours;
+                  finalSchoolTimeM[sPlace] = startMin;
+                  finalSchoolTimeYear[sPlace] = startYear;
+                  finalSchoolTimeMonth[sPlace] = startMonth;
+                  finalSchoolTimeDay[sPlace] = startDay;
+                  //appendPre(finalSchoolTitle[sPlace] + ' (' + finalSchoolTimeMonth[sPlace] + '-' + finalSchoolTimeDay[sPlace] + '-' + finalSchoolTimeYear[sPlace] + ')' + ' (' + finalSchoolTimeH[sPlace] + ':' + finalSchoolTimeM[sPlace] + ')' + '(' + finalSchoolLocation[sPlace] + ')' );
+                  sPlace = sPlace + 1;
+                }
             }
           }
+        }
         } else {
           appendPre('No upcoming events found.');
         }
@@ -504,15 +601,51 @@
 
     function compileList() {
       //appendPre(today);
+      //appendPre("");
+      //appendPre("COMPLIED LIST:");
       var a = 0;
       var s = 0;
+
+      for (i = 0; i < sPlace; i++) {
+        //appendPre(finalSchoolTitle[i] + ' ' +  ' (' + finalSchoolTimeD[i] + ' ' + finalSchoolTimeH[i] + ':' + finalSchoolTimeM[i] + ') (' + finalSchoolLocation[i] + ') ');
+      }
+
+      //appendPre("");
+
+      for (i = 0; i < aPlace; i++) {
+        //appendPre(finalAthleticTitle[i] + ' ' +  ' (' + finalAthleticTimeD[i] + ' ' + finalAthleticTimeH[i] + ':' + finalAthleticTimeM[i] + ') (' + finalAthleticLocation[i] + ') ');
+      }
+
+      //appendPre("");
+
       for (i = 0; i < 200; i++) {
-        if ((finalSchoolTimeYear[s] <= finalAthleticTimeYear[a]) &&
+        //when there is no school events remaining to be sorted
+        if (finalSchoolTitle[s] == null && finalAthleticTitle[a] != null) {
+            finalTimeD[i] = finalAthleticTimeD[a];
+            finalTimeH[i] = finalAthleticTimeH[a];
+            finalTimeM[i] = finalAthleticTimeM[a];
+            finalTitle[i] = finalAthleticTitle[a];
+            finalLocation[i] = finalAthleticLocation[a];
+            a = a + 1;
+            //appendPre("Placing remaining athletic event: " + finalTitle[i]);
+        }
+        //when there is no athletic events remaining to be sorted
+        else if (finalAthleticTitle[a] == null && finalSchoolTitle[s] != null) {
+          finalTimeD[i] = finalSchoolTimeD[s];
+          finalTimeH[i] = finalSchoolTimeH[s];
+          finalTimeM[i] = finalSchoolTimeM[s];
+          finalTitle[i] = finalSchoolTitle[s];
+          finalLocation[i] = finalSchoolLocation[s];
+          s = s + 1;
+          //appendPre("Placing remaining school event: " + finalTitle[i]);
+        }
+        //when school event is before athletic event
+        else if ((finalSchoolTimeYear[s] <= finalAthleticTimeYear[a]) &&
             (finalSchoolTimeMonth[s] <= finalAthleticTimeMonth[a]) &&
             (finalSchoolTimeDay[s] <= finalAthleticTimeDay[a]) &&
             (finalSchoolTimeH[s] <= finalAthleticTimeH[a]) &&
             (finalSchoolTimeM[s] <= finalAthleticTimeM[a])) {
-          //appendPre("Printing athletic event");
+          //appendPre("compare school");
           finalTimeD[i] = finalSchoolTimeD[s];
           finalTimeH[i] = finalSchoolTimeH[s];
           finalTimeM[i] = finalSchoolTimeM[s];
@@ -521,7 +654,9 @@
           s = s + 1;
           //appendPre("s: " + s);
         }
-        else {
+        //when athletic event is before school event
+        else if (finalAthleticTitle[a] != null && finalSchoolTitle[s] != null) {
+          //appendPre("compare athletic");
           finalTimeD[i] = finalAthleticTimeD[a];
           finalTimeH[i] = finalAthleticTimeH[a];
           finalTimeM[i] = finalAthleticTimeM[a];
@@ -530,20 +665,69 @@
           a = a + 1;
           //appendPre("a: " + a);
         }
+        //when all events are done
+        else if (finalAthleticTitle[i] == null && finalSchoolTitle[i] == null) {
+          //appendPre("FINAL LIST:");
+          for (c = 0; c < i; c++) {
+            if (finalTimeH[c] > 13) {
+              finalTimeH[c] = (finalTimeH[c] - 12) + ':' + finalTimeM[c] + ' p.m.';
+            }
+            else {
+              finalTimeH[c] = finalTimeH[c] + ':' + finalTimeM[c] + ' a.m.';
+            }
+            if (finalTimeM[c] == '') {
 
-        if (finalTitle[i] != null) {
-          console.log(finalTitle[0], "sfrgsebsd");
-          //appendPre(finalTitle[i] + ' ' +  ' (' + finalTimeD[i] + ' ' + finalTimeH[i] + ':' + finalTimeM[i] + ') (' + finalLocation[i] + ') ');
+              finalTimeH[c] = 'ALL DAY';
+              finalTimeM[c] = '';
+            }
+            //appendPre(finalTitle[c] + ' ' +  ' (' + finalTimeD[c] + ' ' + finalTimeH[c] + ':' + finalTimeM[c] + ') (' + finalLocation[c] + ') ');
+
+
+
+            //listing all the events
+            for (var i = 0; i < finalTitle.length; i++){
+              var firstEvent = "event" + i;
+              var secondEvent = "event" + (i + 1);
+              var newEvent = firstEvent.replace(firstEvent.toString(),secondEvent.toString());
+              document.getElementById(newEvent).innerHTML = finalTitle[i];
+            }
+
+            //listing all the locations
+            for (var i = 0; i < finalLocation.length; i++){
+              var firstLocation = "location" + i;
+              var secondLocation = "location" + (i + 1);
+              var newLocation = firstLocation.replace(firstLocation.toString(),secondLocation.toString());
+              document.getElementById(newLocation).innerHTML = finalLocation[i];
+            }
+
+            //listing all the times
+            for (var i = 0; i < finalTimeH.length; i++){
+              var firstTime = "time" + i;
+              var secondTime = "time" + (i + 1);
+              var newTime = firstTime.replace(firstTime.toString(),secondTime.toString());
+              document.getElementById(newTime).innerHTML = finalTimeH[i];
+            }
+
+
+
+          }
+          i = 200;
         }
-
       }
     }
   </script>
 
+  <script async defer src="https://apis.google.com/js/api.js"
+    onload="this.onload=function(){};handleClientLoad()"
+    onreadystatechange="if (this.readyState === 'complete') this.onload()">
+  </script>
+
   <script>
+  /*
     //array for list of events
-    var listEvent = finalTitle[0];
+    var listEvent = ["hello", "trash", "landis"];
     var events = listEvent.length;
+
     //listing all the events
     for (var i = 0; i < events; i++){
       var firstEvent = "event" + i;
@@ -551,10 +735,11 @@
       var newEvent = firstEvent.replace(firstEvent.toString(),secondEvent.toString());
       document.getElementById(newEvent).innerHTML = listEvent[i];
     }
-
+*/
     //array for list of times that corrospond with events
-    var listTime = finalTimeH[0];
+    var listTime = ["300", "5000", "3424"];
     var times = listTime.length;
+
     //listing all the times
     for (var i = 0; i < times; i++){
       var firstTime = "time" + i;
@@ -562,10 +747,11 @@
       var newTime = firstTime.replace(firstTime.toString(),secondTime.toString());
       document.getElementById(newTime).innerHTML = listTime[i];
     }
-
+  /*
     //array for list of locations that corrospond with events and time
-    var listLocation = finalLocation[0];
+    var listLocation = ["farvdaraec", "afvfcervaer", "caervaerv"];
     var locations = listLocation.length;
+
     //listing all the locations
     for (var i = 0; i < locations; i++){
       var firstLocation = "location" + i;
@@ -573,64 +759,19 @@
       var newLocation = firstLocation.replace(firstLocation.toString(),secondLocation.toString());
       document.getElementById(newLocation).innerHTML = listLocation[i];
     }
+  */
   </script>
 
 <script>
   //width of sidebar
   function openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-    document.getElementById("main").style.marginRight = "250px";
+    document.getElementById("mySidenav").style.width = "500px";
+    document.getElementById("main").style.marginRight = "500px";
   }
   function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
     document.getElementById("main").style.marginLRight= "0";
   }
-
-  //startClosed();
-  </script>
-
-    <script src="js/three.js"></script>
-    <script src="js/controls/OrbitControls.js"></script>
-    <script src="js/loaders/GLTFLoader.js"></script>
-    <script src="js/shaders/CopyShader.js"></script>
-    <script src="js/shaders/FXAAShader.js"></script>
-    <script src="js/postprocessing/EffectComposer.js"></script>
-    <script src="js/postprocessing/RenderPass.js"></script>
-    <script src="js/postprocessing/ShaderPass.js"></script>
-    <script src="js/postprocessing/OutlinePass.js"></script>
-    <script src="js/libs/stats.min.js"></script>
-    <script src='js/libs/dat.gui.min.js'></script>
-
-    <div id = 'canvas'>
-
-
-      <script>
-      function openNav() {
-          document.getElementById("mySidenav").style.width = "250px";
-          document.getElementById("main").style.marginRight = "250px";
-      }
-      function closeNav() {
-          document.getElementById("mySidenav").style.width = "0";
-          document.getElementById("main").style.marginLRight= "0";
-      }
-      </script>
-
-      <script>
-
-      // create dropdown within sidebar and add listener for toggle
-      var dropdown = document.getElementsByClassName("dropdown-btn");
-      var i;
-      for (i = 0; i < dropdown.length; i++) {
-        dropdown[i].addEventListener("click", function() {
-          this.classList.toggle("active");
-          var dropdownContent = this.nextElementSibling;
-          if (dropdownContent.style.display === "block") {
-            dropdownContent.style.display = "none";
-          } else {
-            dropdownContent.style.display = "block";
-          }
-        });
-      }
 
       </script>
 

@@ -422,6 +422,11 @@
           else if (finalAthleticTitle[i] == null && finalSchoolTitle[i] == null) {
             appendPre("FINAL LIST:");
             for (c = 0; c < i; c++) {
+              if (finalTimeM[c] == '') {
+                //appendPre("found");
+                finalTimeH[c] = 'ALL DAY';
+                finalTimeM[c] = '';
+              }
               appendPre(finalTitle[c] + ' ' +  ' (' + finalTimeD[c] + ' ' + finalTimeH[c] + ':' + finalTimeM[c] + ') (' + finalLocation[c] + ') ');
             }
             i = 200;
