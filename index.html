@@ -331,7 +331,7 @@
         controls.enableZoom = true;
 
         // add ambient light
-        scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
+        scene.add( new THREE.AmbientLight( 0xffffff, .7 ) );
 
         var light = new THREE.DirectionalLight(0xffffff,1);
         light.position.set(0, 500, 200);
@@ -343,11 +343,10 @@
         light.shadow.camera.near = 0;
         light.shadow.camera.far = 4000;
         light.shadow.camera.fov = 90;
-        scene.add(light);
 
 
-        //add the group of all models into the scene
-        scene.add( group );
+
+
 
         /*
         *Model Loaders
@@ -448,20 +447,55 @@
                   if (room instanceof THREE.Mesh){
                     room.receiveShadow = true;
                     room.castShadow = true;
+                    room.material.side = THREE.DoubleSide;
+                    room.geometry.computeBoundingSphere();
+
                     //tests if the mesh is a room or just an aesthetic part
-                    if(room.name.slice(3, -3) == 'part'){
+                    if(room.name.slice(2, -3) == 'part'){
                       //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
-                      room.userData = {alreadyUp:false, isRoom:false, isStairs:false};
+                      room.userData = {alreadyUp:false, isRoom:false, isRestroom:false};
                     }
                     //tests if mesh is stairs, stairs must use special animation
-                    else if (room.name.slice(3, -3) == 'stairs'){
-                      room.userData = {alreadyUp:false, isRoom:false, isStairs:true};
+                    else if (room.name.slice(2, -3) == 'Restroom'){
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:true};
                     }
                     else{
                       //Accesses a list of names and adds each one to the model
-                      room.userData = {alreadyUp:false, isRoom:true, isStairs:false, names:findNames(child.name)};
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(child.name)};
+                    }
+                    if(room.userData.isRestroom){
+                      createRestroom(room.geometry.boundingSphere.center);
+                      console.log(room.geometry.boundingSphere.radius)
                     }
                   }
+
+                 else if (room instanceof THREE.Group){
+                    room.children.forEach(function(children){
+                      children.receiveShadow = true;
+                      children.castShadow = true;
+                      children.geometry.computeBoundingSphere();
+                      children.material.side = THREE.DoubleSide;
+                    });
+
+                    //tests if the mesh is a room or just an aesthetic part
+                    if(room.name.slice(2, -3) == 'part'){
+                      //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
+                      room.userData = {alreadyUp:false, isRoom:false, isRestroom:false};
+                    }
+                    //tests if mesh is stairs, stairs must use special animation
+                    else if (room.name.slice(2, -3) == 'Restroom'){
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:true};
+                    }
+                    else{
+                      //Accesses a list of names and adds each one to the model
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(child.name)};
+                    }
+                    if(room.userData.isRestroom){
+                      createRestroom(room.children[0].geometry.boundingSphere.center);
+                      console.log(room.children[0].geometry.boundingSphere.radius )
+                    }
+                  }
+
                 });
               });
               modelGroup.add(buildingGroup);
@@ -471,7 +505,10 @@
         }
 
         // add Nangaku model
-        loadCampus('models/CampusMapFinal.gltf', new THREE.Vector3(1,0,-1), group);
+        loadCampus('models/CampusMapFinalV2.gltf', new THREE.Vector3(1,0,-1), group);
+
+        //add the group of all models into the scene
+        scene.add( group );
 
         //init2();
         dot(totaldots);
@@ -503,43 +540,16 @@
 
 
 
-        //function returns a room when given a name (e.g. n203, w315, Library)
-        function findRoom(roomName){
-          group.children.forEach(function(building){
-            building.children.forEach(function(floor){
-              floor.children.forEach(function(room){
-                room.userData.names.forEach(function(name){
-                  if(name == roomName){
-                    return name.parent;
-                  }
-                });
-              })
-            });
-          });
-          return null;
+        var restroomSignMap = new THREE.TextureLoader().load( "Sprites/RestroomSign.png" );
+        var restroomSignMaterial = new THREE.SpriteMaterial( { map: restroomSignMap, color: 0xffffff } );
+
+        function createRestroom(position){
+          var restroomSign = new THREE.Sprite( restroomSignMaterial );
+          restroomSign.scale = new THREE.Vector3(10,10,10);
+          restroomSign.position.copy(position);
+
+          scene.add( restroomSign );
         }
-
-        function forEachRoom(eval){
-          group.children.forEach(function(building){
-            building.children.forEach(function(floor){
-              floor.children.forEach(function(room){
-                eval(room)
-              })
-            });
-          });
-        }
-
-        var bathroomSprite;
-
-        forEachRoom(function createBathroom(room){
-          if(room.name.slice(2) == "bathroom"){
-            var spriteMap = new THREE.TextureLoader().load(bathroomSprite);
-            var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xffffff } );
-            var sprite = new THREE.Sprite( spriteMaterial );
-            scene.add( sprite );
-            sprite.position.copy(room.position);
-          }
-        });
 
         /*
         * Animation Functions
@@ -705,7 +715,17 @@
              outlinePass.selectedObjects = [];
              var selectedObject = intersects[ 0 ].object;
 
-             console.log(selectedObject.userData);
+
+             if(selectedObject.name.slice(0,1) == 'M'){
+               console.log(selectedObject.parent.userData.isRestroom);
+             }
+             else console.log(selectedObject.userData.isRestroom);
+
+             if(selectedObject.name.slice(0,1) == 'M'){
+               console.log(selectedObject.parent.name.slice(2,-3));
+             }
+             else console.log(selectedObject.name.slice(2, -3));
+
              animateFloors(selectedObject, 'PingPong');
              addSelectedObject( selectedObject );
              if (clicked && started || prevobj != selectedObject)
@@ -837,7 +857,7 @@
           {
             //controls.enableRotate = false;
             //console.log(camera.rotation, pcamrot);
-            camera.rotation = pcamrot;
+            camera.position = pcamrot;
             console.log(pcamrot);
           }
           else
