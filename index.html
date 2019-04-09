@@ -317,7 +317,7 @@
 
         // initialize and position camera
          camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
-        camera.position.set( 0, 0, 8 );
+        camera.position.set( 0, 0, 0 );
 
         // initialize and customize controls
         controls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -331,7 +331,7 @@
         controls.enableZoom = true;
 
         // add ambient light
-        scene.add( new THREE.AmbientLight( 0xffffff, .7 ) );
+        scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
 
         var light = new THREE.DirectionalLight(0xffffff,1);
         light.position.set(0, 500, 200);
@@ -343,6 +343,7 @@
         light.shadow.camera.near = 0;
         light.shadow.camera.far = 4000;
         light.shadow.camera.fov = 90;
+        scene.add(light);
 
 
 
@@ -464,8 +465,8 @@
                       room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(child.name)};
                     }
                     if(room.userData.isRestroom){
-                      createRestroom(room.geometry.boundingSphere.center);
-                      console.log(room.geometry.boundingSphere.radius)
+                      createRestroom(room.position);
+                      console.log(room)
                     }
                   }
 
@@ -491,8 +492,8 @@
                       room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(child.name)};
                     }
                     if(room.userData.isRestroom){
-                      createRestroom(room.children[0].geometry.boundingSphere.center);
-                      console.log(room.children[0].geometry.boundingSphere.radius )
+                      createRestroom(room.position);
+                      console.log(room.children[0].geometry.boundingSphere.center );
                     }
                   }
 
@@ -505,10 +506,14 @@
         }
 
         // add Nangaku model
-        loadCampus('models/CampusMapFinalV2.gltf', new THREE.Vector3(1,0,-1), group);
+        loadCampus('models/CampusMapFinalV2.gltf', new THREE.Vector3(1,0,0), group);
+
+        controls.target = new THREE.Vector3(1,0,0);
 
         //add the group of all models into the scene
         scene.add( group );
+
+
 
         //init2();
         dot(totaldots);
@@ -547,6 +552,7 @@
           var restroomSign = new THREE.Sprite( restroomSignMaterial );
           restroomSign.scale = new THREE.Vector3(10,10,10);
           restroomSign.position.copy(position);
+          restroomSign.position.y = restroomSign.position.y + 1;
 
           scene.add( restroomSign );
         }
@@ -851,20 +857,23 @@
           var panz = 1;
           if (pcamrot != camera.rotation)
           {
-            console.log("holler");
+
           }
           if (ppanx != controls.target.x || ppanz != controls.target.z)
           {
             //controls.enableRotate = false;
             //console.log(camera.rotation, pcamrot);
             camera.position = pcamrot;
-            console.log(pcamrot);
+
           }
           else
           {
             //controls.enableRotate = true;
             pcamrot = camera.rotation;
           }
+
+          //Camera Pan Limiter
+          /*
           if (controls.target.x > panx) {
               controls.target.x = panx;
           }
@@ -883,6 +892,7 @@
           ppanz = controls.target.z;
           //console.log(camera.rotation, pcamrot);
           //console.log(camera);
+          */
 
           var useddots = Array();
 
