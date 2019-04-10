@@ -620,6 +620,11 @@
 
       for (i = 0; i < 200; i++) {
         //when there is no school events remaining to be sorted
+        //console.log("Comparing: " + finalSchoolTimeYear[s] + " " + finalAthleticTimeYear[a]);
+        //console.log("Comparing: " + finalSchoolTimeMonth[s] + " " + finalAthleticTimeMonth[a]);
+        //console.log("Comparing: " + finalSchoolTimeDay[s] + " " + finalAthleticTimeDay[a]);
+        //console.log("Comparing: " + finalSchoolTimeH[s] + " " + finalAthleticTimeH[a]);
+        //console.log("Comparing: " + finalSchoolTimeM[s] + " " + finalAthleticTimeM[a]);
         if (finalSchoolTitle[s] == null && finalAthleticTitle[a] != null) {
             finalTimeD[i] = finalAthleticTimeD[a];
             finalTimeH[i] = finalAthleticTimeH[a];
@@ -627,6 +632,7 @@
             finalTitle[i] = finalAthleticTitle[a];
             finalLocation[i] = finalAthleticLocation[a];
             a = a + 1;
+            //console.log("Athletic Event, no school");
             //appendPre("Placing remaining athletic event: " + finalTitle[i]);
         }
         //when there is no athletic events remaining to be sorted
@@ -637,14 +643,14 @@
           finalTitle[i] = finalSchoolTitle[s];
           finalLocation[i] = finalSchoolLocation[s];
           s = s + 1;
+          //console.log("School Event, no athletic");
           //appendPre("Placing remaining school event: " + finalTitle[i]);
         }
         //when school event is before athletic event
         else if ((finalSchoolTimeYear[s] <= finalAthleticTimeYear[a]) &&
             (finalSchoolTimeMonth[s] <= finalAthleticTimeMonth[a]) &&
             (finalSchoolTimeDay[s] <= finalAthleticTimeDay[a]) &&
-            (finalSchoolTimeH[s] <= finalAthleticTimeH[a]) &&
-            (finalSchoolTimeM[s] <= finalAthleticTimeM[a])) {
+            (finalSchoolTimeH[s] <= finalAthleticTimeH[a])) {
           //appendPre("compare school");
           finalTimeD[i] = finalSchoolTimeD[s];
           finalTimeH[i] = finalSchoolTimeH[s];
@@ -652,6 +658,7 @@
           finalTitle[i] = finalSchoolTitle[s];
           finalLocation[i] = finalSchoolLocation[s];
           s = s + 1;
+          //console.log("School Event, yes athletic");
           //appendPre("s: " + s);
         }
         //when athletic event is before school event
@@ -663,11 +670,13 @@
           finalTitle[i] = finalAthleticTitle[a];
           finalLocation[i] = finalAthleticLocation[a];
           a = a + 1;
+          console.log("Athletic Event, yes school");
           //appendPre("a: " + a);
         }
         //when all events are done
         else if (finalAthleticTitle[i] == null && finalSchoolTitle[i] == null) {
           //appendPre("FINAL LIST:");
+          console.log("DONE");
           for (c = 0; c < i; c++) {
             if (finalTimeH[c] > 13) {
               finalTimeH[c] = (finalTimeH[c] - 12) + ':' + finalTimeM[c] + ' p.m.';
