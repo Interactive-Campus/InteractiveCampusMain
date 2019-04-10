@@ -506,9 +506,9 @@
         }
 
         // add Nangaku model
-        loadCampus('models/CampusMapFinalV2.gltf', new THREE.Vector3(1,0,0), group);
+        loadCampus('models/CampusMapFinalV2.gltf', new THREE.Vector3(1,0,50), group);
 
-        controls.target = new THREE.Vector3(1,0,0);
+        controls.target = new THREE.Vector3(1,0,50);
 
         //add the group of all models into the scene
         scene.add( group );
@@ -554,7 +554,7 @@
           restroomSign.position.copy(position);
           restroomSign.position.y = restroomSign.position.y + 1;
 
-          scene.add( restroomSign );
+          group.add( restroomSign );
         }
 
         /*
