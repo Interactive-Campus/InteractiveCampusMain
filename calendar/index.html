@@ -16,8 +16,8 @@
     <script type="text/javascript">
 
       // Client ID and API key from the Developer Console
-      var CLIENT_ID = '838924599001-deoloebt602et97hrlajsd29lmllnmpq.apps.googleusercontent.com';
-      var API_KEY = 'AIzaSyDiUHhA9rZuyJyhTN5hjVPkwOQaCnC4zX4';
+      var CLIENT_ID = '336303778767-nacccfvp3mrchehtnumqlq8op5c61ovl.apps.googleusercontent.com';
+      var API_KEY = 'AIzaSyDKonArHWvtE7f1Ro8XU0dZFFNCO-JjmX0';
 
       // Array of API discovery doc URLs for APIs used by the quickstart
       var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
@@ -290,13 +290,15 @@
                 //appendPre(school.summary);
                 // if the event has a location and summary keep
                 var when = school.start.dateTime;
+                var end = school.end.dateTime;
                 var today = (new Date()).toISOString();
                 // grab the date of the instant it reloads and compare it to the date of the event
                 var dateOnly = today.substring(8, 10);
                 // take event's date and start time
-                if (!when) {
+                if (!when || !end) {
                   // if there is no start time, put date for all day event
                   when = school.start.date;
+                  end = school.end.date;
                 }
 
                 //appendPre(finalSchoolTitle[i] + ' ' +  ' (' + finalSchoolTime[i] + ')' + ' (' + finalSchoolLocation[i] + ') ');
@@ -318,6 +320,7 @@
                 //}
                 // switch hours from UTC to HST
                 startHours = startHours - 10;
+
                 if (startHours < 0) {
                   startHours = startHours + 24;
                   startDay = startDay - 1;
