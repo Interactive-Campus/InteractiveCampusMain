@@ -10,26 +10,43 @@
           font-weight: normal;
           font-style: normal;
       }
-      /* side bar itself */
-      .sidenav {
-          height: 100%;
-          width: 0;
+      /* bar itself */
+      .sidenavb {
+          height: 10%;
+          width: 100%;
+          left: 0;
           position: fixed;
           z-index: 1;
-          top: 0;
-          right: 0;
-          background-color: rgb(160, 186, 195);
+          top: 56%;
+          background-color: #ffffff;
           overflow-x: hidden;
-          transition: .75s;
-          padding-top: 30px;
+          padding-top: 10px;
       }
+
+      .sidenav {
+          height: 35%;
+          width: 100%;
+          left:0;
+          position: fixed;
+          z-index: 1;
+          bottom: 0;
+          background-color: #ffffff;
+          overflow-x: hidden;
+          padding-top: 0px;
+      }
+
       /* title at top */
       g
       {
         font-size: 36px;
         padding: 0px 3px 0px 7px;
-        color: #ffffff;
-        margin-bottom: 20px;
+        color: rgb(175, 28, 64);
+      }
+
+      info
+      {
+        font-size: 18px;
+        color: rgb(175, 28, 64);
       }
 
       /*asthetic rectangle*/
@@ -39,7 +56,7 @@
         height: 10px;
         width: 136px;
         align: left;
-        background-color: #ffffff;
+        background-color: rgb(175, 28, 64);
       }
 
       button {
@@ -51,10 +68,10 @@
       /* list of events */
       .sidenav a {
           /* space between (top, right side, bottom, left side )*/
-          padding: 20px 5px 0px 10px;
+          padding: 0px 5px 20px 10px;
           text-decoration: none;
-          font-size: 24px;
-          color: #ffffff;
+          font-size: 20px;
+          color: rgb(175, 28, 64);
           display: block;
           transition: 0.5s;
           line-height: 1em;
@@ -69,15 +86,6 @@
       /* color of text after hover*/
       .sidenav a:hover {
           color: #000000;
-      }
-
-      /* close sidebar button */
-      .sidenav .closebtn {
-          position: absolute;
-          top: 0;
-          right: 10px;
-          font-size: 36px;
-          margin-left: 50px;
       }
 
       p
@@ -119,12 +127,14 @@
 
 <body>
 
-  <div id="mySidenav" class="sidenav">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <div id="mySidenav" class="sidenavb">
 
   <g> EVENTS </g>
-
   <div class="rectangle"></div>
+  <info> click on an event for more information </info>
+
+
+  <div id="mySidenav" class="sidenav">
 
   <div class="button">
     <button id="authorize_button" style="display: none;">Authorize</button>
@@ -240,6 +250,75 @@
     <p id ="location12"></p>
     <b href="#">Directions</b>
   </div>
+  <a class="dropdown-btn"> <div id ="event13"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time13"></p>
+    <p id ="location13"></p>
+    <b href="#">Directions</b>
+  </div>
+
+  <a class="dropdown-btn"> <div id="event14"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time14"></p>
+    <p id ="location14"></p>
+    <b href="#">Directions</b>
+  </div>
+
+  <a class="dropdown-btn"> <div id="event15"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time15"></p>
+    <p id ="location15"></p>
+    <b href="#">Directions</b>
+
+    <a class="dropdown-btn"> <div id="event16"></div>
+      <i class="fa fa-caret-down"></i>
+    </a>
+    <div class="dropdown-container">
+      <p id ="time16"></p>
+      <p id ="location16"></p>
+      <b href="#">Directions</b>
+    </div>
+
+    <a class="dropdown-btn"> <div id="event17"></div>
+      <i class="fa fa-caret-down"></i>
+    </a>
+    <div class="dropdown-container">
+      <p id ="time17"></p>
+      <p id ="location17"></p>
+      <b href="#">Directions</b>
+    </div>
+    <a class="dropdown-btn"> <div id ="event18"></div>
+      <i class="fa fa-caret-down"></i>
+    </a>
+    <div class="dropdown-container">
+      <p id ="time18"></p>
+      <p id ="location18"></p>
+      <b href="#">Directions</b>
+    </div>
+
+    <a class="dropdown-btn"> <div id="event19"></div>
+      <i class="fa fa-caret-down"></i>
+    </a>
+    <div class="dropdown-container">
+      <p id ="time19"></p>
+      <p id ="location19"></p>
+      <b href="#">Directions</b>
+    </div>
+
+    <a class="dropdown-btn"> <div id="event20"></div>
+      <i class="fa fa-caret-down"></i>
+    </a>
+    <div class="dropdown-container">
+      <p id ="time20"></p>
+      <p id ="location20"></p>
+      <b href="#">Directions</b>
+  </div>
 
   <script>
     var dropdown = document.getElementsByClassName("dropdown-btn");
@@ -333,7 +412,7 @@
         // Handle the initial sign-in state.
         updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
         authorizeButton.onclick = handleAuthClick;
-        signoutButton.onclick = handleSignoutClick;
+        //signoutButton.onclick = handleSignoutClick;
       }, function(error) {
         appendPre(JSON.stringify(error, null, 2));
       });
@@ -430,12 +509,15 @@
             var startMin = awhen.substring (14, 16);
             var startSec = awhen.substring (17, 19);
 
-            var endHours = aendwhen.substring (11, 13);
-            var endMin = aendwhen.substring (14, 16);
-            endHours = endHours - 10;
-            if (endHours < 0) {
-              endHours = endHours + 24;
+            if (aendwhen != null) {
+              var endHours = aendwhen.substring (11, 13);
+              var endMin = aendwhen.substring (14, 16);
             }
+
+            //console.log(awhen);
+            //console.log(aendwhen);
+            //console.log(endHours);
+            //console.log(endMin);
             // SWITCH TIMEZONES FROM UTC TO HST
             // get hours
             // add 10 hours to the time
@@ -447,6 +529,10 @@
             if (startHours < 0) {
               startHours = startHours + 24;
               startDay = startDay - 1;
+            }
+            endHours = endHours - 10;
+            if (endHours < 0) {
+              endHours = endHours + 24;
             }
             startDate = startYear + '-' + startMonth + '-' + startDay;
             // if today's date matches the event's date, print event
@@ -555,6 +641,7 @@
               //appendPre(school.summary);
               // if the event has a location and summary keep
               var when = school.start.dateTime;
+              var endwhen = school.end.dateTime;
               var today = (new Date()).toISOString();
               // grab the date of the instant it reloads and compare it to the date of the event
               var dateOnly = today.substring(8, 10);
@@ -573,12 +660,11 @@
               var startMin = when.substring (14, 16);
               var startSec = when.substring (17, 19);
 
-              var endHours = aendwhen.substring (11, 13);
-              var endMin = aendwhen.substring (14, 16);
-              endHours = endHours - 10;
-              if (endHours < 0) {
-                endHours = endHours + 24;
+              if (endwhen != null) {
+                var endHours = endwhen.substring (11, 13);
+                var endMin = endwhen.substring (14, 16);
               }
+
               // SWITCH TIMEZONES FROM UTC TO HST
               // get hours
               // add 10 hours to the time
@@ -593,6 +679,10 @@
               if (startHours < 0) {
                 startHours = startHours + 24;
                 startDay = startDay - 1;
+              }
+              endHours = endHours - 10;
+              if (endHours < 0) {
+                endHours = endHours + 24;
               }
               startDate = startYear + '-' + startMonth + '-' + startDay;
               // if today's date matches the event's date, print event
@@ -705,19 +795,46 @@
           finalEndTimeH[i] = finalAthleticEndTimeH[a];
           finalEndTimeM[i] = finalAthleticEndTimeM[a];
           a = a + 1;
-          console.log("Athletic Event, yes school");
+          //console.log("Athletic Event, yes school");
           //appendPre("a: " + a);
         }
         //when all events are done
         else if (finalAthleticTitle[i] == null && finalSchoolTitle[i] == null) {
           //appendPre("FINAL LIST:");
-          console.log("DONE");
+          //console.log("DONE");
           for (c = 0; c < i; c++) {
-            if (finalTimeH[c] > 13) {
-              finalTimeH[c] = (finalTimeH[c] - 12) + ':' + finalTimeM[c] + ' p.m.';
+            //start and end times are both pm
+            if ((finalTimeH[c] >= 12) && (finalEndTimeH[c] >= 12)) {
+              if (finalEndTimeH[c] == 12){
+                finalTimeH[c] = (finalTimeH[c] - 12) + ':' + finalTimeM[c] + ' p.m.' + ' to ' + (finalEndTimeH[c]) + ':' + finalEndTimeM[c] + ' p.m.';
+              }
+              else if (finalTimeH[c] == 12) {
+                finalTimeH[c] = (finalTimeH[c]) + ':' + finalTimeM[c] + ' p.m.' + ' to ' + (finalEndTimeH[c] - 12) + ':' + finalEndTimeM[c] + ' p.m.';
+              }
+              else {
+                finalTimeH[c] = (finalTimeH[c] - 12) + ':' + finalTimeM[c] + ' p.m.' + ' to ' + (finalEndTimeH[c] - 12) + ':' + finalEndTimeM[c] + ' p.m.';
+                //console.log(finalTimeH[c]);
+              }
             }
+            //start time pm but end time is am
+            else if ((finalTimeH[c] >= 12) && (finalEndTimeH[c] < 12)) {
+              finalTimeH[c] = (finalTimeH[c] - 12) + ':' + finalTimeM[c] + ' p.m.' + ' to ' + (finalEndTimeH[c]) + ':' + finalEndTimeM[c] + ' a.m.';
+              //console.log(finalTimeH[c]);
+            }
+            //start time is am but end time is pm
+            else if ((finalTimeH[c] < 12) && (finalEndTimeH[c] >= 12)) {
+              if (finalEndTimeH[c] == 12){
+                finalTimeH[c] = (finalTimeH[c]) + ':' + finalTimeM[c] + ' a.m.' + ' to ' + (finalEndTimeH[c]) + ':' + finalEndTimeM[c] + ' p.m.';
+              }
+              else {
+                finalTimeH[c] = (finalTimeH[c]) + ':' + finalTimeM[c] + ' a.m.' + ' to ' + (finalEndTimeH[c] - 12) + ':' + finalEndTimeM[c] + ' p.m.';
+                //console.log(finalTimeH[c]);
+              }
+            }
+            //start and end times are both am
             else {
-              finalTimeH[c] = finalTimeH[c] + ':' + finalTimeM[c] + ' a.m.';
+              finalTimeH[c] = finalTimeH[c] + ':' + finalTimeM[c] + ' a.m.' + ' to ' + finalEndTimeH[c] + ':' + finalEndTimeM[c] + ' a.m.';
+              //console.log(finalTimeH[c], "TIMES"); /*--------------START HERE-----------------*/
             }
             if (finalTimeM[c] == '') {
 
@@ -725,8 +842,6 @@
               finalTimeM[c] = '';
             }
             //appendPre(finalTitle[c] + ' ' +  ' (' + finalTimeD[c] + ' ' + finalTimeH[c] + ':' + finalTimeM[c] + ') (' + finalLocation[c] + ') ');
-
-
 
             //listing all the events
             for (var i = 0; i < finalTitle.length; i++){
@@ -743,7 +858,6 @@
               var newLocation = firstLocation.replace(firstLocation.toString(),secondLocation.toString());
               document.getElementById(newLocation).innerHTML = finalLocation[i];
             }
-
             //listing all the times
             for (var i = 0; i < finalTimeH.length; i++){
               var firstTime = "time" + i;
@@ -751,9 +865,6 @@
               var newTime = firstTime.replace(firstTime.toString(),secondTime.toString());
               document.getElementById(newTime).innerHTML = finalTimeH[i];
             }
-
-
-
           }
           i = 200;
         }
@@ -767,55 +878,17 @@
   </script>
 
   <script>
-  /*
-    //array for list of events
-    var listEvent = ["hello", "trash", "landis"];
-    var events = listEvent.length;
-
-    //listing all the events
-    for (var i = 0; i < events; i++){
-      var firstEvent = "event" + i;
-      var secondEvent = "event" + (i + 1);
-      var newEvent = firstEvent.replace(firstEvent.toString(),secondEvent.toString());
-      document.getElementById(newEvent).innerHTML = listEvent[i];
+    //width of sidebar
+    /*
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "700px";
+      document.getElementById("main").style.marginLRight = "500px";
     }
-*/
-    //array for list of times that corrospond with events
-    var listTime = ["300", "5000", "3424"];
-    var times = listTime.length;
-
-    //listing all the times
-    for (var i = 0; i < times; i++){
-      var firstTime = "time" + i;
-      var secondTime = "time" + (i + 1);
-      var newTime = firstTime.replace(firstTime.toString(),secondTime.toString());
-      document.getElementById(newTime).innerHTML = listTime[i];
+    style.marginR
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+      document.getElementById("main").style.marginLRight= "0";
     }
-  /*
-    //array for list of locations that corrospond with events and time
-    var listLocation = ["farvdaraec", "afvfcervaer", "caervaerv"];
-    var locations = listLocation.length;
-
-    //listing all the locations
-    for (var i = 0; i < locations; i++){
-      var firstLocation = "location" + i;
-      var secondLocation = "location" + (i + 1);
-      var newLocation = firstLocation.replace(firstLocation.toString(),secondLocation.toString());
-      document.getElementById(newLocation).innerHTML = listLocation[i];
-    }
-  */
-  </script>
-
-<script>
-  //width of sidebar
-  function openNav() {
-    document.getElementById("mySidenav").style.width = "500px";
-    document.getElementById("main").style.marginRight = "500px";
-  }
-  function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-    document.getElementById("main").style.marginLRight= "0";
-  }
 
       </script>
 
@@ -831,6 +904,7 @@
         <script src="js/libs/stats.min.js"></script>
         <script src='js/libs/dat.gui.min.js'></script>
         <script src='js/NameList.js'></script>
+        <script src="js/loaders/OBJLoader.js"></script>
         <div id = 'canvas'>
           <script>
           // https://stackoverflow.com/questions/13542175/three-js-ray-intersect-fails-by-adding-div/13544277#13544277
@@ -853,19 +927,143 @@
         var clips;
         var mixer = new THREE.AnimationMixer();
         var clock = new THREE.Clock(true);
-        var divWidth = window.innerWidth * 3 / 4;// / 2;//500;
-        var divHeight = window.innerHeight * 5 / 7// / 2;//500;
-        var xd = 1;
-        var yd = 1;
-        var xx = 0;
-        var yy = 0;
-        init();
-        onWindowResize();
-        animate();
+        var divWidth = window.innerWidth;
+        var divHeight = window.innerHeight;
+        var objloader = new THREE.OBJLoader();
 
-        function init()
+        var dots = new Array();
+        var radius = .2;
+        var convtxs = new Float32Array();
+        var dotlength;
+        var linee;
+
+        var geometr = new THREE.BoxGeometry( radius, radius, radius);
+        var materia = new THREE.MeshLambertMaterial( {color: 0xff0000} );
+        var spher = new THREE.Mesh( geometr, materia );
+
+        var nucurve;
+
+
+        var ie;
+        var curvee = new THREE.CatmullRomCurve3();
+        var pieces = 2;
+
+        var curveArray = new Array();
+        var curveEqArray = Array();
+        var curvesToAdd = Array();
+        var cuvesToAni = Array();
+
+        var matt = new THREE.LineBasicMaterial( { color : 0x00ff00, linecap: 'square', linejoin: 'square', linewidth: 5 } );
+
+        var totaldots = 1000;
+
+        function findRoom (stringg)
         {
-          //startClosed();
+
+        }
+
+
+        function dot (u)
+        {
+          var geometr = new THREE.BufferGeometry();
+          var ohold;
+          objloader.load(
+          // resource URL
+          'models/arruw.obj',
+          // called when resource is loaded
+          function ( object ) {
+
+            ohold = object.children[0].geometry;
+
+            var materia = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+            var lxl;
+            for (lxl = 0; lxl < u; lxl++)
+            {
+              dots[lxl] = new THREE.Mesh( ohold, materia );
+              //dots[lxl].material.visible = true;
+              dots[lxl].position.y = 42069360;
+              scene.add(dots[lxl]);
+
+              //console.log(lxl, dots[lxl]);
+              //scene.add(dots[lxl]);
+              dotlength = dots.length;
+            }
+            console.log(dots.length);
+
+          } );
+
+          console.log(dots.length, "asdf");
+        }
+
+        function indexDown (index)
+        {
+          if (index != 0)
+          {
+            return index - 1;
+          }
+          return 0;
+        }
+
+
+        function comppts (q, arr, index)
+        {
+          var curveptarray = new Array();
+          for (ie = 0; ie < (q / 3) - 1; ie++)
+          {
+            if (ie % pieces == 0)
+            {
+              curveptarray[ie/pieces] = new THREE.Vector3(arr[ie * 3], arr[ie * 3 + 1], arr[ie * 3 + 2]);
+            }
+          }
+          curveEqArray[index] = new THREE.CatmullRomCurve3();
+          curveEqArray[index].points = curveptarray;
+          //scene.add( curveEqArray[index] );
+          //curveptarray = new Array();
+
+          console.log("help", index);
+          console.log("help", curveEqArray[index]);
+        }
+
+        function spSetup(file, id, roomLink, stScale, yScale, xp, yp, zp)
+        {
+          objloader.load(
+          // resource URL
+          file,
+          // called when resource is loaded
+          function ( object ) {
+            nucurve = new THREE.Line(object, matt);
+            comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array, id);
+            var toobg = new THREE.TubeBufferGeometry( curveEqArray[id], 100, .03, 4, false );
+            var toobm = new THREE.MeshBasicMaterial( { color: 0xff0000} );
+            curveArray[id] = new THREE.Mesh( toobg, toobm );
+            curveArray[id].scale.x = stScale;
+            curveArray[id].scale.y = stScale;
+            curveArray[id].scale.z = stScale;
+            curveArray[id].position.x = xp;
+            curveArray[id].position.y = yp;
+            curveArray[id].position.z = zp;
+            curveArray[id].name = roomLink;
+            console.log("COOKIE", curveArray[id]);
+            scene.add( curveArray[id] );
+          });
+        }
+
+        function init2 ()
+        {
+          spSetup('models/sample_curve4.obj', 0, 'C-101', 2, 1, 2, 0, 0);
+          spSetup('models/sample_curves.obj', 1, 'W-203', 2, 1, 0, 3, 0);
+          spSetup('models/sample_curve2.obj', 2, 'I-212', 2, 1, 3, 2, 0);
+          spSetup('models/sample_curve8.obj', 3, 'C-1xx', 2, 1, 0, 3, 1);
+          spSetup('models/sample_curve3.obj', 4, 'G-101', 2, 1, 1, 1, 1);
+          spSetup('models/sample_curve3.obj', 5, 'C-xxx', 2, 1, 1, 1, 1);
+        }
+      init();
+      onWindowResize();
+      animate();
+
+      function init()
+      {
+        //startClosed();
 
         container = document.getElementById( 'canvas' );
         document.body.appendChild( container );
@@ -888,12 +1086,12 @@
 
         // initialize and position camera
          camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
-        camera.position.set( 0, 0, 8 );
+        camera.position.set( 0, 0, 0 );
 
         // initialize and customize controls
         controls = new THREE.OrbitControls( camera, renderer.domElement );
         controls.minDistance = 2;
-        controls.maxDistance = 5;
+        controls.maxDistance = 100;
         controls.maxPolarAngle = 11*Math.PI/24;
         controls.enablePan = true;
         controls.enableDamping = true;
@@ -902,7 +1100,7 @@
         controls.enableZoom = true;
 
         // add ambient light
-        scene.add( new THREE.AmbientLight( 0xffffff, .4 ) );
+        scene.add( new THREE.AmbientLight( 0xffffff, .7 ) );
 
         // add point light
       /*  var light = new THREE.SpotLight( 0xffffff );
@@ -948,13 +1146,13 @@
         scene.add(light);
 
 
-        //add the group of all models into the scene
-        scene.add( group );
+
+
 
         /*
         *Model Loaders
         */
-
+        //TODO Add Import for splines from Braxton
         /*
         *Main function to load in the school model.
         *path takes a string of the file path of the model (GLTF format)
@@ -962,6 +1160,17 @@
         *modelGroup takes a Group and makes it the top of the tree
         *Each mesh in the model is added to a group based on the scene that it is in
         *each scene is then added to modelGroup
+        *
+        *The tree is divided by Building, floor, and room.
+        *Each Section has splines assigned to it used for pathfinding
+        *
+        *                     Outline of tree system
+        *
+        * Main Group -> Buildings - > Floors - > Rooms
+        *                   |            |         |
+        *"Highway" Splines to entrance   |         |
+        *         Splines From Entrance to floor   |
+        *                       Splines from stairway / floor Entrance to room
         */
         var loader = new THREE.GLTFLoader();
 
@@ -974,9 +1183,33 @@
             *E.G. Weinberg is W, Nangaku is N
             */
             gltf.scenes.forEach(function (curScene){
-              var sceneGroup = new THREE.Group();
-              sceneGroup.name = curScene.name;
+              var buildingGroup = new THREE.Group();
+              buildingGroup.name = curScene.name;
               var sceneLength = curScene.children.length;
+              /*
+              *Creates 4 floors for each Building, not all are used
+              *each room is stored in its floor,
+              *Each floor is assigned a name e.g  N2 and a pathfinding line
+              */
+              var floor1 = new THREE.Group();
+              buildingGroup.add(floor1);
+              floor1.name = buildingGroup.name + "1";
+
+              var floor2 = new THREE.Group();
+              buildingGroup.add(floor2);
+              floor2.name = buildingGroup.name + "2";
+
+              var floor3 = new THREE.Group();
+              buildingGroup.add(floor3);
+              floor3.name = buildingGroup.name + "4";
+
+              var floor4 = new THREE.Group();
+              buildingGroup.add(floor4);
+              floor4.name = buildingGroup.name + "4";
+
+              var floor5 = new THREE.Group();
+              buildingGroup.add(floor5);
+              floor5.name = buildingGroup.name + "5";
 
               /*
               *Each mesh has a prefix indicating the building it is a part of and the floor
@@ -985,33 +1218,103 @@
               *Each non room mesh is named with its prefix and followed by part
               */
               for(var i = 0; i < sceneLength; i++){
+                switch (curScene.children[0].name.slice(1,2)) {
+                  case "1":
+                    floor1.add(curScene.children[0]);
+                    break;
 
-                sceneGroup.add(curScene.children[0]);
-              }
-              sceneGroup.children.forEach( function (child){
-                if (child instanceof THREE.Mesh){
-                  child.receiveShadow = true;
-                  child.castShadow = true;
-                  //tests if the mesh is a room or just an aesthetic part
-                  if(child.name.slice(3, -3) == 'part'){
-                    //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
-                    child.userData = {alreadyUp:false, room:false};
-                  }
+                  case "2":
+                    floor2.add(curScene.children[0]);
+                    break;
 
-                  else{
-                    //Accesses a list of names and adds each one to the model
-                    child.userData = {alreadyUp:false, room:true, names:findNames(child.name)};
-                  }
+                  case "3":
+                    floor3.add(curScene.children[0]);
+                    break;
+
+                  case "4":
+                    floor4.add(curScene.children[0]);
+                    break;
+
+                  case "5":
+                    floor5.add(curScene.children[0]);
+                    break;
+
+                  default:
+                    floor1.add(curScene.children[0]);
                 }
+              }
+              buildingGroup.children.forEach( function (child){
+                child.children.forEach(function(room){
+                  if (room instanceof THREE.Mesh){
+                    room.receiveShadow = true;
+                    room.castShadow = true;
+                    room.material.side = THREE.DoubleSide;
+                    room.geometry.computeBoundingSphere();
+
+                    //tests if the mesh is a room or just an aesthetic part
+                    if(room.name.slice(2, -3) == 'part'){
+                      //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
+                      room.userData = {alreadyUp:false, isRoom:false, isRestroom:false};
+                    }
+                    //tests if mesh is stairs, stairs must use special animation
+                    else if (room.name.slice(2, -3) == 'Restroom'){
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:true};
+                    }
+                    else{
+                      //Accesses a list of names and adds each one to the model
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(child.name)};
+                    }
+                    if(room.userData.isRestroom){
+                      createRestroom(room.position);
+                    }
+                  }
+
+                 else if (room instanceof THREE.Group){
+                    room.children.forEach(function(children){
+                      children.receiveShadow = true;
+                      children.castShadow = true;
+                      children.geometry.computeBoundingSphere();
+                      children.material.side = THREE.DoubleSide;
+                    });
+
+                    //tests if the mesh is a room or just an aesthetic part
+                    if(room.name.slice(2, -3) == 'part'){
+                      //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
+                      room.userData = {alreadyUp:false, isRoom:false, isRestroom:false};
+                    }
+                    //tests if mesh is stairs, stairs must use special animation
+                    else if (room.name.slice(2, -3) == 'Restroom'){
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:true};
+                    }
+                    else{
+                      //Accesses a list of names and adds each one to the model
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(child.name)};
+                    }
+                    if(room.userData.isRestroom){
+                      createRestroom(room.position);
+                    }
+                  }
+
+                });
               });
-              modelGroup.add(sceneGroup);
+              modelGroup.add(buildingGroup);
             });
           });
           modelGroup.position.copy(position);
         }
 
         // add Nangaku model
-        loadCampus('models/Nangaku6.gltf', new THREE.Vector3(1,0,-1), group);
+        loadCampus('models/CampusMapFinalV2.gltf', new THREE.Vector3(1,0,50), group);
+
+        controls.target = new THREE.Vector3(1,0,50);
+
+        //add the group of all models into the scene
+        scene.add( group );
+
+
+
+        //init2();
+        dot(totaldots);
 
         // add and position floor
 
@@ -1026,9 +1329,7 @@
         floorMesh.position.y = 0;
         floorMesh.receiveShadow = true;
         floorMesh.castShadow = true;
-        scene.add(floorMesh);
-
-
+        //scene.add(floorMesh);
 
         // initialize postprocessing
         composer = new THREE.EffectComposer( renderer );
@@ -1043,32 +1344,27 @@
         effectFXAA.renderToScreen = true;
         composer.addPass( effectFXAA );
 
-        // initialize event listeners
-        window.addEventListener( 'resize', onWindowResize, false );
-        window.addEventListener( 'mouseup', onTouchMove );
-        window.addEventListener( 'touchend', onTouchMove );
-        window.addEventListener( 'touchstart', onmesh);
-        window.addEventListener( 'mousedown', onmesh);
-        window.addEventListener( 'mousemove', stopstart);
+        //Function to take the name of a selected Room
 
-        // variables for listener functions
-        var clicked = true;
-        var started = false;
-        var lfclick = true;
-        var prevobj = null;
+        function getRoomName(room){
+          if(room.name.slice(0,1) == 'M'){
+            return room.parent.name;
+          }
+          else return room.name
+        }
 
-        //function returns a room when given a name (e.g. n203, w315, Library)
-        function findRoom(roomName){
-          group.forEach(function(building){
-            building.forEach(function(room){
-              room.names.forEach(function(name){
-                if(name == roomName){
-                  return room;
-                }
-              })
-            });
-          });
-          return null;
+        //Takes a position and creates a restroom sign at that position, used by loader
+
+        var restroomSignMap = new THREE.TextureLoader().load( "Sprites/RestroomSign.png" );
+        var restroomSignMaterial = new THREE.SpriteMaterial( { map: restroomSignMap, color: 0xffffff } );
+
+        function createRestroom(position){
+          var restroomSign = new THREE.Sprite( restroomSignMaterial );
+          restroomSign.scale = new THREE.Vector3(10,10,10);
+          restroomSign.position.copy(position);
+          restroomSign.position.y = restroomSign.position.y + 1;
+
+          group.add( restroomSign );
         }
 
         /*
@@ -1104,26 +1400,6 @@
           action.paused = false;
         }
 
-        function lowerFloor(rootObject, clipName){
-          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
-          action.timeScale = -1;
-          action.clampWhenFinished = true;
-          action.paused = false;
-          action.play();
-          rootObject.alreadyUp =  false;
-          action.setLoop(THREE.LoopOnce);
-        }
-
-        function raiseFloor(rootObject, clipName){
-          var action = mixer.clipAction( THREE.AnimationClip.findByName(clips, clipName), rootObject );
-          action.timeScale = 1;
-          rootObject.alreadyUp =  true;
-          action.setLoop(THREE.LoopOnce);
-          action.clampWhenFinished = true;
-          action.play();
-          action.paused = false;
-        }
-
         /*
         *Animates all floors in the building Group
         *putting 'pingPong' for animation mode toggles the animation Up and down
@@ -1133,69 +1409,64 @@
 
         function animateFloors(selectedRoom, animationMode){
           if(animationMode  == 'PingPong'){
-            selectedRoom.parent.children.forEach(function(child){
-              //plays animations by the name of the floors, each floor's suffix has a matching animation
-              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -3)) != null){
-                playFloorAnimation(child, child.alreadyUp, child.name.slice(0, -3));
-              }
-              else{child.alreadyUp = !child.alreadyUp;}
+            selectedRoom.parent.parent.children.forEach(function(child){
+              child.children.forEach(function(room){
+                //plays animations by the name of the floors, each floor's suffix has a matching animation
+                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, -3)) != null){
+                  playFloorAnimation(room, room.alreadyUp, room.name.slice(0, -3));
+                }
+                else{room.alreadyUp = !room.alreadyUp;}
+              });
             });
           }
 
           else if(animationMode == 'Lower'){
-            selectedRoom.parent.children.forEach(function(child){
-              //plays animations by the name of the floors, each floor's suffix has a matching animation
-              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -3)) != null){
-                lowerFloor(child, child.name.slice(0, -3));
-              }
-              else {child.alreadyUp =  false}
+            selectedRoom.parent.parent.children.forEach(function(child){
+              child.children.forEach(function(room){
+                //plays animations by the name of the floors, each floor's suffix has a matching animation
+                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, -3)) != null){
+                  playFloorAnimation(room, true, room.name.slice(0, -3));
+                }
+
+                else{room.alreadyUp = false;}
+              });
             });
           }
 
           else if (animationMode == 'Raise') {
-            selectedRoom.parent.children.forEach(function(child){
-              //plays animations by the name of the floors, each floor's suffix has a matching animation e.g. Nangaku second floor is N2
-              if (THREE.AnimationClip.findByName(clips,child.name.slice(0, -3)) != null){
-                raiseFloor(child, child.name.slice(0, -3));
-              }
-              else {child.alreadyUp =  true}
+            selectedRoom.parent.parent.children.forEach(function(child){
+              child.children.forEach(function(room){
+                //plays animations by the name of the floors, each floor's suffix has a matching animation
+                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, -3)) != null){
+                  playFloorAnimation(room, false, room.name.slice(0, -3));
+                }
+                else{room.alreadyUp = true;}
+              });
             });
           }
           else {console.log("Invalid Input, use pingPong, raise, or lower")}
         }
 
+        // initialize event listeners
+        window.addEventListener( 'resize', onWindowResize, false );
+        window.addEventListener( 'mouseup', onTouchMove );
+        window.addEventListener( 'touchend', onTouchMove );
+        window.addEventListener( 'touchstart', onmesh);
+        window.addEventListener( 'mousedown', onmesh);
+        //window.addEventListener( 'mousemove', stopstart);
+
+        // variables for listener functions
+        var clicked = true;
+        var started = false;
+        var lfclick = true;
+        var prevobj = null;
+
         /////////////////////////////////
         //  event triggered functions  //
         /////////////////////////////////
-
-        function stopstart (event)
-        {
-          if (!lfclick)
-          {
-            controls.enableRotate = false;
-            controls.enablePan = true;
-            console.log("a");
-          }
-          else
-          {
-            controls.enableRotate = true;
-            //controls.enablePan = false;
-            //console.log("b");
-          }
-        }
-
         function onmesh (event)
         {
           var x, y;
-
-          if (event.button == 2)
-          {
-            lfclick = false;
-          }
-          else
-          {
-            lfclick = true;
-          }
 
           if ( event.changedTouches )
           {
@@ -1225,8 +1496,7 @@
 
         }
 
-        //
-
+        // checks intersection when click up
         function onTouchMove( event )
         {
           var x, y;
@@ -1245,47 +1515,51 @@
           checkIntersection();
         }
 
-        //
+        // adds object to outline list
         function addSelectedObject( object )
         {
           selectedObjects = [];
           selectedObjects.push( object );
         }
 
-        //
         function checkIntersection()
-        {
-          raycaster.setFromCamera( mouse, camera );
-          var intersects = raycaster.intersectObjects( [ group ], true );
-          if ( intersects.length > 0 )
-          {
-            outlinePass.selectedObjects = [];
+         {
+           raycaster.setFromCamera( mouse, camera );
+           var intersects = raycaster.intersectObjects( [ group ], true );
+           if ( intersects.length > 0 )
+           {
+             outlinePass.selectedObjects = [];
+             var selectedObject = intersects[ 0 ].object;
 
-            var selectedObject = intersects[ 0 ].object;
-            animateFloors(selectedObject, 'PingPong');
+             if(getRoomName(selectedObject).slice(2,-3) != 'part'){
+               addSelectedObject( selectedObject );
+             }
 
-            addSelectedObject( selectedObject );
-            if (clicked && started || prevobj != selectedObject)
-            {
-              outlinePass.selectedObjects = selectedObjects;
-              openNav();
-            }
-            else
-            {
-              outlinePass.selectedObjects = [];
-              closeNav();
-            }
-            clicked = !clicked;
-          }
-          else
-          {
-            if (!started)
-            {
-              outlinePass.selectedObjects = [];
-            }
-          }
-          prevobj = selectedObject;
-        }
+             animateFloors(selectedObject, 'PingPong');
+
+
+             if (clicked && started || prevobj != selectedObject)
+             {
+               outlinePass.selectedObjects = selectedObjects;
+               openNav();
+             }
+             else
+             {
+               outlinePass.selectedObjects = [];
+               closeNav();
+             }
+             clicked = !clicked;
+           }
+           else
+           {
+             if (!started)
+             {
+               outlinePass.selectedObjects = [];
+             }
+           }
+           prevobj = selectedObject;
+         }
+
 
         var width = divWidth;
         var height = divHeight;
@@ -1297,110 +1571,217 @@
         renderer.domElement.style.height = height + 'px';
       }
 
-          // resize the screen correctly
-          var i = 0;
-          function onWindowResize()
+
+
+        // resize the screen correctly
+        var i = 0;
+        function onWindowResize()
+        {
+          divWidth = window.innerWidth;// / 2;
+          divHeight = window.innerHeight; // 2;
+          var width = divWidth;
+          var height = divHeight;
+          var w2 = 0;//200/7;//= xx;
+          var h2 = 0;//= yy;
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize( width, height );
+          composer.setSize( width, height );
+          renderer.domElement.style.width = width + 'px';
+          renderer.domElement.style.height = height + 'px';
+          //renderer.domElement.style.offsetLeft = w2 + 'px';
+          //renderer.domElement.style.offsetTop = h2 + 'px';
+          effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
+
+
+          var css = '#canvas {background-color: #f0f; margin-left: ' + w2.toString() + 'vw; width: 0px; height: 0px; padding: 0px; margin-top: ' + h2.toString() + 'vw; position: static;}',
+          head = document.head || document.getElementsByTagName('head')[0],
+          style = document.createElement('style');
+
+          var y;
+
+
+          style.type = 'text/css';
+          if (style.styleSheet)
           {
-            divWidth = window.innerWidth;// / 2;
-            divHeight = window.innerHeight; // 2;
-            var width = divWidth;
-            var height = divHeight;
-            var w2 = 0;//200/7;//= xx;
-            var h2 = 0;//= yy;
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-            renderer.setSize( width, height );
-            composer.setSize( width, height );
-            renderer.domElement.style.width = width + 'px';
-            renderer.domElement.style.height = height + 'px';
-            //renderer.domElement.style.offsetLeft = w2 + 'px';
-            //renderer.domElement.style.offsetTop = h2 + 'px';
-            effectFXAA.uniforms[ 'resolution' ].value.set( 1 / divWidth, 1 / divHeight );
+            // This is required for IE8 and below.
+            style.styleSheet.cssText = css;
+          }
+          else
+          {
+            t = document.createTextNode(css);
+            style.appendChild(t);
 
-
-            var css = '#canvas {background-color: #f0f; margin-left: ' + w2.toString() + 'vw; width: 0px; height: 0px; padding: 0px; margin-top: ' + h2.toString() + 'vw; position: static;}',
-            head = document.head || document.getElementsByTagName('head')[0],
-            style = document.createElement('style');
-
-            var y;
-
-
-            style.type = 'text/css';
-            if (style.styleSheet)
+            if (style.childNodes.length <1)
             {
-              // This is required for IE8 and below.
-              style.styleSheet.cssText = css;
-            }
-            else
-            {
-              t = document.createTextNode(css);
-              style.appendChild(t);
+              //y = style.childNode[0];
+              style.removeChild(style.childNode[style.childNodes.length - 1]);
+              head.style.childNodes[0].kill();
+              head.style.childNodes[i].kill();
+              style.removeChild(style.childNode[0]);
+              head.style.childNodes[i-1].kill();
+              style.removeChild(style.childNode[i]);
+              style.removeChild(style.childNode[i-1]);
+              head.style.childNodes[style.childNodes.length - 1].kill();
+              //console.log(style.childNodes.length);
 
-              if (style.childNodes.length <1)
-              {
-                //y = style.childNode[0];
-                style.removeChild(style.childNode[style.childNodes.length - 1]);
-                head.style.childNodes[0].kill();
-                head.style.childNodes[i].kill();
-                style.removeChild(style.childNode[0]);
-                head.style.childNodes[i-1].kill();
-                style.removeChild(style.childNode[i]);
-                style.removeChild(style.childNode[i-1]);
-                head.style.childNodes[style.childNodes.length - 1].kill();
-                //console.log(style.childNodes.length);
-
-                i++;
-              }
-
-              console.log(style.childNodes.length);
-
-              //head.style.textContent = css;
+              i++;
             }
 
-            head.appendChild(style);
 
-            if (head.childNodes.length > 1)
-            {
-              //y = style.childNodes[0];
-              //head.removeChild(y);
-            }
+            //head.style.textContent = css;
           }
 
-          // variables needed before draw loop
+          head.appendChild(style);
+
+          if (head.childNodes.length > 1)
+          {
+            //y = style.childNodes[0];
+            //head.removeChild(y);
+          }
+        }
+
+        // variables needed before draw loop
+
+        var i  = .99;
+        var spor = -1;
+        var ppanx;
+        var ppanz;
+        var pcamrot;// = camera.rotation;
+
+        // draw loop
+        function animate()
+        {
+          requestAnimationFrame( animate );
+          //stats.begin();
+          var timer = performance.now();
+
+					// weak attempt at pan limiting
           var panx = 1;
           var panz = 1;
-
-          // draw loop
-          function animate()
+          if (pcamrot != camera.rotation)
           {
 
-            requestAnimationFrame( animate );
-            //stats.begin();
-            var timer = performance.now();
+          }
+          if (ppanx != controls.target.x || ppanz != controls.target.z)
+          {
+            //controls.enableRotate = false;
+            //console.log(camera.rotation, pcamrot);
+            camera.position = pcamrot;
 
-            if (controls.target.x > panx) {
-                controls.target.x = panx;
-            }
-
-            if (controls.target.x < -1 * panx) {
-                controls.target.x = -1 * panx;
-            }
-            if (controls.target.z > panz) {
-                controls.target.z = panz;
-            }
-            if (controls.target.z < -1 * panz) {
-                controls.target.z = -1 * panz;
-            }
-            controls.target.y = 0;
-
-            controls.update();
-            composer.render();
-            //stats.end();
-            mixer.update(clock.getDelta());
+          }
+          else
+          {
+            //controls.enableRotate = true;
+            pcamrot = camera.rotation;
           }
 
+          //Camera Pan Limiter
+          /*
+          if (controls.target.x > panx) {
+              controls.target.x = panx;
+          }
+          if (controls.target.x < -1 * panx) {
+              controls.target.x = -1 * panx;
+          }
+          if (controls.target.z > panz) {
+              controls.target.z = panz;
+          }
+          if (controls.target.z < -1 * panz) {
+              controls.target.z = -1 * panz;
+          }
+          controls.target.y = 0;
+          controls.enableDamping = false;
+          ppanx = controls.target.x;
+          ppanz = controls.target.z;
+          //console.log(camera.rotation, pcamrot);
+          //console.log(camera);
+          */
+
+          var useddots = Array();
+
+          var speed = .0008;
+          var scale = .18;
+          var pointsFactor = .25;
+          var room = "C-101"; // changes with clicks
+
+          curvesToAdd = [];
+
+          // curve adder function(s)
+          var curveIndex;
+          for (curveIndex = 0; curveIndex < curveArray.length; curveIndex++)
+          {
+            var curveChar;
+            for (curveChar = 0; curveChar < curveArray[curveIndex].name.length; curveChar++)
+            {
+              if (room[curveChar] != curveArray[curveIndex].name[curveChar] && curveChar != 1 && curveArray[curveIndex].name[curveChar] != 'x')
+              {
+                break;
+              }
+              if (curveArray[curveIndex].name[curveChar] == 'x' || curveChar == (curveArray[curveIndex].name.length - 1))
+              {
+                // append CurvesToAdd
+                curvesToAdd.push(curveIndex);
+                break;
+              }
+            }
+          }
+
+          // zero to one variable
+          if (i >= 1)
+          {
+            i = 1;
+            spor = -1;
+          }
+          i = (i + (spor * speed));
+          if (i <= 0)
+          {
+            i = 1;
+          }
+
+          // make curves invisible
+          var blanker;
+          for (blanker = 0; blanker < curveArray.length; blanker++)
+          {
+            curveArray[blanker].visible = false;
+          }
+
+          // calculate total needed dots
+          var totaluseddots = 0;
+          var eye;
+          for (eye = 0; eye < curvesToAdd.length; eye++)
+          {
+            totaluseddots += curveEqArray[curvesToAdd[eye]].points.length * pointsFactor;
+            useddots[eye] = curveEqArray[curvesToAdd[eye]].points.length * pointsFactor;
+          }
+
+          // make selected curves visible, position and move them along curve
+          var dotally = 0;
+          var p;
+          for (p = 0; p < curvesToAdd.length; p++)
+          {
+            curveArray[curvesToAdd[p]].visible = true;
+            for (q = 0; q < useddots[p]; q++)
+            {
+              dots[dotally].scale.x = scale * 1.5;
+              dots[dotally].scale.y = scale * 1.5;
+              dots[dotally].scale.z = scale * 1.5;
+
+              dots[dotally].position.x = curveEqArray[curvesToAdd[p]].getPoint((i + (q / useddots[p])) % 1).x * curveArray[curvesToAdd[p]].scale.x + curveArray[curvesToAdd[p]].position.x;
+              dots[dotally].position.y = curveEqArray[curvesToAdd[p]].getPoint((i + (q / useddots[p])) % 1).y * curveArray[curvesToAdd[p]].scale.y + curveArray[curvesToAdd[p]].position.y;
+              dots[dotally].position.z = curveEqArray[curvesToAdd[p]].getPoint((i + (q / useddots[p])) % 1).z * curveArray[curvesToAdd[p]].scale.z + curveArray[curvesToAdd[p]].position.z;
+
+              dotally++;
+            }
+          }
+
+          // THREE functions updatae
+          controls.update();
+          composer.render();
+          mixer.update(clock.getDelta());
+
+          scene.background = new THREE.Color(0xc0d9ff);
+          }
         </script>
-
     </body>
-
 </html>
