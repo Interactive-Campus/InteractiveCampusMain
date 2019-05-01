@@ -977,7 +977,7 @@
 
 
         // initialize and position camera
-         camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
+         camera = new THREE.PerspectiveCamera( 45, width / height, 1, 100000 );
         camera.position.set( 0, 0, 0 );
 
         // initialize and customize controls
@@ -992,50 +992,16 @@
         controls.enableZoom = true;
 
         // add ambient light
-        scene.add( new THREE.AmbientLight( 0xffffff, .7 ) );
+        scene.add( new THREE.AmbientLight( 0xffffff, 0.3 ) );
 
-        // add point light
-      /*  var light = new THREE.SpotLight( 0xffffff );
-        //var light = new //THREE.HemisphereLight(0xffffff, 0x808020, 1);//PointLight(0xffffff);
+        var light = new THREE.DirectionalLight(0xffffff,1);
+
         scene.add( light );
-        light.position.set( -800, 800, 800 );
-        light.rotation.set( -Math.PI / 4, 0, -Math.PI / 4 );
+        light.position.y = 100;
+        var lightTarget = new THREE.Object3D();
+        light.target = lightTarget;
 
 
-        light.intensity = 1.2;
-        light.angle = Math.PI / 2;
-        //light.position.y = 200;
-        light.penumbra = 100;
-        //light.rotation.z = -400;
-        //light.position.x = -100;
-
-        //light.shadow.mapSize.width = 512;  // default
-        //light.shadow.mapSize.height = 512; // default
-        light.shadow.camera.near = 0.5;       // default
-        light.shadow.camera.far = 500;
-
-
-        light.castShadow = true;
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-        var smapsize = 2048;
-        light.shadow.mapSize.width = smapsize;
-        light.shadow.mapSize.height = smapsize;
-
-        var light = new THREE.DirectionalLight(0xffffff,1);
-        light.position.set(50, 500, 22);
-        light.target.position.set(300, 400, 200);
-        var light = new THREE.DirectionalLight(0xffffff,1);
-        light.position.set(0, 500, 200);
-        light.target.position.set(0, 0, 0);
-        light.shadow.mapSize.width = 1024*4;
-        light.shadow.mapSize.height = 1024*4;
-        light.castShadow = true;
-
-        light.shadow.camera.near = 0;
-        light.shadow.camera.far = 4000;
-        light.shadow.camera.fov = 90;
-        scene.add(light);
 
 
 
@@ -1196,7 +1162,7 @@
         }
 
         // add Nangaku model
-        loadCampus('models/CampusMapFinalV2.gltf', new THREE.Vector3(1,0,50), group);
+        loadCampus('models/CampusMapFinalV2.gltf', new THREE.Vector3(1,0,60), group);
 
         controls.target = new THREE.Vector3(1,0,50);
 
