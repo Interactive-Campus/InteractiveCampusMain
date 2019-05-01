@@ -18,7 +18,7 @@
           z-index: 1;
           top: 0;
           right: 0;
-          background-color: rgb(255, 153, 65);
+          background-color: rgb(160, 186, 195);
           overflow-x: hidden;
           transition: .75s;
           padding-top: 30px;
@@ -746,7 +746,7 @@
     }
 */
     //array for list of times that corrospond with events
-    var listTime = ["300", "5000", "3424"];
+    /*var listTime = ["300", "5000", "3424"];
     var times = listTime.length;
 
     //listing all the times
@@ -756,6 +756,7 @@
       var newTime = firstTime.replace(firstTime.toString(),secondTime.toString());
       document.getElementById(newTime).innerHTML = listTime[i];
     }
+    */
   /*
     //array for list of locations that corrospond with events and time
     var listLocation = ["farvdaraec", "afvfcervaer", "caervaerv"];
@@ -771,18 +772,19 @@
   */
   </script>
 
-<script>
+
+  <script>
+  /*
   //width of sidebar
   function openNav() {
     document.getElementById("mySidenav").style.width = "500px";
-    document.getElementById("main").style.marginRight = "500px";
   }
   function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
-    document.getElementById("main").style.marginLRight= "0";
   }
 
-      </script>
+  */
+  </script>
 
         <script src="js/three.js"></script>
         <script src="js/controls/OrbitControls.js"></script>
@@ -1125,6 +1127,10 @@
                     if(room.userData.isRestroom){
                       createRestroom(room.position);
                     }
+                    createSign(room,'ATM', "Sprites/ATM-01.png");
+                    createSign(room,'Ride', "Sprites/ridecardboothicon-01.png");
+                    createSign(room,'Scrip', "Sprites/scrip-01.png");
+                    createSign(room,'You', "Sprites/YOUAREHERE-01.png");
                   }
 
                  else if (room instanceof THREE.Group){
@@ -1151,6 +1157,10 @@
                     if(room.userData.isRestroom){
                       createRestroom(room.position);
                     }
+                    createSign(room,'ATM', "Sprites/ATM-01.png");
+                    createSign(room,'Ride', "Sprites/ridecardboothicon-01.png");
+                    createSign(room,'Scrip', "Sprites/scrip-01.png");
+                    createSign(room,'You', "Sprites/YOUAREHERE-01.png");
                   }
 
                 });
@@ -1177,17 +1187,14 @@
         // add and position floor
 
         var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
-        var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
-
-        var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
-        var floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
+        var floorGeometry = new THREE.PlaneBufferGeometry(10000, 10000);
 
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         floorMesh.rotation.x -= Math.PI * 0.5;
-        floorMesh.position.y = 0;
+        floorMesh.position.y = -0.5;
         floorMesh.receiveShadow = true;
         floorMesh.castShadow = true;
-        //scene.add(floorMesh);
+        scene.add(floorMesh);
 
         // initialize postprocessing
         composer = new THREE.EffectComposer( renderer );
@@ -1204,23 +1211,39 @@
 
         //Function to take the name of a selected Room
 
-        function getRoomName(room){
+        function getRoom(room){
           if(room.name.slice(0,1) == 'M'){
-            return room.parent.name;
+            return room.parent;
           }
-          else return room.name
+          else return room;
         }
 
         //Takes a position and creates a restroom sign at that position, used by loader
 
-        var restroomSignMap = new THREE.TextureLoader().load( "Sprites/RestroomSign.png" );
+
+
+        function createSign(room, name, path){
+          console.log("Working");
+          if(room.name.slice(2, -3) == name){
+            console.log("Working");
+            var signMap = new THREE.TextureLoader().load( path);
+            var signMaterial = new THREE.SpriteMaterial( { map: signMap, color: 0xffffff } );
+            var sign = new THREE.Sprite( signMaterial );
+            sign.scale.set(3,3,1);
+            sign.position.copy(room.position);
+            sign.position.y = sign.position.y + 2;
+            group.add( sign );
+          }
+        }
+
+        var restroomSignMap = new THREE.TextureLoader().load( "Sprites/bathroomicon-01.png" );
         var restroomSignMaterial = new THREE.SpriteMaterial( { map: restroomSignMap, color: 0xffffff } );
 
         function createRestroom(position){
           var restroomSign = new THREE.Sprite( restroomSignMaterial );
-          restroomSign.scale = new THREE.Vector3(10,10,10);
+          restroomSign.scale.set(3,3,1);
           restroomSign.position.copy(position);
-          restroomSign.position.y = restroomSign.position.y + 1;
+          restroomSign.position.y = restroomSign.position.y + 3;
 
           group.add( restroomSign );
         }
@@ -1389,8 +1412,10 @@
              outlinePass.selectedObjects = [];
              var selectedObject = intersects[ 0 ].object;
 
-             if(getRoomName(selectedObject).slice(2,-3) != 'part'){
-               addSelectedObject( selectedObject );
+             console.log(getRoom(selectedObject).name.slice(2,-3));
+
+             if(getRoom(selectedObject).name.slice(2,-3) != 'Part'){
+               addSelectedObject(getRoom(selectedObject));
              }
 
              animateFloors(selectedObject, 'PingPong');
