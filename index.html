@@ -1099,7 +1099,8 @@
         controls = new THREE.OrbitControls( camera, renderer.domElement );
         controls.minDistance = 10;
         controls.maxDistance = 40;
-        controls.maxPolarAngle = 11*Math.PI/24;
+        controls.maxPolarAngle = 10.8*Math.PI/24;
+        //controls.minPolarAngle = 0;
         controls.enablePan = true;
         controls.enableDamping = true;
         controls.dampingFactor = 0.25;
@@ -1669,7 +1670,7 @@
         var stcamposz = 57.57;
 
         var stconposx = 1;
-        var stconposy = 0;
+        var stconposy = -5.4;
         var stconposz = 50;
 
         var snapfactor = .1; // between zero and one
@@ -1689,6 +1690,8 @@
 					// weak attempt at pan limiting
           var panx = 20;
           var panz = 20;
+          //controls.target.y = -5.4 * (camera / 40);
+          console.log(camera);
 
           var secnds = new Date();
 
