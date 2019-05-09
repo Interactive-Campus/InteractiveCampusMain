@@ -977,6 +977,16 @@
         // initialize scene
         scene = new THREE.Scene();
 
+        //Create Sky Dome
+        var skyGeo = new THREE.SphereGeometry(100000, 25, 25);
+        var loader  = new THREE.TextureLoader(),
+        skyTexture = loader.load( "Images/SkyBox.jpg" );
+        var skyMaterial = new THREE.MeshBasicMaterial({
+          map: skyTexture,
+        });
+        var sky = new THREE.Mesh(skyGeo, skyMaterial);
+        sky.material.side = THREE.BackSide;
+        scene.add(sky);
 
         // initialize and position camera
          camera = new THREE.PerspectiveCamera( 45, width / height, 1, 100000 );
@@ -1038,6 +1048,7 @@
           loader.load( path, function ( gltf )
           {
             clips = gltf.animations;
+
             /*
             *Each Scene is named a 1 letter code for what building it represents
             *E.G. Weinberg is W, Nangaku is N
@@ -1125,12 +1136,8 @@
                       room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(child.name)};
                     }
                     if(room.userData.isRestroom){
-                      createRestroom(room.position);
+
                     }
-                    createSign(room,'ATM', "Sprites/ATM-01.png");
-                    createSign(room,'Ride', "Sprites/ridecardboothicon-01.png");
-                    createSign(room,'Scrip', "Sprites/scrip-01.png");
-                    createSign(room,'You', "Sprites/YOUAREHERE-01.png");
                   }
 
                  else if (room instanceof THREE.Group){
@@ -1155,12 +1162,8 @@
                       room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(child.name)};
                     }
                     if(room.userData.isRestroom){
-                      createRestroom(room.position);
+
                     }
-                    createSign(room,'ATM', "Sprites/ATM-01.png");
-                    createSign(room,'Ride', "Sprites/ridecardboothicon-01.png");
-                    createSign(room,'Scrip', "Sprites/scrip-01.png");
-                    createSign(room,'You', "Sprites/YOUAREHERE-01.png");
                   }
 
                 });
@@ -1172,7 +1175,7 @@
         }
 
         // add Nangaku model
-        loadCampus('models/CampusMapFinalV2.gltf', new THREE.Vector3(1,0,60), group);
+        loadCampus('models/CampusMapFinalV3.gltf', new THREE.Vector3(1,0,60), group);
 
         controls.target = new THREE.Vector3(1,0,50);
 
@@ -1186,7 +1189,7 @@
 
         // add and position floor
 
-        var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
+        var floorMaterial = new THREE.MeshBasicMaterial({color: 0x8ac980});
         var floorGeometry = new THREE.PlaneBufferGeometry(10000, 10000);
 
         var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -1293,8 +1296,8 @@
             selectedRoom.parent.parent.children.forEach(function(child){
               child.children.forEach(function(room){
                 //plays animations by the name of the floors, each floor's suffix has a matching animation
-                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, -3)) != null){
-                  playFloorAnimation(room, room.alreadyUp, room.name.slice(0, -3));
+                if (THREE.AnimationClip.findByName(clips, room.name.slice(0, 2)) != null){
+                  playFloorAnimation(room, room.alreadyUp, room.name.slice(0, 2));
                 }
                 else{room.alreadyUp = !room.alreadyUp;}
               });
@@ -1305,8 +1308,8 @@
             selectedRoom.parent.parent.children.forEach(function(child){
               child.children.forEach(function(room){
                 //plays animations by the name of the floors, each floor's suffix has a matching animation
-                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, -3)) != null){
-                  playFloorAnimation(room, true, room.name.slice(0, -3));
+                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, 2)) != null){
+                  playFloorAnimation(room, true, room.name.slice(0, 2));
                 }
 
                 else{room.alreadyUp = false;}
@@ -1318,8 +1321,8 @@
             selectedRoom.parent.parent.children.forEach(function(child){
               child.children.forEach(function(room){
                 //plays animations by the name of the floors, each floor's suffix has a matching animation
-                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, -3)) != null){
-                  playFloorAnimation(room, false, room.name.slice(0, -3));
+                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, 2)) != null){
+                  playFloorAnimation(room, false, room.name.slice(0, 2));
                 }
                 else{room.alreadyUp = true;}
               });
@@ -1412,13 +1415,13 @@
              outlinePass.selectedObjects = [];
              var selectedObject = intersects[ 0 ].object;
 
-             console.log(getRoom(selectedObject).name.slice(2,-3));
+             console.log(getRoom(selectedObject).name);
 
              if(getRoom(selectedObject).name.slice(2,-3) != 'Part'){
                addSelectedObject(getRoom(selectedObject));
              }
 
-             animateFloors(selectedObject, 'PingPong');
+             animateFloors(getRoom(selectedObject), 'PingPong');
 
 
              if (clicked && started || prevobj != selectedObject)
