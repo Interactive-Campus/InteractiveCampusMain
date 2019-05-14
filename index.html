@@ -1097,9 +1097,9 @@
 
         // initialize and customize controls
         controls = new THREE.OrbitControls( camera, renderer.domElement );
-        controls.minDistance = 10;
+        controls.minDistance = 20;
         controls.maxDistance = 40;
-        controls.maxPolarAngle = 10.8*Math.PI/24;
+        controls.maxPolarAngle = 9.7*Math.PI/24;
         //controls.minPolarAngle = 0;
         controls.enablePan = true;
         controls.enableDamping = true;
@@ -1690,8 +1690,8 @@
 					// weak attempt at pan limiting
           var panx = 20;
           var panz = 20;
-          //controls.target.y = -5.4 * (camera / 40);
-          console.log(camera);
+          controls.target.y = -5.4;// * (camera / 40);
+          //console.log(camera);
 
           var secnds = new Date();
 
