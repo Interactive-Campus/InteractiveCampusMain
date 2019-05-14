@@ -816,7 +816,7 @@
         var mouse = new THREE.Vector2();
         var selectedObjects = [];
         var composer, effectFXAA, outlinePass;
-        var group = new THREE.Group();
+        var campus = new THREE.Group();
         var obj3d = new THREE.Object3D();
         var clips;
         var mixer = new THREE.AnimationMixer();
@@ -886,7 +886,6 @@
 
           } );
 
-          console.log(dots.length, "asdf");
         }
 
         function indexDown (index)
@@ -1014,11 +1013,6 @@
         light.target = lightTarget;
 
 
-
-
-
-
-
         /*
         *Model Loaders
         */
@@ -1123,20 +1117,17 @@
                     room.geometry.computeBoundingSphere();
 
                     //tests if the mesh is a room or just an aesthetic part
-                    if(room.name.slice(2, -3) == 'part'){
+                    if(room.name.slice(2, -3).toUpperCase() == 'part'.toUpperCase()){
                       //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
                       room.userData = {alreadyUp:false, isRoom:false, isRestroom:false};
                     }
                     //tests if mesh is stairs, stairs must use special animation
-                    else if (room.name.slice(2, -3) == 'Restroom'){
+                    else if (room.name.slice(2, -3).toUpperCase() == 'Restroom'.toUpperCase()){
                       room.userData = {alreadyUp:false, isRoom:true, isRestroom:true};
                     }
                     else{
                       //Accesses a list of names and adds each one to the model
-                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(child.name)};
-                    }
-                    if(room.userData.isRestroom){
-
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(room.name)};
                     }
                   }
 
@@ -1149,7 +1140,7 @@
                     });
 
                     //tests if the mesh is a room or just an aesthetic part
-                    if(room.name.slice(2, -3) == 'part'){
+                    if(room.name.slice(2, -3).toUpperCase() == 'part'.toUpperCase()){
                       //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
                       room.userData = {alreadyUp:false, isRoom:false, isRestroom:false};
                     }
@@ -1159,10 +1150,7 @@
                     }
                     else{
                       //Accesses a list of names and adds each one to the model
-                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(child.name)};
-                    }
-                    if(room.userData.isRestroom){
-
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(room.name)};
                     }
                   }
 
@@ -1175,12 +1163,12 @@
         }
 
         // add Nangaku model
-        loadCampus('models/CampusMapFinalV3.gltf', new THREE.Vector3(1,0,60), group);
+        loadCampus('models/CampusMapFinalV3.gltf', new THREE.Vector3(1,0,60), campus);
 
         controls.target = new THREE.Vector3(1,0,50);
 
         //add the group of all models into the scene
-        scene.add( group );
+        scene.add( campus );
 
 
 
@@ -1221,6 +1209,16 @@
           else return room;
         }
 
+        function searchRoom(query){
+          for(i = 0; i < campus.children.length; i++){
+
+          }
+        }
+
+        function traverseTree(){
+          
+        }
+
         //Takes a position and creates a restroom sign at that position, used by loader
 
 
@@ -1235,20 +1233,8 @@
             sign.scale.set(3,3,1);
             sign.position.copy(room.position);
             sign.position.y = sign.position.y + 2;
-            group.add( sign );
+            campus.add( sign );
           }
-        }
-
-        var restroomSignMap = new THREE.TextureLoader().load( "Sprites/bathroomicon-01.png" );
-        var restroomSignMaterial = new THREE.SpriteMaterial( { map: restroomSignMap, color: 0xffffff } );
-
-        function createRestroom(position){
-          var restroomSign = new THREE.Sprite( restroomSignMaterial );
-          restroomSign.scale.set(3,3,1);
-          restroomSign.position.copy(position);
-          restroomSign.position.y = restroomSign.position.y + 3;
-
-          group.add( restroomSign );
         }
 
         /*
@@ -1366,7 +1352,7 @@
           mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
 
           raycaster.setFromCamera( mouse, camera );
-          var intersects = raycaster.intersectObjects( [ group ], true );
+          var intersects = raycaster.intersectObjects( [ campus ], true );
           if ( intersects.length > 0 )
           {
             started = true;
@@ -1409,13 +1395,15 @@
         function checkIntersection()
          {
            raycaster.setFromCamera( mouse, camera );
-           var intersects = raycaster.intersectObjects( [ group ], true );
+           var intersects = raycaster.intersectObjects( [ campus ], true );
            if ( intersects.length > 0 )
            {
              outlinePass.selectedObjects = [];
              var selectedObject = intersects[ 0 ].object;
 
              console.log(getRoom(selectedObject).name);
+
+             console.log(searchRoom("C201"));
 
              if(getRoom(selectedObject).name.slice(2,-3) != 'Part'){
                addSelectedObject(getRoom(selectedObject));
