@@ -29,8 +29,14 @@
           left:0;
           position: fixed;
           z-index: 1;
+<<<<<<< HEAD
           bottom: 0;
           background-color: #ffffff;
+=======
+          top: 0;
+          right: 0;
+          background-color: rgb(160, 186, 195);
+>>>>>>> Shading
           overflow-x: hidden;
           padding-top: 0px;
       }
@@ -878,19 +884,61 @@
   </script>
 
   <script>
-    //width of sidebar
-    /*
-    function openNav() {
-      document.getElementById("mySidenav").style.width = "700px";
-      document.getElementById("main").style.marginLRight = "500px";
+
+  /*
+    //array for list of events
+    var listEvent = ["hello", "trash", "landis"];
+    var events = listEvent.length;
+
+    //listing all the events
+    for (var i = 0; i < events; i++){
+      var firstEvent = "event" + i;
+      var secondEvent = "event" + (i + 1);
+      var newEvent = firstEvent.replace(firstEvent.toString(),secondEvent.toString());
+      document.getElementById(newEvent).innerHTML = listEvent[i];
     }
-    style.marginR
-    function closeNav() {
-      document.getElementById("mySidenav").style.width = "0";
-      document.getElementById("main").style.marginLRight= "0";
+*/
+    //array for list of times that corrospond with events
+    /*var listTime = ["300", "5000", "3424"];
+    var times = listTime.length;
+
+    //listing all the times
+    for (var i = 0; i < times; i++){
+      var firstTime = "time" + i;
+      var secondTime = "time" + (i + 1);
+      var newTime = firstTime.replace(firstTime.toString(),secondTime.toString());
+      document.getElementById(newTime).innerHTML = listTime[i];
     }
     */
-      </script>
+  /*
+    //array for list of locations that corrospond with events and time
+    var listLocation = ["farvdaraec", "afvfcervaer", "caervaerv"];
+    var locations = listLocation.length;
+
+    //listing all the locations
+    for (var i = 0; i < locations; i++){
+      var firstLocation = "location" + i;
+      var secondLocation = "location" + (i + 1);
+      var newLocation = firstLocation.replace(firstLocation.toString(),secondLocation.toString());
+      document.getElementById(newLocation).innerHTML = listLocation[i];
+    }
+  */
+  </script>
+
+
+  <script>
+  /*
+  //width of sidebar
+  function openNav() {
+    document.getElementById("mySidenav").style.width = "500px";
+  }
+  function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+  }
+
+  */
+  </script>
+
 
         <script src="js/three.js"></script>
         <script src="js/controls/OrbitControls.js"></script>
@@ -924,7 +972,7 @@
         var mouse = new THREE.Vector2();
         var selectedObjects = [];
         var composer, effectFXAA, outlinePass;
-        var group = new THREE.Group();
+        var campus = new THREE.Group();
         var obj3d = new THREE.Object3D();
         var clips;
         var mixer = new THREE.AnimationMixer();
@@ -998,7 +1046,6 @@
 
           } );
 
-          console.log(dots.length, "asdf");
         }
 
         function indexDown (index)
@@ -1090,9 +1137,19 @@
         // initialize scene
         scene = new THREE.Scene();
 
+        //Create Sky Dome
+        var skyGeo = new THREE.SphereGeometry(100000, 25, 25);
+        var loader  = new THREE.TextureLoader(),
+        skyTexture = loader.load( "Images/SkyBox.jpg" );
+        var skyMaterial = new THREE.MeshBasicMaterial({
+          map: skyTexture,
+        });
+        var sky = new THREE.Mesh(skyGeo, skyMaterial);
+        sky.material.side = THREE.BackSide;
+        scene.add(sky);
 
         // initialize and position camera
-         camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 100 );
+         camera = new THREE.PerspectiveCamera( 45, width / height, 1, 100000 );
         camera.position.set( 0, 0, 0 );
 
         // initialize and customize controls
@@ -1109,53 +1166,15 @@
         //
 
         // add ambient light
-        scene.add( new THREE.AmbientLight( 0xffffff, .7 ) );
 
-        /*
+        scene.add( new THREE.AmbientLight( 0xffffff, 0.3 ) );
+
         var light = new THREE.DirectionalLight(0xffffff,1);
-        light.position.set(0, 500, 200);
-        light.target.position.set(0, 0, 0);
-        light.shadow.mapSize.width = 1024*4;
-        light.shadow.mapSize.height = 1024*4;
-        light.castShadow = true;
 
-        light.shadow.camera.near = 0;
-        light.shadow.camera.far = 4000;
-        light.shadow.camera.fov = 90;
-        */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        scene.add( light );
+        light.position.y = 100;
+        var lightTarget = new THREE.Object3D();
+        light.target = lightTarget;
 
 
         /*
@@ -1187,6 +1206,7 @@
           loader.load( path, function ( gltf )
           {
             clips = gltf.animations;
+
             /*
             *Each Scene is named a 1 letter code for what building it represents
             *E.G. Weinberg is W, Nangaku is N
@@ -1261,20 +1281,17 @@
                     room.geometry.computeBoundingSphere();
 
                     //tests if the mesh is a room or just an aesthetic part
-                    if(room.name.slice(2, -3) == 'part'){
+                    if(room.name.slice(2, -3).toUpperCase() == 'part'.toUpperCase()){
                       //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
                       room.userData = {alreadyUp:false, isRoom:false, isRestroom:false};
                     }
                     //tests if mesh is stairs, stairs must use special animation
-                    else if (room.name.slice(2, -3) == 'Restroom'){
+                    else if (room.name.slice(2, -3).toUpperCase() == 'Restroom'.toUpperCase()){
                       room.userData = {alreadyUp:false, isRoom:true, isRestroom:true};
                     }
                     else{
                       //Accesses a list of names and adds each one to the model
-                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(child.name)};
-                    }
-                    if(room.userData.isRestroom){
-                      createRestroom(room.position);
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(room.name)};
                     }
                   }
 
@@ -1287,7 +1304,7 @@
                     });
 
                     //tests if the mesh is a room or just an aesthetic part
-                    if(room.name.slice(2, -3) == 'part'){
+                    if(room.name.slice(2, -3).toUpperCase() == 'part'.toUpperCase()){
                       //Adds custom object containing if it is a selectable room and if it is already animated and the name(s) of the room
                       room.userData = {alreadyUp:false, isRoom:false, isRestroom:false};
                     }
@@ -1297,10 +1314,7 @@
                     }
                     else{
                       //Accesses a list of names and adds each one to the model
-                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(child.name)};
-                    }
-                    if(room.userData.isRestroom){
-                      createRestroom(room.position);
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(room.name)};
                     }
                   }
 
@@ -1313,13 +1327,12 @@
         }
 
         // add Nangaku model
-        loadCampus('models/CampusFinalMapV2.gltf', new THREE.Vector3(1,0.1,50), group);
-        console.log(group);
+        loadCampus('models/CampusMapFinalV3.gltf', new THREE.Vector3(1,0,60), campus);
 
         controls.target = new THREE.Vector3(1, 0, 50);
 
         //add the group of all models into the scene
-        scene.add( group );
+        scene.add( campus );
 
 
 
@@ -1328,15 +1341,16 @@
 
         // add and position floor
 
-        var floorMaterial = new THREE.MeshPhongMaterial({color: 0xbbff96});
+        var floorMaterial = new THREE.MeshBasicMaterial({color: 0x8ac980});
         var floorGeometry = new THREE.PlaneBufferGeometry(10000, 10000);
 
         floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         scene.add(floorMesh);
         floorMesh.rotation.x -= Math.PI * 0.5;
-        floorMesh.position.y = 0;
+        floorMesh.position.y = -0.5;
         floorMesh.receiveShadow = true;
         floorMesh.castShadow = true;
+        scene.add(floorMesh);
 
         // initialize postprocessing
         composer = new THREE.EffectComposer( renderer );
@@ -1353,25 +1367,40 @@
 
         //Function to take the name of a selected Room
 
-        function getRoomName(room){
+        function getRoom(room){
           if(room.name.slice(0,1) == 'M'){
-            return room.parent.name;
+            return room.parent;
           }
-          else return room.name
+          else return room;
         }
+
+        function searchRoom(parent, query){
+          for(i = 0; i < parent.children.length; i++){
+            console.log(parent.children[i].name);
+            if(parent.children[i].children.length != 0){
+              searchRoom(parent.children[i]);
+            }
+          }
+        }
+
+
 
         //Takes a position and creates a restroom sign at that position, used by loader
 
-        var restroomSignMap = new THREE.TextureLoader().load( "Sprites/RestroomSign.png" );
-        var restroomSignMaterial = new THREE.SpriteMaterial( { map: restroomSignMap, color: 0xffffff } );
 
-        function createRestroom(position){
-          var restroomSign = new THREE.Sprite( restroomSignMaterial );
-          restroomSign.scale = new THREE.Vector3(10,10,10);
-          restroomSign.position.copy(position);
-          restroomSign.position.y = restroomSign.position.y + 1;
 
-          group.add( restroomSign );
+        function createSign(room, name, path){
+          console.log("Working");
+          if(room.name.slice(2, -3) == name){
+            console.log("Working");
+            var signMap = new THREE.TextureLoader().load( path);
+            var signMaterial = new THREE.SpriteMaterial( { map: signMap, color: 0xffffff } );
+            var sign = new THREE.Sprite( signMaterial );
+            sign.scale.set(3,3,1);
+            sign.position.copy(room.position);
+            sign.position.y = sign.position.y + 2;
+            campus.add( sign );
+          }
         }
 
         /*
@@ -1419,8 +1448,8 @@
             selectedRoom.parent.parent.children.forEach(function(child){
               child.children.forEach(function(room){
                 //plays animations by the name of the floors, each floor's suffix has a matching animation
-                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, -3)) != null){
-                  playFloorAnimation(room, room.alreadyUp, room.name.slice(0, -3));
+                if (THREE.AnimationClip.findByName(clips, room.name.slice(0, 2)) != null){
+                  playFloorAnimation(room, room.alreadyUp, room.name.slice(0, 2));
                 }
                 else{room.alreadyUp = !room.alreadyUp;}
               });
@@ -1431,8 +1460,8 @@
             selectedRoom.parent.parent.children.forEach(function(child){
               child.children.forEach(function(room){
                 //plays animations by the name of the floors, each floor's suffix has a matching animation
-                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, -3)) != null){
-                  playFloorAnimation(room, true, room.name.slice(0, -3));
+                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, 2)) != null){
+                  playFloorAnimation(room, true, room.name.slice(0, 2));
                 }
 
                 else{room.alreadyUp = false;}
@@ -1444,8 +1473,8 @@
             selectedRoom.parent.parent.children.forEach(function(child){
               child.children.forEach(function(room){
                 //plays animations by the name of the floors, each floor's suffix has a matching animation
-                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, -3)) != null){
-                  playFloorAnimation(room, false, room.name.slice(0, -3));
+                if (THREE.AnimationClip.findByName(clips,room.name.slice(0, 2)) != null){
+                  playFloorAnimation(room, false, room.name.slice(0, 2));
                 }
                 else{room.alreadyUp = true;}
               });
@@ -1489,7 +1518,7 @@
           mouse.y = - ( ( y - renderer.domElement.offsetTop ) / renderer.domElement.clientHeight ) * 2 + 1;
 
           raycaster.setFromCamera( mouse, camera );
-          var intersects = raycaster.intersectObjects( [ group ], true );
+          var intersects = raycaster.intersectObjects( [ campus ], true );
           if ( intersects.length > 0 )
           {
             started = true;
@@ -1532,17 +1561,22 @@
         function checkIntersection()
          {
            raycaster.setFromCamera( mouse, camera );
-           var intersects = raycaster.intersectObjects( [ group ], true );
+           var intersects = raycaster.intersectObjects( [ campus ], true );
            if ( intersects.length > 0 )
            {
              outlinePass.selectedObjects = [];
              var selectedObject = intersects[ 0 ].object;
 
-             if(getRoomName(selectedObject).slice(2,-3) != 'part'){
-               addSelectedObject( selectedObject );
+             console.log(getRoom(selectedObject).name);
+
+             console.log(searchRoom(campus, "C201"));
+             console.log(campus.children.length);
+
+             if(getRoom(selectedObject).name.slice(2,-3) != 'Part'){
+               addSelectedObject(getRoom(selectedObject));
              }
 
-             animateFloors(selectedObject, 'PingPong');
+             animateFloors(getRoom(selectedObject), 'PingPong');
 
 
              if (clicked && started || prevobj != selectedObject)
