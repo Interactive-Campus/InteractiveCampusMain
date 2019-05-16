@@ -1209,15 +1209,16 @@
           else return room;
         }
 
-        function searchRoom(query){
-          for(i = 0; i < campus.children.length; i++){
-
+        function searchRoom(parent, query){
+          for(i = 0; i < parent.children.length; i++){
+            console.log(parent.children[i].name);
+            if(parent.children[i].children.length != 0){
+              searchRoom(parent.children[i]);
+            }
           }
         }
 
-        function traverseTree(){
-          
-        }
+
 
         //Takes a position and creates a restroom sign at that position, used by loader
 
@@ -1403,7 +1404,8 @@
 
              console.log(getRoom(selectedObject).name);
 
-             console.log(searchRoom("C201"));
+             console.log(searchRoom(campus, "C201"));
+             console.log(campus.children.length);
 
              if(getRoom(selectedObject).name.slice(2,-3) != 'Part'){
                addSelectedObject(getRoom(selectedObject));
