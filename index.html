@@ -10,26 +10,43 @@
           font-weight: normal;
           font-style: normal;
       }
-      /* side bar itself */
-      .sidenav {
-          height: 100%;
-          width: 0;
+      /* bar itself */
+      .sidenavb {
+          height: 10%;
+          width: 100%;
+          left: 0;
           position: fixed;
           z-index: 1;
-          top: 0;
-          right: 0;
-          background-color: rgb(255, 153, 65);
+          top: 56%;
+          background-color: #ffffff;
           overflow-x: hidden;
-          transition: .75s;
-          padding-top: 30px;
+          padding-top: 10px;
       }
+
+      .sidenav {
+          height: 35%;
+          width: 100%;
+          left:0;
+          position: fixed;
+          z-index: 1;
+          bottom: 0;
+          background-color: #ffffff;
+          overflow-x: hidden;
+          padding-top: 0px;
+      }
+
       /* title at top */
       g
       {
         font-size: 36px;
         padding: 0px 3px 0px 7px;
-        color: #ffffff;
-        margin-bottom: 20px;
+        color: rgb(175, 28, 64);
+      }
+
+      info
+      {
+        font-size: 18px;
+        color: rgb(175, 28, 64);
       }
 
       /*asthetic rectangle*/
@@ -39,7 +56,7 @@
         height: 10px;
         width: 136px;
         align: left;
-        background-color: #ffffff;
+        background-color: rgb(175, 28, 64);
       }
 
       button {
@@ -51,10 +68,10 @@
       /* list of events */
       .sidenav a {
           /* space between (top, right side, bottom, left side )*/
-          padding: 20px 5px 0px 10px;
+          padding: 0px 5px 20px 10px;
           text-decoration: none;
-          font-size: 24px;
-          color: #ffffff;
+          font-size: 20px;
+          color: rgb(175, 28, 64);
           display: block;
           transition: 0.5s;
           line-height: 1em;
@@ -69,15 +86,6 @@
       /* color of text after hover*/
       .sidenav a:hover {
           color: #000000;
-      }
-
-      /* close sidebar button */
-      .sidenav .closebtn {
-          position: absolute;
-          top: 0;
-          right: 10px;
-          font-size: 36px;
-          margin-left: 50px;
       }
 
       p
@@ -119,12 +127,14 @@
 
 <body>
 
-  <div id="mySidenav" class="sidenav">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <div id="mySidenav" class="sidenavb">
 
   <g> EVENTS </g>
-
   <div class="rectangle"></div>
+  <info> click on an event for more information </info>
+
+
+  <div id="mySidenav" class="sidenav">
 
   <div class="button">
     <button id="authorize_button" style="display: none;">Authorize</button>
@@ -240,6 +250,75 @@
     <p id ="location12"></p>
     <b href="#">Directions</b>
   </div>
+  <a class="dropdown-btn"> <div id ="event13"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time13"></p>
+    <p id ="location13"></p>
+    <b href="#">Directions</b>
+  </div>
+
+  <a class="dropdown-btn"> <div id="event14"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time14"></p>
+    <p id ="location14"></p>
+    <b href="#">Directions</b>
+  </div>
+
+  <a class="dropdown-btn"> <div id="event15"></div>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <div class="dropdown-container">
+    <p id ="time15"></p>
+    <p id ="location15"></p>
+    <b href="#">Directions</b>
+
+    <a class="dropdown-btn"> <div id="event16"></div>
+      <i class="fa fa-caret-down"></i>
+    </a>
+    <div class="dropdown-container">
+      <p id ="time16"></p>
+      <p id ="location16"></p>
+      <b href="#">Directions</b>
+    </div>
+
+    <a class="dropdown-btn"> <div id="event17"></div>
+      <i class="fa fa-caret-down"></i>
+    </a>
+    <div class="dropdown-container">
+      <p id ="time17"></p>
+      <p id ="location17"></p>
+      <b href="#">Directions</b>
+    </div>
+    <a class="dropdown-btn"> <div id ="event18"></div>
+      <i class="fa fa-caret-down"></i>
+    </a>
+    <div class="dropdown-container">
+      <p id ="time18"></p>
+      <p id ="location18"></p>
+      <b href="#">Directions</b>
+    </div>
+
+    <a class="dropdown-btn"> <div id="event19"></div>
+      <i class="fa fa-caret-down"></i>
+    </a>
+    <div class="dropdown-container">
+      <p id ="time19"></p>
+      <p id ="location19"></p>
+      <b href="#">Directions</b>
+    </div>
+
+    <a class="dropdown-btn"> <div id="event20"></div>
+      <i class="fa fa-caret-down"></i>
+    </a>
+    <div class="dropdown-container">
+      <p id ="time20"></p>
+      <p id ="location20"></p>
+      <b href="#">Directions</b>
+  </div>
 
   <script>
     var dropdown = document.getElementsByClassName("dropdown-btn");
@@ -287,6 +366,8 @@
      var finalAthleticTimeYear = new Array();
      var finalAthleticTimeMonth = new Array();
      var finalAthleticTimeDay = new Array();
+     var finalAthleticEndTimeH = new Array();
+     var finalAthleticEndTimeM = new Array();
 
      var finalSchoolTitle = new Array();
      var finalSchoolLocation = new Array();
@@ -296,12 +377,16 @@
      var finalSchoolTimeYear = new Array();
      var finalSchoolTimeMonth = new Array();
      var finalSchoolTimeDay = new Array();
+     var finalSchoolEndTimeH = new Array();
+     var finalSchoolEndTimeM = new Array();
 
      var finalTitle = new Array();
      var finalLocation = new Array();
      var finalTimeD = new Array();
      var finalTimeH = new Array();
      var finalTimeM = new Array();
+     var finalEndTimeH = new Array();
+     var finalEndTimeM = new Array();
 
      var sPlace = 0;
      var aPlace = 0;
@@ -327,7 +412,7 @@
         // Handle the initial sign-in state.
         updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
         authorizeButton.onclick = handleAuthClick;
-        signoutButton.onclick = handleSignoutClick;
+        //signoutButton.onclick = handleSignoutClick;
       }, function(error) {
         appendPre(JSON.stringify(error, null, 2));
       });
@@ -407,6 +492,8 @@
           for (i = 0; i < aevents.length; i++) {
             var athletic = aevents[i];
             var awhen = athletic.start.dateTime;
+            var aendwhen = athletic.end.dateTime;
+
             var today = (new Date()).toISOString();
             // grab the date of the instant it reloads and compare it to the date of the event
             var dateOnly = today.substring(8, 10);
@@ -421,6 +508,16 @@
             var startDate;
             var startMin = awhen.substring (14, 16);
             var startSec = awhen.substring (17, 19);
+
+            if (aendwhen != null) {
+              var endHours = aendwhen.substring (11, 13);
+              var endMin = aendwhen.substring (14, 16);
+            }
+
+            //console.log(awhen);
+            //console.log(aendwhen);
+            //console.log(endHours);
+            //console.log(endMin);
             // SWITCH TIMEZONES FROM UTC TO HST
             // get hours
             // add 10 hours to the time
@@ -432,6 +529,10 @@
             if (startHours < 0) {
               startHours = startHours + 24;
               startDay = startDay - 1;
+            }
+            endHours = endHours - 10;
+            if (endHours < 0) {
+              endHours = endHours + 24;
             }
             startDate = startYear + '-' + startMonth + '-' + startDay;
             // if today's date matches the event's date, print event
@@ -448,6 +549,9 @@
                 finalAthleticTimeYear[aPlace] = startYear;
                 finalAthleticTimeMonth[aPlace] = startMonth;
                 finalAthleticTimeDay[aPlace] = startDay;
+                finalAthleticEndTimeH[aPlace] = endHours;
+                finalAthleticEndTimeM[aPlace] = endMin;
+
                 //appendPre(finalAthleticTitle[aPlace] + ' (' + finalAthleticTimeMonth[aPlace] + '-' + finalAthleticTimeDay[aPlace] + '-' + finalAthleticTimeYear[aPlace] + ')' + ' (' + finalAthleticTimeH[aPlace] + ':' + finalAthleticTimeM[aPlace] + ')' + '(' + finalAthleticLocation[aPlace] + ')' );
                 aPlace = aPlace + 1;
               }
@@ -537,6 +641,7 @@
               //appendPre(school.summary);
               // if the event has a location and summary keep
               var when = school.start.dateTime;
+              var endwhen = school.end.dateTime;
               var today = (new Date()).toISOString();
               // grab the date of the instant it reloads and compare it to the date of the event
               var dateOnly = today.substring(8, 10);
@@ -554,6 +659,12 @@
               var startDate;
               var startMin = when.substring (14, 16);
               var startSec = when.substring (17, 19);
+
+              if (endwhen != null) {
+                var endHours = endwhen.substring (11, 13);
+                var endMin = endwhen.substring (14, 16);
+              }
+
               // SWITCH TIMEZONES FROM UTC TO HST
               // get hours
               // add 10 hours to the time
@@ -568,6 +679,10 @@
               if (startHours < 0) {
                 startHours = startHours + 24;
                 startDay = startDay - 1;
+              }
+              endHours = endHours - 10;
+              if (endHours < 0) {
+                endHours = endHours + 24;
               }
               startDate = startYear + '-' + startMonth + '-' + startDay;
               // if today's date matches the event's date, print event
@@ -584,6 +699,8 @@
                   finalSchoolTimeYear[sPlace] = startYear;
                   finalSchoolTimeMonth[sPlace] = startMonth;
                   finalSchoolTimeDay[sPlace] = startDay;
+                  finalSchoolEndTimeH[sPlace] = endHours;
+                  finalSchoolEndTimeM[sPlace] = endMin;
                   //appendPre(finalSchoolTitle[sPlace] + ' (' + finalSchoolTimeMonth[sPlace] + '-' + finalSchoolTimeDay[sPlace] + '-' + finalSchoolTimeYear[sPlace] + ')' + ' (' + finalSchoolTimeH[sPlace] + ':' + finalSchoolTimeM[sPlace] + ')' + '(' + finalSchoolLocation[sPlace] + ')' );
                   sPlace = sPlace + 1;
                 }
@@ -631,6 +748,8 @@
             finalTimeM[i] = finalAthleticTimeM[a];
             finalTitle[i] = finalAthleticTitle[a];
             finalLocation[i] = finalAthleticLocation[a];
+            finalEndTimeH[i] = finalAthleticEndTimeH[a];
+            finalEndTimeM[i] = finalAthleticEndTimeM[a];
             a = a + 1;
             //console.log("Athletic Event, no school");
             //appendPre("Placing remaining athletic event: " + finalTitle[i]);
@@ -642,6 +761,8 @@
           finalTimeM[i] = finalSchoolTimeM[s];
           finalTitle[i] = finalSchoolTitle[s];
           finalLocation[i] = finalSchoolLocation[s];
+          finalEndTimeH[i] = finalSchoolEndTimeH[s];
+          finalEndTimeM[i] = finalSchoolEndTimeM[s];
           s = s + 1;
           //console.log("School Event, no athletic");
           //appendPre("Placing remaining school event: " + finalTitle[i]);
@@ -657,6 +778,8 @@
           finalTimeM[i] = finalSchoolTimeM[s];
           finalTitle[i] = finalSchoolTitle[s];
           finalLocation[i] = finalSchoolLocation[s];
+          finalEndTimeH[i] = finalSchoolEndTimeH[s];
+          finalEndTimeM[i] = finalSchoolEndTimeM[s];
           s = s + 1;
           //console.log("School Event, yes athletic");
           //appendPre("s: " + s);
@@ -669,20 +792,49 @@
           finalTimeM[i] = finalAthleticTimeM[a];
           finalTitle[i] = finalAthleticTitle[a];
           finalLocation[i] = finalAthleticLocation[a];
+          finalEndTimeH[i] = finalAthleticEndTimeH[a];
+          finalEndTimeM[i] = finalAthleticEndTimeM[a];
           a = a + 1;
-          console.log("Athletic Event, yes school");
+          //console.log("Athletic Event, yes school");
           //appendPre("a: " + a);
         }
         //when all events are done
         else if (finalAthleticTitle[i] == null && finalSchoolTitle[i] == null) {
           //appendPre("FINAL LIST:");
-          console.log("DONE");
+          //console.log("DONE");
           for (c = 0; c < i; c++) {
-            if (finalTimeH[c] > 13) {
-              finalTimeH[c] = (finalTimeH[c] - 12) + ':' + finalTimeM[c] + ' p.m.';
+            //start and end times are both pm
+            if ((finalTimeH[c] >= 12) && (finalEndTimeH[c] >= 12)) {
+              if (finalEndTimeH[c] == 12){
+                finalTimeH[c] = (finalTimeH[c] - 12) + ':' + finalTimeM[c] + ' p.m.' + ' to ' + (finalEndTimeH[c]) + ':' + finalEndTimeM[c] + ' p.m.';
+              }
+              else if (finalTimeH[c] == 12) {
+                finalTimeH[c] = (finalTimeH[c]) + ':' + finalTimeM[c] + ' p.m.' + ' to ' + (finalEndTimeH[c] - 12) + ':' + finalEndTimeM[c] + ' p.m.';
+              }
+              else {
+                finalTimeH[c] = (finalTimeH[c] - 12) + ':' + finalTimeM[c] + ' p.m.' + ' to ' + (finalEndTimeH[c] - 12) + ':' + finalEndTimeM[c] + ' p.m.';
+                //console.log(finalTimeH[c]);
+              }
             }
+            //start time pm but end time is am
+            else if ((finalTimeH[c] >= 12) && (finalEndTimeH[c] < 12)) {
+              finalTimeH[c] = (finalTimeH[c] - 12) + ':' + finalTimeM[c] + ' p.m.' + ' to ' + (finalEndTimeH[c]) + ':' + finalEndTimeM[c] + ' a.m.';
+              //console.log(finalTimeH[c]);
+            }
+            //start time is am but end time is pm
+            else if ((finalTimeH[c] < 12) && (finalEndTimeH[c] >= 12)) {
+              if (finalEndTimeH[c] == 12){
+                finalTimeH[c] = (finalTimeH[c]) + ':' + finalTimeM[c] + ' a.m.' + ' to ' + (finalEndTimeH[c]) + ':' + finalEndTimeM[c] + ' p.m.';
+              }
+              else {
+                finalTimeH[c] = (finalTimeH[c]) + ':' + finalTimeM[c] + ' a.m.' + ' to ' + (finalEndTimeH[c] - 12) + ':' + finalEndTimeM[c] + ' p.m.';
+                //console.log(finalTimeH[c]);
+              }
+            }
+            //start and end times are both am
             else {
-              finalTimeH[c] = finalTimeH[c] + ':' + finalTimeM[c] + ' a.m.';
+              finalTimeH[c] = finalTimeH[c] + ':' + finalTimeM[c] + ' a.m.' + ' to ' + finalEndTimeH[c] + ':' + finalEndTimeM[c] + ' a.m.';
+              //console.log(finalTimeH[c], "TIMES"); /*--------------START HERE-----------------*/
             }
             if (finalTimeM[c] == '') {
 
@@ -690,8 +842,6 @@
               finalTimeM[c] = '';
             }
             //appendPre(finalTitle[c] + ' ' +  ' (' + finalTimeD[c] + ' ' + finalTimeH[c] + ':' + finalTimeM[c] + ') (' + finalLocation[c] + ') ');
-
-
 
             //listing all the events
             for (var i = 0; i < finalTitle.length; i++){
@@ -708,7 +858,6 @@
               var newLocation = firstLocation.replace(firstLocation.toString(),secondLocation.toString());
               document.getElementById(newLocation).innerHTML = finalLocation[i];
             }
-
             //listing all the times
             for (var i = 0; i < finalTimeH.length; i++){
               var firstTime = "time" + i;
@@ -716,9 +865,6 @@
               var newTime = firstTime.replace(firstTime.toString(),secondTime.toString());
               document.getElementById(newTime).innerHTML = finalTimeH[i];
             }
-
-
-
           }
           i = 200;
         }
@@ -732,56 +878,18 @@
   </script>
 
   <script>
-  /*
-    //array for list of events
-    var listEvent = ["hello", "trash", "landis"];
-    var events = listEvent.length;
-
-    //listing all the events
-    for (var i = 0; i < events; i++){
-      var firstEvent = "event" + i;
-      var secondEvent = "event" + (i + 1);
-      var newEvent = firstEvent.replace(firstEvent.toString(),secondEvent.toString());
-      document.getElementById(newEvent).innerHTML = listEvent[i];
+    //width of sidebar
+    /*
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "700px";
+      document.getElementById("main").style.marginLRight = "500px";
     }
-*/
-    //array for list of times that corrospond with events
-    var listTime = ["300", "5000", "3424"];
-    var times = listTime.length;
-
-    //listing all the times
-    for (var i = 0; i < times; i++){
-      var firstTime = "time" + i;
-      var secondTime = "time" + (i + 1);
-      var newTime = firstTime.replace(firstTime.toString(),secondTime.toString());
-      document.getElementById(newTime).innerHTML = listTime[i];
+    style.marginR
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+      document.getElementById("main").style.marginLRight= "0";
     }
-  /*
-    //array for list of locations that corrospond with events and time
-    var listLocation = ["farvdaraec", "afvfcervaer", "caervaerv"];
-    var locations = listLocation.length;
-
-    //listing all the locations
-    for (var i = 0; i < locations; i++){
-      var firstLocation = "location" + i;
-      var secondLocation = "location" + (i + 1);
-      var newLocation = firstLocation.replace(firstLocation.toString(),secondLocation.toString());
-      document.getElementById(newLocation).innerHTML = listLocation[i];
-    }
-  */
-  </script>
-
-<script>
-  //width of sidebar
-  function openNav() {
-    document.getElementById("mySidenav").style.width = "500px";
-    document.getElementById("main").style.marginRight = "500px";
-  }
-  function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-    document.getElementById("main").style.marginLRight= "0";
-  }
-
+    */
       </script>
 
         <script src="js/three.js"></script>
@@ -806,6 +914,8 @@
           // use this function to interact with JavaScript from sidebar interaction
           const changeText = () => {}
 
+        //to do list here
+
         // declaring big boy variables
         var t;
         var container, stats;
@@ -824,7 +934,7 @@
         var objloader = new THREE.OBJLoader();
 
         var dots = new Array();
-        var radius = .2;
+        var radius = 5;
         var convtxs = new Float32Array();
         var dotlength;
         var linee;
@@ -833,12 +943,16 @@
         var materia = new THREE.MeshLambertMaterial( {color: 0xff0000} );
         var spher = new THREE.Mesh( geometr, materia );
 
+        var geometrt = new THREE.BoxGeometry( 5, 2);
+        var materiaa = new THREE.MeshLambertMaterial( {color: 0xff0000} );
+        var spherer = new THREE.Mesh( geometrt, materiaa );
+
         var nucurve;
 
 
         var ie;
         var curvee = new THREE.CatmullRomCurve3();
-        var pieces = 2;
+        var pieces = 5;
 
         var curveArray = new Array();
         var curveEqArray = Array();
@@ -916,11 +1030,11 @@
           console.log("help", curveEqArray[index]);
         }
 
-        function spSetup(file, id, roomLink, stScale, yScale, xp, yp, zp)
+        function spSetup(roomLink, id, stScale, yScale, xp, yp, zp)
         {
           objloader.load(
           // resource URL
-          file,
+          'models/curves/' + roomLink + '.obj',
           // called when resource is loaded
           function ( object ) {
             nucurve = new THREE.Line(object, matt);
@@ -940,15 +1054,16 @@
           });
         }
 
+        function sepCurve ()
+        {
+
+        }
+
         function init2 ()
         {
-          spSetup('models/sample_curve4.obj', 0, 'C-101', 2, 1, 2, 0, 0);
-          spSetup('models/sample_curves.obj', 1, 'W-203', 2, 1, 0, 3, 0);
-          spSetup('models/sample_curve2.obj', 2, 'I-212', 2, 1, 3, 2, 0);
-          spSetup('models/sample_curve8.obj', 3, 'C-1xx', 2, 1, 0, 3, 1);
-          spSetup('models/sample_curve3.obj', 4, 'G-101', 2, 1, 1, 1, 1);
-          spSetup('models/sample_curve3.obj', 5, 'C-xxx', 2, 1, 1, 1, 1);
+          spSetup('C-101', 0, 1, 1, 1, 0, 50);
         }
+
       init();
       onWindowResize();
       animate();
@@ -982,49 +1097,21 @@
 
         // initialize and customize controls
         controls = new THREE.OrbitControls( camera, renderer.domElement );
-        controls.minDistance = 2;
-        controls.maxDistance = 100;
-        controls.maxPolarAngle = 11*Math.PI/24;
+        controls.minDistance = 20;
+        controls.maxDistance = 40;
+        controls.maxPolarAngle = 9.7*Math.PI/24;
+        //controls.minPolarAngle = 0;
         controls.enablePan = true;
         controls.enableDamping = true;
         controls.dampingFactor = 0.25;
         controls.target.x =  1;
         controls.enableZoom = true;
+        //
 
         // add ambient light
         scene.add( new THREE.AmbientLight( 0xffffff, .7 ) );
 
-        // add point light
-      /*  var light = new THREE.SpotLight( 0xffffff );
-        //var light = new //THREE.HemisphereLight(0xffffff, 0x808020, 1);//PointLight(0xffffff);
-        scene.add( light );
-        light.position.set( -800, 800, 800 );
-        light.rotation.set( -Math.PI / 4, 0, -Math.PI / 4 );
-
-
-        light.intensity = 1.2;
-        light.angle = Math.PI / 2;
-        //light.position.y = 200;
-        light.penumbra = 100;
-        //light.rotation.z = -400;
-        //light.position.x = -100;
-
-        //light.shadow.mapSize.width = 512;  // default
-        //light.shadow.mapSize.height = 512; // default
-        light.shadow.camera.near = 0.5;       // default
-        light.shadow.camera.far = 500;
-
-
-        light.castShadow = true;
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-        var smapsize = 2048;
-        light.shadow.mapSize.width = smapsize;
-        light.shadow.mapSize.height = smapsize;
-
-        var light = new THREE.DirectionalLight(0xffffff,1);
-        light.position.set(50, 500, 22);
-        light.target.position.set(300, 400, 200);
+        /*
         var light = new THREE.DirectionalLight(0xffffff,1);
         light.position.set(0, 500, 200);
         light.target.position.set(0, 0, 0);
@@ -1035,7 +1122,37 @@
         light.shadow.camera.near = 0;
         light.shadow.camera.far = 4000;
         light.shadow.camera.fov = 90;
-        scene.add(light);
+        */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1044,7 +1161,7 @@
         /*
         *Model Loaders
         */
-        //TODO Add Import for splines from Braxton
+        //Todo Add Import for splines from Braxton
         /*
         *Main function to load in the school model.
         *path takes a string of the file path of the model (GLTF format)
@@ -1196,32 +1313,30 @@
         }
 
         // add Nangaku model
-        loadCampus('models/CampusMapFinalV2.gltf', new THREE.Vector3(1,0,50), group);
+        loadCampus('models/CampusFinalMapV2.gltf', new THREE.Vector3(1,0.1,50), group);
+        console.log(group);
 
-        controls.target = new THREE.Vector3(1,0,50);
+        controls.target = new THREE.Vector3(1, 0, 50);
 
         //add the group of all models into the scene
         scene.add( group );
 
 
 
-        //init2();
+        init2();
         dot(totaldots);
 
         // add and position floor
 
-        var floorMaterial = new THREE.MeshPhongMaterial({color: 0x6d6d6d});
-        var floorGeometry = new THREE.PlaneBufferGeometry(100, 100);
+        var floorMaterial = new THREE.MeshPhongMaterial({color: 0xbbff96});
+        var floorGeometry = new THREE.PlaneBufferGeometry(10000, 10000);
 
-        var floorMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, side: THREE.DoubleSide});
-        var floorGeometry = new THREE.PlaneBufferGeometry(20, 20);
-
-        var floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+        floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
+        scene.add(floorMesh);
         floorMesh.rotation.x -= Math.PI * 0.5;
         floorMesh.position.y = 0;
         floorMesh.receiveShadow = true;
         floorMesh.castShadow = true;
-        //scene.add(floorMesh);
 
         // initialize postprocessing
         composer = new THREE.EffectComposer( renderer );
@@ -1539,7 +1654,31 @@
         var spor = -1;
         var ppanx;
         var ppanz;
-        var pcamrot;// = camera.rotation;
+        var pcamrotx;// = camera.rotation;
+        var pcamroty;
+        var pcamrotz;
+        var pcamposx;
+        var pcamposy;
+        var pcamposz;
+        var lastTouched;
+        var wait = 10;
+        var stcamrotx = -2.11;
+        var stcamroty = .016;
+        var stcamrotz = 3.12;
+        var stcamposx = -36.83;
+        var stcamposy = 10.56;
+        var stcamposz = 57.57;
+
+        var stconposx = 1;
+        var stconposy = -5.4;
+        var stconposz = 50;
+
+        var snapfactor = .1; // between zero and one
+
+        function asym(basis, input)
+        {
+          return input + ((basis - input) / Math.round(1 / snapfactor));
+        }
 
         // draw loop
         function animate()
@@ -1549,24 +1688,45 @@
           var timer = performance.now();
 
 					// weak attempt at pan limiting
-          var panx = 1;
-          var panz = 1;
-          if (pcamrot != camera.rotation)
-          {
+          var panx = 20;
+          var panz = 20;
+          controls.target.y = -5.4;// * (camera / 40);
+          //console.log(camera);
 
-          }
-          if (ppanx != controls.target.x || ppanz != controls.target.z)
-          {
-            //controls.enableRotate = false;
-            //console.log(camera.rotation, pcamrot);
-            camera.position = pcamrot;
+          var secnds = new Date();
 
-          }
-          else
+          if (pcamrotx != camera.rotation.x || pcamroty != camera.rotation.y || pcamrotz != camera.rotation.z)
           {
-            //controls.enableRotate = true;
-            pcamrot = camera.rotation;
+            if (pcamposx != camera.position.x || pcamposy != camera.position.y || pcamposz != camera.position.z)
+            {
+              lastTouched = secnds.getTime();
+            }
           }
+
+          var cnposx = controls.target.x + (stconposx - controls.target.x) / (1 / snapfactor);
+          var cnposy = controls.target.y + (stconposy - controls.target.y) / (1 / snapfactor);
+          var cnposz = controls.target.z + (stconposz - controls.target.z) / (1 / snapfactor);
+
+          if (secnds.getTime() - lastTouched > wait * 1000)
+          {
+            // fix this
+            controls.target.x = stconposx;//cnposx;//controls.target.x + (stconposx - controls.target.x) / (1 / snapfactor);
+            controls.target.y = stconposy;//cnposy;//controls.target.y + (stconposy - controls.target.y) / (1 / snapfactor);
+            controls.target.z = stconposz;//cnposz;//controls.target.z + (stconposz - controls.target.z) / (1 / snapfactor);
+
+            camera.position.x = stcamposx;//asym(camera.position.x, stcamposx);
+            camera.position.y = stcamposy;//asym(camera.position.y, stcamposy);
+            camera.position.z = stcamposz;//asym(camera.position.z, stcamposz);
+          }
+
+          pcamrotx = camera.rotation.x;
+          pcamroty = camera.rotation.y;
+          pcamrotz = camera.rotation.z;
+
+          pcamposx = camera.position.x;
+          pcamposy = camera.position.y;
+          pcamposz = camera.position.z;
+
 
           //Camera Pan Limiter
           /*
@@ -1577,7 +1737,7 @@
               controls.target.x = -1 * panx;
           }
           if (controls.target.z > panz) {
-              controls.target.z = panz;
+              controls.target.z = panz + 50;
           }
           if (controls.target.z < -1 * panz) {
               controls.target.z = -1 * panz;
@@ -1585,10 +1745,11 @@
           controls.target.y = 0;
           controls.enableDamping = false;
           ppanx = controls.target.x;
-          ppanz = controls.target.z;
+          ppanz = controls.target.z - 50;
           //console.log(camera.rotation, pcamrot);
           //console.log(camera);
           */
+
 
           var useddots = Array();
 
