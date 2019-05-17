@@ -3,61 +3,88 @@
   <title>Nangaku Building</title>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style>
       /*changing asthetics (MERGER)*/
       body {
-          font-family: "Raleway", sans-serif;
-          font-weight: normal;
-          font-style: normal;
+        font-family: "Raleway", sans-serif;
+        font-weight: normal;
+        font-style: normal;
+        overflow: hidden;
       }
-      /* bar itself */
+      /*asthetic*/
+      .sidenavd{
+        height: 65px;
+        width: 1%;
+        top: 50px;
+        left: 30px;
+        background-color: rgb(175, 28, 64);
+        position: absolute;
+      }
+      /* directions */
+      .sidenavc{
+        height: 6%;
+        width: 21%;
+        top: 50px;
+        left: 50px;
+        background-color: #ffffff;
+        position: absolute;
+        padding-top: 10px;
+        padding-left: 10px;
+      }
+      /* title*/
       .sidenavb {
-          height: 10%;
-          width: 100%;
-          left: 0;
-          position: fixed;
-          z-index: 1;
-          top: 56%;
-          background-color: #ffffff;
-          overflow-x: hidden;
-          padding-top: 10px;
-      }
+        height: 6%;
+        width: 100%;
+        left: -3px;
+        position: absolute;
+        top: 57.5%;
+        background-color: #ffffff;
+        overflow-x: hidden;
+        padding-top: 7px;
+        border: solid rgb(175, 28, 64);
 
+      }
+      /* list of events*/
       .sidenav {
-          height: 35%;
-          width: 100%;
-          left:0;
-          position: fixed;
-          z-index: 1;
-          bottom: 0;
-          background-color: #ffffff;
-          overflow-x: hidden;
-          padding-top: 0px;
+        height: 35%;
+        width: 100%;
+        left:0;
+        position: absolute;
+        bottom: 0;
+        background-color: #ffffff;
+        overflow-x: hidden;
+        padding-top: 0px;
       }
 
       /* title at top */
-      g
-      {
+      g {
         font-size: 36px;
         padding: 0px 3px 0px 7px;
         color: rgb(175, 28, 64);
       }
 
-      info
-      {
+      directions {
         font-size: 18px;
         color: rgb(175, 28, 64);
       }
 
-      /*asthetic rectangle*/
+      info {
+        font-size: 18px;
+        color: rgb(175, 28, 64);
+      }
+
+      /*asthetic rectangle
+
       .rectangle {
         position: absolute;
         left: 10px;
         height: 10px;
-        width: 136px;
+        width: 571px;
         align: left;
         background-color: rgb(175, 28, 64);
       }
+      */
 
       button {
         position: absolute;
@@ -67,15 +94,15 @@
 
       /* list of events */
       .sidenav a {
-          /* space between (top, right side, bottom, left side )*/
-          padding: 0px 5px 20px 10px;
-          text-decoration: none;
-          font-size: 20px;
-          color: rgb(175, 28, 64);
-          display: block;
-          transition: 0.5s;
-          line-height: 1em;
-          margin-top: 10px;
+        /* space between (top, right side, bottom, left side )*/
+        padding: 0px 5px 20px 10px;
+        text-decoration: none;
+        font-size: 20px;
+        color: rgb(175, 28, 64);
+        display: block;
+        transition: 0.5s;
+        line-height: 1em;
+        margin-top: 10px;
 
       }
 
@@ -85,7 +112,7 @@
 
       /* color of text after hover*/
       .sidenav a:hover {
-          color: #000000;
+        color: #000000;
       }
 
       p
@@ -101,21 +128,21 @@
 
       /*text specific for directions */
       .sidenav b {
-          padding: 0px 5px 35px 35px;
-          text-decoration: bold;
-          font-size: 18px;
-          color: #818181;
-          display: block;
-          transition: 0.3s;
+        padding: 0px 5px 35px 35px;
+        text-decoration: bold;
+        font-size: 18px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
       }
       /* color of text after hover*/
       .sidenav b:hover {
-          color: #f1f1f1;
+        color: #f1f1f1;
       }
 
       #main {
-          transition: margin-left .5s;
-          padding: 16px;
+        transition: margin-left .5s;
+        padding: 16px;
       }
 
       @media screen and (max-height: 450px) {
@@ -127,12 +154,18 @@
 
 <body>
 
+  <div id="mySidenav" class="sidenavd">
+  </div>
+
+  <div id="mySidenav" class="sidenavc">
+  <directions> click on a building to get directions </directions>
+  </div>
+
   <div id="mySidenav" class="sidenavb">
 
   <g> EVENTS </g>
-  <div class="rectangle"></div>
-  <info> click on an event for more information </info>
-
+  <info> click on an event for directions or more information </info>
+  </div>
 
   <div id="mySidenav" class="sidenav">
 
@@ -320,6 +353,8 @@
       <b href="#">Directions</b>
   </div>
 
+
+
   <script>
     var dropdown = document.getElementsByClassName("dropdown-btn");
     var i;
@@ -478,7 +513,7 @@
         'maxResults': 200,
         'orderBy': 'startTime'
       }).then(function(response) {
-
+        console.log("Hello?");
         //final refined list to send to sidebar
         var aevents = response.result.items;
         //appendPre('Athletic events:');
@@ -558,6 +593,7 @@
             }
           }
         }
+        console.log("Athletics compiled");
         listUpcomingEvents();
       });
     }
@@ -621,10 +657,13 @@
               // placeholder variable that contains all current characters for loop when through
               if (school.summary[u] == ' ' || u >= school.summary.length) {
                 // if it encounters a space
-                if (checker == 'Trip ' || checker == 'Faculty ' || checker == 'Assembly ' || checker == 'US ' || checker == 'TIAA ' || checker == 'IAA ' || checker == 'Admission ') {
+                if (checker == 'Trip ' || checker == 'Faculty ' || checker == 'Faculty/Staff ' || checker == 'Fac/Staff ' || checker == 'Staff/Faculty ' ||
+                checker == 'Staff/Fac ' || checker == 'Assembly ' || checker == 'AATF ' || checker == 'TIAA ' || checker == 'IAA ' || checker == 'Admission ' ||
+                checker == "Advisors' " || checker == "Heads' " || checker == 'Advisory ' || checker == 'ASC ') {
                   //if the word reads any of the above words, erase summary
                   school.summary = '';
                   school.location = '';
+                 //MAKE AP GOV. CHANGE
                 }
                 checker = '';
                 // set placeholder back to blank for next word if there is one
@@ -676,14 +715,20 @@
               //}
               // switch hours from UTC to HST
               startHours = startHours - 10;
-              if (startHours < 0) {
-                startHours = startHours + 24;
-                startDay = startDay - 1;
+              if (when != school.start.date) {
+                if (startHours < 0) {
+                  startHours = startHours + 24;
+                  startDay = startDay - 1;
+                }
+                endHours = endHours - 10;
+                if (endHours < 0) {
+                  endHours = endHours + 24;
+                }
               }
-              endHours = endHours - 10;
-              if (endHours < 0) {
-                endHours = endHours + 24;
-              }
+              //if (startHours != null) {
+              //  console.log(school.summary);
+              //  startDay = startDay + 1;
+              //}
               startDate = startYear + '-' + startMonth + '-' + startDay;
               // if today's date matches the event's date, print event
               //appendPre(school.summary + ' (' + startDate + 'T' + startHours + ':' + startMin + ':' + startSec + 'Z' + ')' + ' (' + school.location + ')');
@@ -712,6 +757,7 @@
         }
         var today = new Date();
         //appendPre(today.getMonth());
+        console.log("School compiled");
         compileList();
       });
     }
@@ -838,11 +884,11 @@
             }
             if (finalTimeM[c] == '') {
 
-              finalTimeH[c] = 'ALL DAY';
+              finalTimeH[c] = 'All Day';
               finalTimeM[c] = '';
             }
             //appendPre(finalTitle[c] + ' ' +  ' (' + finalTimeD[c] + ' ' + finalTimeH[c] + ':' + finalTimeM[c] + ') (' + finalLocation[c] + ') ');
-
+            console.log("Ordering Complete");
             //listing all the events
             for (var i = 0; i < finalTitle.length; i++){
               var firstEvent = "event" + i;
@@ -872,6 +918,56 @@
     }
   </script>
 
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  <script type="text/javascript">
+  jQuery(function($){
+  	var images = ['2picturescreensaver.jpg', 'screensaver2-01.jpg', 'screensaver3-01.jpg', 'screensaver4-01.jpg'],
+  	timebeforesleep = 2000, //milliseconds inactivity before sleep
+  	imagedisplaytime = 10000, //nilliseconds each image shown during sleep
+  	$sleeper = $('<div style="display: none; width: 100%; height: 100%; background-color: black; position: fixed; top: 0; right: 0;">' +
+  		'<img src="' + images[0] + '"style="width: 100%; height: 100%; display: block;" width="100%" height="100%" alt="Click or Press Key to Return Image" title="Click or Press Key to Return"></div>')
+  		.appendTo(document.body), timer, nofixed, scroll, preloads = [], imcounter = 0, ie7 = /MSIE (\d+)/.exec(navigator.userAgent), imginterval;
+  		if(ie7 && ie7[1] < 8){
+  			$sleeper.css({position: 'absolute'});
+  			nofixed = true;
+  		}
+  	$.each(images, function(i, im){ //preload
+  		$(new Image()).on('load error', function(e){
+  			preloads[i] = e.type;
+  		}).attr('src', im);
+  	});
+  	function rotateimage(){
+  		imcounter = (imcounter + 1) % images.length;
+  		if(!preloads[imcounter] || preloads[imcounter] === 'error'){ //skip missing images and those not yet loaded
+  			rotateimage();
+  			return;
+  		}
+  		$sleeper.find('img').attr('src', images[imcounter]);
+  	}
+  	$(document).on('mousemove click keydown touchstart focusin', function(){
+  		clearTimeout(timer);
+  		clearInterval(imginterval);
+  		preparetosleep();
+  		if($sleeper.css('display') !== 'none'){
+  			$sleeper.stop(true, true).hide('slow', function(){
+  				if(scroll = $sleeper.data('scroll')){$(window).scrollTop(scroll[1]); $(window).scrollLeft(scroll[0]);}
+  			});
+  			$('html, body').css({width: '', height: '', margin: '', padding: '', overflow: ''});
+  		}
+  	});
+  	function preparetosleep(){
+  		timer = setTimeout(function(){
+  			clearInterval(imginterval);
+  			imginterval = setInterval(rotateimage, imagedisplaytime);
+  			$sleeper.data('scroll', [$(window).scrollLeft(), $(window).scrollTop()]);
+  			$('html, body').css({width: nofixed? $(window).width() : '100%', height: nofixed? $(window).height(): '100%', margin: 0, padding: 0, overflow: 'hidden'});
+  			$sleeper.stop(true, true).show('slow');
+  		}, timebeforesleep);
+  	}
+  	preparetosleep();
+  });
+  </script>
+
   <script async defer src="https://apis.google.com/js/api.js"
     onload="this.onload=function(){};handleClientLoad()"
     onreadystatechange="if (this.readyState === 'complete') this.onload()">
@@ -889,6 +985,7 @@
       document.getElementById("mySidenav").style.width = "0";
       document.getElementById("main").style.marginLRight= "0";
     }
+    */
 
       </script>
 
