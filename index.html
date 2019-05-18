@@ -1099,6 +1099,7 @@
             console.log("COOKIE", curveArray[id]);
             scene.add( curveArray[id] );
           });
+          return curveArray[id];
         }
 
         function sepCurve ()
@@ -1569,7 +1570,6 @@
 
              console.log(getRoom(selectedObject).name);
 
-             console.log(searchRoom(campus, "C201"));
              console.log(campus.children.length);
 
              if(getRoom(selectedObject).name.slice(2,-3) != 'Part'){
