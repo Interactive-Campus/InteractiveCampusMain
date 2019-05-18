@@ -1109,7 +1109,7 @@
 
         function init2 ()
         {
-          spSetup('C-101', 0, 1, 1, 1, 0, 50);
+          spSetup('C-101', 0, 1, 1, 1, 0.1, 60);
         }
 
       init();
@@ -1216,6 +1216,7 @@
               var buildingGroup = new THREE.Group();
               buildingGroup.name = curScene.name;
               var sceneLength = curScene.children.length;
+              spSetup(buildingGroup.name + "-xxx", 0, 1, 1, 1, 0.1, 60);
               /*
               *Creates 4 floors for each Building, not all are used
               *each room is stored in its floor,
@@ -1224,22 +1225,27 @@
               var floor1 = new THREE.Group();
               buildingGroup.add(floor1);
               floor1.name = buildingGroup.name + "1";
+              spSetup(buildingGroup.name + "-1xx", 0, 1, 1, 1, 0.1, 60);
 
               var floor2 = new THREE.Group();
               buildingGroup.add(floor2);
               floor2.name = buildingGroup.name + "2";
+              spSetup(buildingGroup.name + "-2xx", 0, 1, 1, 1, 0.1, 60);
 
               var floor3 = new THREE.Group();
               buildingGroup.add(floor3);
-              floor3.name = buildingGroup.name + "4";
+              floor3.name = buildingGroup.name + "3";
+              spSetup(buildingGroup.name + "-3xx", 0, 1, 1, 1, 0.1, 60);
 
               var floor4 = new THREE.Group();
               buildingGroup.add(floor4);
               floor4.name = buildingGroup.name + "4";
+              spSetup(buildingGroup.name + "-4xx", 0, 1, 1, 1, 0.1, 60);
 
               var floor5 = new THREE.Group();
               buildingGroup.add(floor5);
               floor5.name = buildingGroup.name + "5";
+              spSetup(buildingGroup.name + "-5xx", 0, 1, 1, 1, 0.1, 60);
 
               /*
               *Each mesh has a prefix indicating the building it is a part of and the floor
@@ -1276,10 +1282,10 @@
               buildingGroup.children.forEach( function (child){
                 child.children.forEach(function(room){
                   if (room instanceof THREE.Mesh){
-                    room.receiveShadow = true;
-                    room.castShadow = true;
                     room.material.side = THREE.DoubleSide;
                     room.geometry.computeBoundingSphere();
+
+                    spSetup(room.name.slice(0,1) + "-" + room.name.slice(1), 0, 1, 1, 1, 0.1, 60);
 
                     //tests if the mesh is a room or just an aesthetic part
                     if(room.name.slice(2, -3).toUpperCase() == 'part'.toUpperCase()){
@@ -1298,11 +1304,11 @@
 
                  else if (room instanceof THREE.Group){
                     room.children.forEach(function(children){
-                      children.receiveShadow = true;
-                      children.castShadow = true;
                       children.geometry.computeBoundingSphere();
                       children.material.side = THREE.DoubleSide;
                     });
+
+                    spSetup(room.name.slice(0,1) + "-" + room.name.slice(1), 0, 1, 1, 1, 0.1, 60);
 
                     //tests if the mesh is a room or just an aesthetic part
                     if(room.name.slice(2, -3).toUpperCase() == 'part'.toUpperCase()){
@@ -1582,7 +1588,7 @@
              if (clicked && started || prevobj != selectedObject)
              {
                outlinePass.selectedObjects = selectedObjects;
-               openNav();
+               //openNav();
              }
              else
              {
