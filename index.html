@@ -4,6 +4,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
     <style>
       /*changing asthetics (MERGER)*/
       body {
@@ -12,18 +13,69 @@
         font-style: normal;
         overflow: hidden;
       }
-      /*asthetic*/
+
+      /*actual search bar*/
+      .topnav .search-container {
+        float: right;
+
+      }
+      .topnav input[type=text] {
+        height: 28px;
+        width: 210px;
+        top: 0px;
+        left: 0px;
+        background-color: #ffffff;
+        position: absolute;
+        padding-top: 0px;
+        padding-left: 10px;
+      }
+
+
+      @media screen and (max-width: 600px) {
+        .topnav .search-container {
+          float: none;
+        }
+        .topnav input[type=text] {
+          border: 1px solid #ccc;
+        }
+      }
+
+      /*asthetic search bar*/
+      .sidenave{
+        height: 32.5px;
+        width: 10px;
+        top: 130px;
+        left: 30px;
+        background-color: rgb(175, 28, 64);
+        position: absolute;
+      }
+
+
+      /* searchbar */
+      .sidenavf{
+        height: 28px;
+        width: 21%;
+        top: 130px;
+        left: 50px;
+        background-color: #ffffff;
+        position: absolute;
+        padding-top: 5px;
+        padding-left: 10px;
+      }
+
+      /*asthetic directions*/
       .sidenavd{
         height: 65px;
-        width: 1%;
+        width: 10px;
         top: 50px;
         left: 30px;
         background-color: rgb(175, 28, 64);
         position: absolute;
       }
+
       /* directions */
       .sidenavc{
-        height: 6%;
+        height: 55px;
         width: 21%;
         top: 50px;
         left: 50px;
@@ -32,6 +84,7 @@
         padding-top: 10px;
         padding-left: 10px;
       }
+
       /* title*/
       .sidenavb {
         height: 6%;
@@ -69,27 +122,19 @@
         color: rgb(175, 28, 64);
       }
 
+
       info {
         font-size: 18px;
         color: rgb(175, 28, 64);
       }
 
-      /*asthetic rectangle
-
-      .rectangle {
-        position: absolute;
-        left: 10px;
-        height: 10px;
-        width: 571px;
-        align: left;
-        background-color: rgb(175, 28, 64);
-      }
-      */
 
       button {
         position: absolute;
-        height: 0px;
-        width: 0px;
+        left: 224px;
+        top: 0px;
+        height: 33px;
+        width: 33px;
       }
 
       /* list of events */
@@ -161,17 +206,27 @@
   <directions> click on a building to get directions </directions>
   </div>
 
-  <div id="mySidenav" class="sidenavb">
+  <div id="mySidenav" class="sidenave">
+  </div>
 
-  <g> EVENTS </g>
-  <info> click on an event for directions or more information </info>
+  <div id="mySidenav" class="sidenavf">
+    <div class="topnav">
+      <form action="/action_page.php">
+        <input type="text" placeholder="Search.." name="search">
+      </form>
+    </div>
+  </div>
+
+  <div id="mySidenav" class="sidenavb">
+    <g> EVENTS </g>
+    <info> click on an event for directions or more information </info>
   </div>
 
   <div id="mySidenav" class="sidenav">
 
   <div class="button">
-    <button id="authorize_button" style="display: none;">Authorize</button>
-    <button id="signout_button" style="display: none;">Sign Out</button>
+    <button1 id="authorize_button" style="display: none;">Authorize</button1>
+    <button1 id="signout_button" style="display: none;">Sign Out</button1>
   </div>
 
   <pre id="content" style="white-space: pre-wrap;"></pre>
@@ -922,8 +977,8 @@
   <script type="text/javascript">
   jQuery(function($){
   	var images = ['2picturescreensaver.jpg', 'screensaver2-01.jpg', 'screensaver3-01.jpg', 'screensaver4-01.jpg'],
-  	timebeforesleep = 2000, //milliseconds inactivity before sleep
-  	imagedisplaytime = 10000, //nilliseconds each image shown during sleep
+  	timebeforesleep = 60000, //milliseconds inactivity before sleep
+  	imagedisplaytime = 60000, //milliseconds each image shown during sleep
   	$sleeper = $('<div style="display: none; width: 100%; height: 100%; background-color: black; position: fixed; top: 0; right: 0;">' +
   		'<img src="' + images[0] + '"style="width: 100%; height: 100%; display: block;" width="100%" height="100%" alt="Click or Press Key to Return Image" title="Click or Press Key to Return"></div>')
   		.appendTo(document.body), timer, nofixed, scroll, preloads = [], imcounter = 0, ie7 = /MSIE (\d+)/.exec(navigator.userAgent), imginterval;
@@ -986,10 +1041,7 @@
       document.getElementById("main").style.marginLRight= "0";
     }
     */
-<<<<<<< HEAD
 
-=======
->>>>>>> 158551b41d60764c52017f54172a58f366ff25d7
       </script>
 
         <script src="js/three.js"></script>
