@@ -29,14 +29,8 @@
           left:0;
           position: fixed;
           z-index: 1;
-<<<<<<< HEAD
           bottom: 0;
           background-color: #ffffff;
-=======
-          top: 0;
-          right: 0;
-          background-color: rgb(160, 186, 195);
->>>>>>> Shading
           overflow-x: hidden;
           padding-top: 0px;
       }
@@ -1070,11 +1064,9 @@
           }
           curveEqArray[index] = new THREE.CatmullRomCurve3();
           curveEqArray[index].points = curveptarray;
-          //scene.add( curveEqArray[index] );
-          //curveptarray = new Array();
+          scene.add( curveEqArray[index] );
+          curveptarray = new Array();
 
-          console.log("help", index);
-          console.log("help", curveEqArray[index]);
         }
 
         function spSetup(roomLink, id, stScale, yScale, xp, yp, zp)
@@ -1088,18 +1080,18 @@
             comppts(object.children[0].geometry.attributes.position.array.length, object.children[0].geometry.attributes.position.array, id);
             var toobg = new THREE.TubeBufferGeometry( curveEqArray[id], 100, .03, 4, false );
             var toobm = new THREE.MeshBasicMaterial( { color: 0xff0000} );
-            curveArray[id] = new THREE.Mesh( toobg, toobm );
-            curveArray[id].scale.x = stScale;
-            curveArray[id].scale.y = stScale;
-            curveArray[id].scale.z = stScale;
-            curveArray[id].position.x = xp;
-            curveArray[id].position.y = yp;
-            curveArray[id].position.z = zp;
-            curveArray[id].name = roomLink;
-            console.log("COOKIE", curveArray[id]);
-            scene.add( curveArray[id] );
+            var curve = new THREE.Mesh( toobg, toobm );
+            curve.scale.x = stScale;
+            curve.scale.y = stScale;
+            curve.scale.z = stScale;
+            curve.position.x = xp;
+            curve.position.y = yp;
+            curve.position.z = zp;
+            curve.name = roomLink;
+            scene.add( curve );
+            console.log(curve);
+            return curve;
           });
-          return curveArray[id];
         }
 
         function sepCurve ()
@@ -1202,6 +1194,7 @@
         *                       Splines from stairway / floor Entrance to room
         */
         var loader = new THREE.GLTFLoader();
+        var roomID = 0;
 
         function loadCampus(path, position, modelGroup){
           loader.load( path, function ( gltf )
@@ -1216,7 +1209,7 @@
               var buildingGroup = new THREE.Group();
               buildingGroup.name = curScene.name;
               var sceneLength = curScene.children.length;
-              spSetup(buildingGroup.name + "-xxx", 0, 1, 1, 1, 0.1, 60);
+              spSetup(buildingGroup.name , 0, 1, 1, 1, 0.1, 60);
               /*
               *Creates 4 floors for each Building, not all are used
               *each room is stored in its floor,
@@ -1225,27 +1218,27 @@
               var floor1 = new THREE.Group();
               buildingGroup.add(floor1);
               floor1.name = buildingGroup.name + "1";
-              spSetup(buildingGroup.name + "-1xx", 0, 1, 1, 1, 0.1, 60);
+              //spSetup(buildingGroup.name + "-1xx", 0, 1, 1, 1, 0.1, 60);
 
               var floor2 = new THREE.Group();
               buildingGroup.add(floor2);
               floor2.name = buildingGroup.name + "2";
-              spSetup(buildingGroup.name + "-2xx", 0, 1, 1, 1, 0.1, 60);
+              //spSetup(buildingGroup.name + "-2xx", 0, 1, 1, 1, 0.1, 60);
 
               var floor3 = new THREE.Group();
               buildingGroup.add(floor3);
               floor3.name = buildingGroup.name + "3";
-              spSetup(buildingGroup.name + "-3xx", 0, 1, 1, 1, 0.1, 60);
+              //spSetup(buildingGroup.name + "-3xx", 0, 1, 1, 1, 0.1, 60);
 
               var floor4 = new THREE.Group();
               buildingGroup.add(floor4);
               floor4.name = buildingGroup.name + "4";
-              spSetup(buildingGroup.name + "-4xx", 0, 1, 1, 1, 0.1, 60);
+              //spSetup(buildingGroup.name + "-4xx", 0, 1, 1, 1, 0.1, 60);
 
               var floor5 = new THREE.Group();
               buildingGroup.add(floor5);
               floor5.name = buildingGroup.name + "5";
-              spSetup(buildingGroup.name + "-5xx", 0, 1, 1, 1, 0.1, 60);
+              //spSetup(buildingGroup.name + "-5xx", 0, 1, 1, 1, 0.1, 60);
 
               /*
               *Each mesh has a prefix indicating the building it is a part of and the floor
@@ -1285,7 +1278,15 @@
                     room.material.side = THREE.DoubleSide;
                     room.geometry.computeBoundingSphere();
 
-                    spSetup(room.name.slice(0,1) + "-" + room.name.slice(1), 0, 1, 1, 1, 0.1, 60);
+                    var roomCurve = spSetup(room.name.slice(0,1) + "-" + room.name.slice(1), 0, 1, 1, 1, 0.1, 60);
+                    var floorCurve = spSetup(room.name.slice(0,1) + "-" + room.name.slice(1,2) + "xx", 0, 1, 1, 1, 0.1, 60);
+                    var buildingCurve = spSetup(room.name.slice(0,1), 0, 1, 1, 1, 0.1, 60);
+                    if(floorCurve != null){
+                      floorCurve.add(roomCurve);
+                    }
+                    if(buildingCurve != null && floorCurve != null){
+                      buildingCurve.add(floorCurve);
+                    }
 
                     //tests if the mesh is a room or just an aesthetic part
                     if(room.name.slice(2, -3).toUpperCase() == 'part'.toUpperCase()){
@@ -1294,11 +1295,11 @@
                     }
                     //tests if mesh is stairs, stairs must use special animation
                     else if (room.name.slice(2, -3).toUpperCase() == 'Restroom'.toUpperCase()){
-                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:true};
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:true, curve:roomCurve};
                     }
                     else{
                       //Accesses a list of names and adds each one to the model
-                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(room.name)};
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(room.name), curve:roomCurve};
                     }
                   }
 
@@ -1308,7 +1309,16 @@
                       children.material.side = THREE.DoubleSide;
                     });
 
-                    spSetup(room.name.slice(0,1) + "-" + room.name.slice(1), 0, 1, 1, 1, 0.1, 60);
+                    var roomCurve = spSetup(room.name.slice(0,1) + "-" + room.name.slice(1), 0, 1, 1, 1, 0.1, 60);
+                    if(roomCurve != null){console.log(roomCurve.name); console.log(true);}
+                    var floorCurve = spSetup(room.name.slice(0,1) + "-" + room.name.slice(1,2) + "xx", 0, 1, 1, 1, 0.1, 60);
+                    var buildingCurve = spSetup(room.name.slice(0,1), 0, 1, 1, 1, 0.1, 60);
+                    if(floorCurve != null){
+                      floorCurve.add(roomCurve);
+                    }
+                    if(buildingCurve != null && floorCurve != null){
+                      buildingCurve.add(floorCurve);
+                    }
 
                     //tests if the mesh is a room or just an aesthetic part
                     if(room.name.slice(2, -3).toUpperCase() == 'part'.toUpperCase()){
@@ -1317,14 +1327,13 @@
                     }
                     //tests if mesh is stairs, stairs must use special animation
                     else if (room.name.slice(2, -3) == 'Restroom'){
-                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:true};
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:true, curve:roomCurve};
                     }
                     else{
                       //Accesses a list of names and adds each one to the model
-                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(room.name)};
+                      room.userData = {alreadyUp:false, isRoom:true, isRestroom:false, names:findNames(room.name),curve:roomCurve};
                     }
                   }
-
                 });
               });
               modelGroup.add(buildingGroup);
