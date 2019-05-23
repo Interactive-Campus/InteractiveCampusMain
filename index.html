@@ -417,6 +417,7 @@
 
      var finalTitle = new Array();
      var finalLocation = new Array();
+     var finalLocationIndiv = new Array();
      var finalTimeD = new Array();
      var finalTimeH = new Array();
      var finalTimeM = new Array();
@@ -911,11 +912,20 @@
               var newTime = firstTime.replace(firstTime.toString(),secondTime.toString());
               document.getElementById(newTime).innerHTML = finalTimeH[i];
             }
+            locationToRoom();
           }
           i = 200;
         }
       }
     }
+    function locationToRoom() {
+      for (var c = 0; c < finalLocation.length; c++) {
+        finalLocationIndiv = finalLocation[c];
+        for (var d = 0; d < finalLocationIndiv.length; d++) {
+          console.log(finalLocationIndiv[d]);
+        }
+      }
+  }
   </script>
 
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
@@ -972,25 +982,6 @@
     onload="this.onload=function(){};handleClientLoad()"
     onreadystatechange="if (this.readyState === 'complete') this.onload()">
   </script>
-
-  <script>
-    //width of sidebar
-    /*
-    function openNav() {
-      document.getElementById("mySidenav").style.width = "700px";
-      document.getElementById("main").style.marginLRight = "500px";
-    }
-    style.marginR
-    function closeNav() {
-      document.getElementById("mySidenav").style.width = "0";
-      document.getElementById("main").style.marginLRight= "0";
-    }
-    */
-<<<<<<< HEAD
-
-=======
->>>>>>> 158551b41d60764c52017f54172a58f366ff25d7
-      </script>
 
         <script src="js/three.js"></script>
         <script src="js/controls/OrbitControls.js"></script>
